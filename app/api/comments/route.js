@@ -1,0 +1,70 @@
+import { getDbUser } from "@/lib/data";
+import { getSupabaseAdmin } from "@/lib/supabase";
+import { createNotifications } from "@/lib/notify";
+
+// GET /api/comments?taskId=...  — คอมเมนต์/อัปเดตความคืบหน้าของงาน
+export async function GET(req) {
+  const user = await getDbUser();
+  if (!user) return Response.json({ error: "unauthorized" }, { status: 401 });
+
+  const taskId = new URL(req.url).searchParams.get("taskId");
+  if (!taskId) return Response.json({ error: "taskId is required" }, { status: 400 });
+
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase
+    .from("comments")
+    .select("id, body, created_at, users(name, email)")
+    .eq("task_id", taskId)
+    .order("created_at", { ascending: true });
+  if (error) return Response.json({ error: error.message }, { status: 500 });
+
+  const comments = (data || []).map((c) => ({
+    id: c.id,
+    body: c.body,
+    created_at: c.created_at,
+    author: c.users?.name || c.users?.email || "ผู้ใช้",
+  }));
+  return Response.json({ comments });
+}
+
+// POST /api/comments  { taskId, body }
+export async function POST(req) {
+  const user = await getDbUser();
+  if (!user) return Response.json({ error: "unauthorized" }, { status: 401 });
+
+  let body;
+  try {
+    body = await req.json();
+  } catch {
+    return Response.json({ error: "invalid json" }, { status: 400 });
+  }
+  const { taskId, body: text } = body || {};
+  if (!taskId || !text?.trim()) {
+    return Response.json({ error: "taskId and body are required" }, { status: 400 });
+  }
+
+  const supabase = getSupabaseAdmin();
+  const { error } = await supabase
+    .from("comments")
+    .insert({ task_id: taskId, user_id: user.id, body: text.trim() });
+  if (error) return Response.json({ error: error.message }, { status: 500 });
+
+  // แจ้งผู้รับผิดชอบงาน (ยกเว้นคนที่คอมเมนต์)
+  const { data: task } = await supabase.from("tasks").select("title, project_id").eq("id", taskId).maybeSingle();
+  const { data: as } = await supabase.from("task_assignees").select("user_id").eq("task_id", taskId);
+  if (task) {
+    await createNotifications(
+      (as || [])
+        .filter((r) => r.user_id !== user.id)
+        .map((r) => ({
+          user_id: r.user_id,
+          project_id: task.project_id,
+          task_id: taskId,
+          type: "comment",
+          message: `💬 มีอัปเดต/คอมเมนต์ใหม่ในงาน "${task.title}"`,
+        }))
+    );
+  }
+
+  return Response.json({ ok: true });
+}

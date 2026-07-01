@@ -1,0 +1,197 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
+import JoinCodeButton from "@/components/JoinCodeButton";
+
+function ViewToggle({ base }) {
+  const views = [
+    { key: "leader", href: "/leader", icon: "👑", label: "Leader" },
+    { key: "member", href: "/member", icon: "🙋", label: "Member" },
+  ];
+  const active = base === "/member" ? "member" : "leader";
+  return (
+    <div className="flex rounded-xl bg-surface-2 p-1">
+      {views.map((v) => (
+        <Link
+          key={v.key}
+          href={v.href}
+          className={`flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-[13px] font-semibold transition-all ${
+            active === v.key ? "bg-white text-ink shadow-sm" : "text-ink-2 hover:text-ink"
+          }`}
+        >
+          <span>{v.icon}</span>
+          {v.label}
+        </Link>
+      ))}
+    </div>
+  );
+}
+
+export default function ProjectPicker({ base, projects = [] }) {
+  const isLeader = base === "/leader";
+  const router = useRouter();
+  const { data: session } = useSession();
+  const [creating, setCreating] = useState(false);
+  const [name, setName] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  const initials = (session?.user?.name || session?.user?.email || "?").slice(0, 2).toUpperCase();
+
+  async function createProject(e) {
+    e.preventDefault();
+    if (!name.trim()) return;
+    setBusy(true);
+    const res = await fetch("/api/projects", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: name.trim() }),
+    });
+    setBusy(false);
+    if (res.ok) {
+      const { project } = await res.json();
+      router.push(`/leader/${project.id}`); // ผู้สร้างเป็น leader เสมอ
+    } else {
+      alert("สร้างโปรเจกต์ไม่สำเร็จ");
+    }
+  }
+
+  return (
+    <div className="dot-grid min-h-screen">
+      <header className="border-b border-line bg-white/90 backdrop-blur">
+        <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-4">
+          <Link href="/" className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand text-lg font-bold text-white shadow-[0_4px_10px_rgba(46,158,91,.3)]">
+              T
+            </div>
+            <span className="text-xl font-bold tracking-tight text-ink">TaskHub</span>
+          </Link>
+          <div className="flex items-center gap-4">
+            <ViewToggle base={base} />
+            <button
+              onClick={() => signOut({ callbackUrl: "/login" })}
+              title="ออกจากระบบ"
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-soft text-xs font-semibold text-brand-dark"
+            >
+              {initials}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main className="mx-auto max-w-5xl px-5 py-10">
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold tracking-tight text-ink">เลือกโปรเจกต์</h1>
+          <p className="mt-1 text-ink-2">
+            {isLeader
+              ? "เลือกโปรเจกต์ที่คุณเป็นหัวหน้า หรือสร้างใหม่"
+              : "เลือกโปรเจกต์ที่คุณเป็นสมาชิก"}
+          </p>
+        </div>
+
+        {projects.length === 0 && !isLeader && (
+          <div className="flex flex-col items-center gap-4 rounded-2xl border border-dashed border-line bg-white/60 p-10 text-center">
+            <div className="text-4xl">🙋</div>
+            <div className="text-ink-2">ยังไม่ได้เข้าร่วมโปรเจกต์ไหน — กรอกโค้ด/ลิงก์เชิญจากหัวหน้าเพื่อเข้าร่วม</div>
+            <JoinCodeButton className="rounded-[10px] bg-accent px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#f55e1d]">
+              🔑 กรอกโค้ดเข้าร่วม
+            </JoinCodeButton>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {projects.map((p) => (
+            <Link
+              key={p.id}
+              href={`${base}/${p.id}`}
+              className="group flex flex-col rounded-2xl border border-line bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,.05)] transition-all hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(0,0,0,.10)]"
+            >
+              <div className="flex items-center gap-3">
+                <div
+                  className="flex h-12 w-12 items-center justify-center rounded-xl text-sm font-bold text-white"
+                  style={{ background: p.color }}
+                >
+                  {p.initials}
+                </div>
+                <div className="min-w-0">
+                  <div className="truncate text-base font-semibold text-ink">{p.name}</div>
+                  <div className="truncate text-xs text-ink-3">{p.desc || "—"}</div>
+                </div>
+              </div>
+              <div className="mt-4 flex items-center gap-4 text-xs text-ink-2">
+                {isLeader ? (
+                  <>
+                    <span>👥 {p.memberCount} สมาชิก</span>
+                    <span>🗂 {p.taskCount} งาน</span>
+                  </>
+                ) : (
+                  <>
+                    <span>👑 {p.leaderName}</span>
+                    <span>🗂 {p.taskCount} งาน</span>
+                  </>
+                )}
+              </div>
+              <span
+                className="mt-4 inline-flex items-center gap-1 text-sm font-semibold transition-transform group-hover:translate-x-1"
+                style={{ color: p.color }}
+              >
+                เข้าโปรเจกต์ →
+              </span>
+            </Link>
+          ))}
+
+          {isLeader && (
+            <button
+              onClick={() => setCreating(true)}
+              className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-line bg-white/50 p-5 text-ink-3 transition-colors hover:border-brand hover:text-brand"
+            >
+              <span className="flex h-12 w-12 items-center justify-center rounded-xl border border-dashed border-current text-2xl">
+                +
+              </span>
+              <span className="text-sm font-semibold">สร้างโปรเจกต์ใหม่</span>
+            </button>
+          )}
+        </div>
+      </main>
+
+      {/* create modal */}
+      {creating && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4" onClick={() => setCreating(false)}>
+          <form
+            onClick={(e) => e.stopPropagation()}
+            onSubmit={createProject}
+            className="w-full max-w-sm rounded-2xl border border-line bg-white p-6 shadow-xl"
+          >
+            <h2 className="text-lg font-bold text-ink">สร้างโปรเจกต์ใหม่</h2>
+            <p className="mt-1 text-sm text-ink-2">คุณจะเป็นหัวหน้า (Leader) ของโปรเจกต์นี้</p>
+            <input
+              autoFocus
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="ชื่อโปรเจกต์"
+              className="mt-4 w-full rounded-xl border border-line px-3.5 py-2.5 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand-soft"
+            />
+            <div className="mt-5 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setCreating(false)}
+                className="rounded-[10px] border border-line px-4 py-2 text-sm font-semibold text-ink-2 hover:bg-surface-2"
+              >
+                ยกเลิก
+              </button>
+              <button
+                type="submit"
+                disabled={busy}
+                className="rounded-[10px] bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-dark disabled:opacity-60"
+              >
+                {busy ? "กำลังสร้าง..." : "สร้าง"}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+    </div>
+  );
+}
