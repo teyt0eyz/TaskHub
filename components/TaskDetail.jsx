@@ -11,7 +11,7 @@ const STATUSES = [
   { key: "done", label: "Done", bg: "#2E9E5B", color: "#fff" },
 ];
 
-export default function TaskDetail({ task, projectId, onClose, canComment = true, canEdit = false, members = [] }) {
+export default function TaskDetail({ task, projectId, onClose, canComment = true, canEdit = false, canReview = false, members = [] }) {
   const router = useRouter();
   const fileRef = useRef(null);
   const [status, setStatus] = useState(task.status);
@@ -27,6 +27,7 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
   const [editing, setEditing] = useState(false);
   const [edit, setEdit] = useState({
     title: task.title,
+    description: task.description || "",
     priority: task.priority || "medium",
     deadline: task._deadline || "",
     assigned_to: (task.assignees || [task.assignee]).map((a) => a?.id).filter(Boolean),
@@ -44,6 +45,14 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
   useEffect(() => {
     loadComments();
     loadAttachments();
+    // เปิดดูงานนี้ = อ่านคอมเมนต์ใหม่แล้ว → ทำเครื่องหมายอ่าน + เคลียร์ badge บนการ์ด
+    fetch("/api/notifications", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ taskId: task.id }),
+    })
+      .then(() => router.refresh())
+      .catch(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [task.id]);
 
@@ -157,6 +166,7 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
       body: JSON.stringify({
         id: task.id,
         title: edit.title.trim(),
+        description: edit.description,
         priority: edit.priority,
         deadline: edit.deadline || null,
         assigned_to: edit.assigned_to,
@@ -252,6 +262,16 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
                 className="w-full rounded-xl border border-line px-3.5 py-2.5 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand-soft"
               />
             </div>
+            <div>
+              <label className="mb-1 block text-xs font-semibold text-ink-2">รายละเอียด</label>
+              <textarea
+                value={edit.description}
+                onChange={(e) => setEdit({ ...edit, description: e.target.value })}
+                rows={3}
+                placeholder="อธิบายรายละเอียดงาน..."
+                className="w-full resize-none rounded-xl border border-line px-3.5 py-2.5 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand-soft"
+              />
+            </div>
             <div className="flex gap-3">
               <div className="flex-1">
                 <label className="mb-1 block text-xs font-semibold text-ink-2">ความด่วน</label>
@@ -288,6 +308,12 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
           </form>
         ) : (
         <div className="flex-1 overflow-y-auto p-5">
+          {task.description && (
+            <div className="mb-4 whitespace-pre-wrap rounded-xl bg-surface-2/60 px-3.5 py-3 text-sm leading-relaxed text-ink-2">
+              {task.description}
+            </div>
+          )}
+
           {needsRev && (
             <div className="mb-4 rounded-xl border border-[rgba(193,57,43,.25)] bg-[rgba(193,57,43,.06)] px-3 py-2 text-sm font-medium text-[#c1392b]">
               ↩ งานนี้ถูกตีกลับให้แก้ไข — ดูรายละเอียดในความคืบหน้าด้านล่าง
@@ -331,8 +357,8 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
               </div>
             )}
 
-            {/* leader: ยืนยันผ่าน / ตีกลับ งานที่เสร็จแล้ว */}
-            {canEdit && status === "done" && !task.approved && (
+            {/* ผู้มีสิทธิ์ตรวจงาน: ยืนยันผ่าน / ตีกลับ งานที่เสร็จแล้ว */}
+            {canReview && status === "done" && !task.approved && (
               <div className="mt-3">
                 {!rejecting ? (
                   <div className="flex flex-wrap gap-2">
@@ -470,8 +496,8 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
         </div>
         )}
 
-        {/* footer: leader ลบงาน */}
-        {isLeader && !editing && (
+        {/* footer: ผู้มีสิทธิ์จัดการงาน ลบงาน */}
+        {canEdit && !editing && (
           <div className="border-t border-line px-5 py-3">
             <button onClick={deleteTask} disabled={busy} className="text-sm font-semibold text-[#c1392b] hover:underline disabled:opacity-60">
               🗑 ลบงานนี้

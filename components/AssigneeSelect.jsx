@@ -2,6 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 
+const ROLE_META = {
+  leader: { label: "หัวหน้า", color: "#2E9E5B", bg: "rgba(46,158,91,.14)" },
+  deputy: { label: "รองหัวหน้า", color: "#6b3fa0", bg: "#EDE0FF" },
+  member: { label: "สมาชิก", color: "#b8521f", bg: "#FFE6D6" },
+};
+const ROLE_ORDER = ["leader", "deputy", "member"];
+const metaOf = (m) => ROLE_META[m?.role] || ROLE_META.member;
+const chipLabel = (m) => m?.title || metaOf(m).label;
+
 export default function AssigneeSelect({ members = [], value = [], onChange }) {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
@@ -17,12 +26,26 @@ export default function AssigneeSelect({ members = [], value = [], onChange }) {
 
   const toggle = (id) => onChange(value.includes(id) ? value.filter((x) => x !== id) : [...value, id]);
 
-  const label =
-    value.length === 0
-      ? "มอบหมายให้ฉัน (ค่าเริ่มต้น)"
-      : value.length === 1
-      ? members.find((m) => m.id === value[0])?.name || "1 คน"
-      : `เลือกแล้ว ${value.length} คน`;
+  const allIds = members.map((m) => m.id);
+  const everyone = allIds.length > 0 && allIds.every((id) => value.includes(id));
+  const toggleAll = () => onChange(everyone ? [] : allIds);
+
+  // จัดกลุ่มตาม role (สำหรับปุ่มเลือกทั้งหมดตามหมวด)
+  const groups = ROLE_ORDER.map((role) => ({
+    role,
+    ids: members.filter((m) => (m.role || "member") === role).map((m) => m.id),
+  })).filter((g) => g.ids.length > 0);
+  const groupAllSelected = (ids) => ids.length > 0 && ids.every((id) => value.includes(id));
+  const toggleGroup = (ids) =>
+    onChange(groupAllSelected(ids) ? value.filter((v) => !ids.includes(v)) : [...new Set([...value, ...ids])]);
+
+  const label = everyone
+    ? `ทุกคน (${allIds.length} คน)`
+    : value.length === 0
+    ? "มอบหมายให้ฉัน (ค่าเริ่มต้น)"
+    : value.length === 1
+    ? members.find((m) => m.id === value[0])?.name || "1 คน"
+    : `เลือกแล้ว ${value.length} คน`;
 
   const filtered = members.filter((m) => m.name.toLowerCase().includes(q.trim().toLowerCase()));
 
@@ -47,6 +70,42 @@ export default function AssigneeSelect({ members = [], value = [], onChange }) {
               className="w-full rounded-lg border border-line px-2.5 py-1.5 text-sm outline-none focus:border-brand"
             />
           </div>
+
+          {members.length > 0 && (
+            <div className="border-b border-line px-2 py-2">
+              {/* มอบให้ทุกคน */}
+              <label className="flex cursor-pointer items-center gap-2 rounded-lg px-1.5 py-1.5 hover:bg-surface-2">
+                <input type="checkbox" checked={everyone} onChange={toggleAll} className="h-4 w-4 accent-[#2E9E5B]" />
+                <span className="text-sm font-semibold text-ink">👥 มอบให้ทุกคน ({allIds.length})</span>
+              </label>
+              {/* เลือกทั้งหมดตาม role */}
+              {groups.length > 1 && (
+                <div className="mt-1.5 flex flex-wrap gap-1.5 px-1">
+                  {groups.map((g) => {
+                    const on = groupAllSelected(g.ids);
+                    const meta = ROLE_META[g.role];
+                    return (
+                      <button
+                        key={g.role}
+                        type="button"
+                        onClick={() => toggleGroup(g.ids)}
+                        className="rounded-full px-2.5 py-1 text-[11px] font-semibold transition-all"
+                        style={
+                          on
+                            ? { background: meta.color, color: "#fff" }
+                            : { background: meta.bg, color: meta.color }
+                        }
+                      >
+                        {on ? "✓ " : "+ "}
+                        {meta.label}ทั้งหมด ({g.ids.length})
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+
           <div className="scroll-soft max-h-52 overflow-y-auto overscroll-contain py-1">
             {members.length === 0 && (
               <div className="px-3 py-2 text-xs text-ink-3">ไม่มีสมาชิก — จะมอบให้ตัวเอง</div>
@@ -54,17 +113,26 @@ export default function AssigneeSelect({ members = [], value = [], onChange }) {
             {members.length > 0 && filtered.length === 0 && (
               <div className="px-3 py-2 text-xs text-ink-3">ไม่พบสมาชิกที่ค้นหา</div>
             )}
-            {filtered.map((m) => (
-              <label key={m.id} className="flex cursor-pointer items-center gap-2 px-3 py-2 hover:bg-surface-2">
-                <input
-                  type="checkbox"
-                  checked={value.includes(m.id)}
-                  onChange={() => toggle(m.id)}
-                  className="h-4 w-4 accent-[#FF6B2B]"
-                />
-                <span className="text-sm text-ink">{m.name}</span>
-              </label>
-            ))}
+            {filtered.map((m) => {
+              const meta = metaOf(m);
+              return (
+                <label key={m.id} className="flex cursor-pointer items-center gap-2 px-3 py-2 hover:bg-surface-2">
+                  <input
+                    type="checkbox"
+                    checked={value.includes(m.id)}
+                    onChange={() => toggle(m.id)}
+                    className="h-4 w-4 accent-[#FF6B2B]"
+                  />
+                  <span
+                    className="shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-semibold"
+                    style={{ background: meta.bg, color: meta.color }}
+                  >
+                    {chipLabel(m)}
+                  </span>
+                  <span className="truncate text-sm text-ink">{m.name}</span>
+                </label>
+              );
+            })}
           </div>
         </div>
       )}

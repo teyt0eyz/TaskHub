@@ -49,20 +49,26 @@ export async function POST(req) {
     .insert({ task_id: taskId, user_id: user.id, body: text.trim() });
   if (error) return Response.json({ error: error.message }, { status: 500 });
 
-  // แจ้งผู้รับผิดชอบงาน (ยกเว้นคนที่คอมเมนต์)
+  // แจ้งทั้งผู้รับผิดชอบงาน "และหัวหน้าโปรเจกต์" (ยกเว้นคนที่คอมเมนต์เอง)
   const { data: task } = await supabase.from("tasks").select("title, project_id").eq("id", taskId).maybeSingle();
-  const { data: as } = await supabase.from("task_assignees").select("user_id").eq("task_id", taskId);
   if (task) {
+    const [{ data: as }, { data: leaders }] = await Promise.all([
+      supabase.from("task_assignees").select("user_id").eq("task_id", taskId),
+      supabase.from("project_members").select("user_id").eq("project_id", task.project_id).eq("role", "leader"),
+    ]);
+    const recipients = new Set([
+      ...(as || []).map((r) => r.user_id),
+      ...(leaders || []).map((l) => l.user_id),
+    ]);
+    recipients.delete(user.id);
     await createNotifications(
-      (as || [])
-        .filter((r) => r.user_id !== user.id)
-        .map((r) => ({
-          user_id: r.user_id,
-          project_id: task.project_id,
-          task_id: taskId,
-          type: "comment",
-          message: `💬 มีอัปเดต/คอมเมนต์ใหม่ในงาน "${task.title}"`,
-        }))
+      [...recipients].map((uid) => ({
+        user_id: uid,
+        project_id: task.project_id,
+        task_id: taskId,
+        type: "comment",
+        message: `💬 ${user.name || "สมาชิก"} อัปเดตงาน "${task.title}"`,
+      }))
     );
   }
 

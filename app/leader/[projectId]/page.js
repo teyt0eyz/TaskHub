@@ -1,23 +1,25 @@
 import WorkspaceCanvas from "@/components/WorkspaceCanvas";
-import { getDbUser, getProjectById, getActiveTasks, getProjectMembers, initialsOf } from "@/lib/data";
+import { getDbUser, getProjectById, getActiveTasks, getProjectMembers, getMembership, can, PERM, initialsOf } from "@/lib/data";
 
 export default async function LeaderWorkspacePage({ params }) {
   const { projectId } = await params;
-  const [user, project, tasks, members] = await Promise.all([
-    getDbUser(),
+  const user = await getDbUser();
+  const [project, tasks, members, membership] = await Promise.all([
     getProjectById(projectId),
-    getActiveTasks(projectId),
+    getActiveTasks(projectId, user?.id),
     getProjectMembers(projectId),
+    getMembership(projectId, user?.id),
   ]);
-  const memberOpts = members.map((m) => ({ id: m.id, name: m.name }));
+  const memberOpts = members.map((m) => ({ id: m.id, name: m.name, role: m.role, title: m.title }));
 
+  const projColor = project?.color || "#2E9E5B";
   const root = {
-    name: user?.name || project?.name || "Leader",
-    initials: initialsOf(user?.name || user?.email || project?.name || "L"),
-    color: "#1f7a45",
-    bg: "rgba(46,158,91,.16)",
-    accent: "#2E9E5B",
-    roleLabel: "Leader",
+    name: project?.name || "โปรเจกต์",
+    initials: initialsOf(project?.name || "P"),
+    color: projColor,
+    bg: `${projColor}22`,
+    accent: projColor,
+    roleLabel: "โปรเจกต์",
   };
 
   // tree แสดง 4 งานแรกของโปรเจกต์
@@ -29,7 +31,9 @@ export default async function LeaderWorkspacePage({ params }) {
       projectId={projectId}
       members={memberOpts}
       currentUserId={user?.id}
-      canEdit
+      canEdit={can(membership, PERM.TASKS)}
+      canReview={can(membership, PERM.REVIEW)}
+      canCreate={can(membership, PERM.TASKS)}
     />
   );
 }

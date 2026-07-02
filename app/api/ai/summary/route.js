@@ -1,33 +1,29 @@
 import { generateWeeklySummary } from "@/lib/gemini";
-import { getDbUser, getRecentCheckins, getMyTasks } from "@/lib/data";
-import { getSupabaseAdmin } from "@/lib/supabase";
+import {
+  getDbUser,
+  getMembership,
+  can,
+  PERM,
+  getRecentCheckins,
+  getMyTasks,
+  getProjectAiQuota,
+  bumpProjectAiCount,
+  AI_LIMIT,
+} from "@/lib/data";
 
-const LIMIT = 5; // สรุป AI ได้ 5 ครั้ง/เดือน/user
-
-// ต้นเดือนปัจจุบัน (UTC) — ใช้เป็นจุด reset โควตา
-function periodStart(d = new Date()) {
-  return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1));
-}
-function nextPeriodStart(d = new Date()) {
-  return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 1));
-}
-
-// โควตาที่ใช้ไปในเดือนนี้ (ถ้าข้ามเดือนแล้วถือว่าเริ่มนับใหม่ = 0)
-function usedThisMonth(user) {
-  const reset = user?.ai_summary_reset_at ? new Date(user.ai_summary_reset_at) : null;
-  if (!reset || reset < periodStart()) return 0;
-  return user?.ai_summary_count || 0;
-}
-
-// GET /api/ai/summary — เช็คโควตาที่เหลือของผู้ใช้ปัจจุบัน
-export async function GET() {
+// GET /api/ai/summary?projectId=... — โควตา AI ที่เหลือของโปรเจกต์
+export async function GET(req) {
   const user = await getDbUser();
   if (!user) return Response.json({ error: "unauthorized" }, { status: 401 });
-  const used = usedThisMonth(user);
-  return Response.json({ remaining: Math.max(0, LIMIT - used), limit: LIMIT, resetAt: nextPeriodStart() });
+  const projectId = new URL(req.url).searchParams.get("projectId");
+  if (!projectId) return Response.json({ remaining: AI_LIMIT, limit: AI_LIMIT });
+
+  const membership = await getMembership(projectId, user.id);
+  const q = await getProjectAiQuota(projectId);
+  return Response.json({ remaining: q.remaining, limit: q.limit, resetAt: q.resetAt, canAI: can(membership, PERM.AI) });
 }
 
-// POST /api/ai/summary — สร้างสรุปด้วย Gemini (นับโควตาของ "คนกด")
+// POST /api/ai/summary — สรุปงานรายคน (ใช้โควตาของโปรเจกต์ หรือ key ของผู้ใช้เอง)
 export async function POST(req) {
   const user = await getDbUser();
   if (!user) return Response.json({ error: "unauthorized" }, { status: 401 });
@@ -39,20 +35,26 @@ export async function POST(req) {
     return Response.json({ error: "invalid json" }, { status: 400 });
   }
 
-  const { memberName, projectId, userId } = body || {};
-  if (!memberName) return Response.json({ error: "memberName is required" }, { status: 400 });
+  const { memberName, projectId, userId, apiKey } = body || {};
+  if (!memberName || !projectId) return Response.json({ error: "memberName and projectId required" }, { status: 400 });
 
-  const used = usedThisMonth(user);
-  if (used >= LIMIT) {
-    return Response.json(
-      { error: "quota_exceeded", remaining: 0, limit: LIMIT, resetAt: nextPeriodStart() },
-      { status: 429 }
-    );
+  // ต้องมีสิทธิ์ "สรุปด้วย AI" ในโปรเจกต์นี้
+  const membership = await getMembership(projectId, user.id);
+  if (!can(membership, PERM.AI)) return Response.json({ error: "forbidden" }, { status: 403 });
+
+  const ownKey = typeof apiKey === "string" && apiKey.trim() ? apiKey.trim() : null;
+
+  // ถ้าไม่ได้ใช้ key ตัวเอง → เช็คโควตาของโปรเจกต์
+  if (!ownKey) {
+    const q = await getProjectAiQuota(projectId);
+    if (q.remaining <= 0) {
+      return Response.json({ error: "quota_exceeded", remaining: 0, limit: q.limit, resetAt: q.resetAt }, { status: 429 });
+    }
   }
 
   let checkins = body.checkins || [];
   let tasks = body.tasks || [];
-  if (projectId && userId) {
+  if (userId) {
     const [c, t] = await Promise.all([getRecentCheckins(projectId, userId), getMyTasks(projectId, userId)]);
     checkins = c;
     tasks = t.map((x) => ({ title: x.title, status: x.status }));
@@ -60,18 +62,15 @@ export async function POST(req) {
 
   let summary;
   try {
-    summary = await generateWeeklySummary(memberName, checkins, tasks);
+    summary = await generateWeeklySummary(memberName, checkins, tasks, ownKey);
   } catch (e) {
-    console.error("ai summary failed:", e.message);
-    return Response.json({ error: "ai_summary_failed" }, { status: 500 });
+    console.error("ai summary failed:", e?.message);
+    return Response.json({ error: "ai_summary_failed", detail: e?.message || String(e) }, { status: 500 });
   }
 
-  // สำเร็จแล้วค่อยหักโควตา
-  const newCount = used + 1;
-  await getSupabaseAdmin()
-    .from("users")
-    .update({ ai_summary_count: newCount, ai_summary_reset_at: periodStart().toISOString() })
-    .eq("id", user.id);
-
-  return Response.json({ summary, remaining: Math.max(0, LIMIT - newCount), limit: LIMIT });
+  if (ownKey) {
+    return Response.json({ summary, unlimited: true, limit: AI_LIMIT });
+  }
+  const used = await bumpProjectAiCount(projectId);
+  return Response.json({ summary, remaining: Math.max(0, AI_LIMIT - used), limit: AI_LIMIT });
 }

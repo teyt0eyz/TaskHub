@@ -1,4 +1,4 @@
-import { getDbUser } from "@/lib/data";
+import { getDbUser, getMembership, can, PERM } from "@/lib/data";
 import { getSupabaseAdmin } from "@/lib/supabase";
 import { createNotifications } from "@/lib/notify";
 
@@ -13,9 +13,15 @@ export async function POST(req) {
   } catch {
     return Response.json({ error: "invalid json" }, { status: 400 });
   }
-  const { project_id, title, status = "todo", priority = "medium", deadline = null } = body || {};
+  const { project_id, title, status = "todo", priority = "medium", deadline = null, description = "" } = body || {};
   if (!project_id || !title) {
     return Response.json({ error: "project_id and title are required" }, { status: 400 });
+  }
+
+  // สร้างงานได้เฉพาะผู้มีสิทธิ์ "จัดการงาน"
+  const membership = await getMembership(project_id, user.id);
+  if (!can(membership, PERM.TASKS)) {
+    return Response.json({ error: "forbidden" }, { status: 403 });
   }
 
   // assigned_to รับได้ทั้ง array (หลายคน) หรือค่าเดี่ยว; ว่าง = มอบให้ผู้สร้าง
@@ -33,6 +39,7 @@ export async function POST(req) {
     .insert({
       project_id,
       title,
+      description: description?.trim() || null,
       status,
       priority,
       deadline: deadline || null,
@@ -86,38 +93,35 @@ export async function PATCH(req) {
   } catch {
     return Response.json({ error: "invalid json" }, { status: 400 });
   }
-  const { id, status, needs_revision, title, priority, deadline } = body || {};
+  const { id, status, needs_revision, title, priority, deadline, description } = body || {};
   if (!id) return Response.json({ error: "id is required" }, { status: 400 });
 
   const supabase = getSupabaseAdmin();
 
-  // ฟิลด์ที่แก้ได้เฉพาะ leader ของโปรเจกต์ (เนื้อหางาน + การยืนยันปิดงาน)
+  // แก้เนื้อหางาน (title/priority/deadline/ผู้รับผิดชอบ/แท็ก) ต้องมีสิทธิ์ "จัดการงาน"
   const editsContent =
     title !== undefined ||
+    description !== undefined ||
     priority !== undefined ||
     deadline !== undefined ||
     body.assigned_to !== undefined ||
-    body.tags !== undefined ||
-    body.approve !== undefined;
+    body.tags !== undefined;
+  // ยืนยัน/ตีกลับงาน ต้องมีสิทธิ์ "ตรวจงาน"
+  const needsReview = body.approve !== undefined || needs_revision === true;
 
-  if (editsContent) {
+  if (editsContent || needsReview) {
     const { data: t } = await supabase.from("tasks").select("project_id").eq("id", id).maybeSingle();
     if (!t) return Response.json({ error: "not found" }, { status: 404 });
-    const { data: membership } = await supabase
-      .from("project_members")
-      .select("role")
-      .eq("project_id", t.project_id)
-      .eq("user_id", user.id)
-      .maybeSingle();
-    if (!membership || membership.role !== "leader") {
-      return Response.json({ error: "forbidden" }, { status: 403 });
-    }
+    const m = await getMembership(t.project_id, user.id);
+    if (editsContent && !can(m, PERM.TASKS)) return Response.json({ error: "forbidden" }, { status: 403 });
+    if (needsReview && !can(m, PERM.REVIEW)) return Response.json({ error: "forbidden" }, { status: 403 });
   }
 
   const update = {};
   if (status) update.status = status;
   if (typeof needs_revision === "boolean") update.needs_revision = needs_revision;
   if (typeof title === "string" && title.trim()) update.title = title.trim();
+  if (description !== undefined) update.description = (description || "").trim() || null;
   if (priority) update.priority = priority;
   if (deadline !== undefined) update.deadline = deadline || null;
   if (body.approve === true) update.approved_at = new Date().toISOString();
@@ -251,13 +255,8 @@ export async function DELETE(req) {
   const { data: task } = await supabase.from("tasks").select("project_id").eq("id", id).maybeSingle();
   if (!task) return Response.json({ error: "not found" }, { status: 404 });
 
-  const { data: membership } = await supabase
-    .from("project_members")
-    .select("role")
-    .eq("project_id", task.project_id)
-    .eq("user_id", user.id)
-    .maybeSingle();
-  if (!membership || membership.role !== "leader") {
+  const m = await getMembership(task.project_id, user.id);
+  if (!can(m, PERM.TASKS)) {
     return Response.json({ error: "forbidden" }, { status: 403 });
   }
 

@@ -8,7 +8,7 @@ Capstone Project · Presentation วันอาทิตย์ที่ 5 ก�
 
 ## Project overview
 
-TaskHub เป็น web app สำหรับการบริหารงานในทีม ไม่ว่าจะเป็นหัวหน้ากับพนักงาน, อาจารย์กับนักศึกษา, หรือหัวหน้ากลุ่มกับเพื่อนร่วมทีม โดย Leader มอบหมายงานและติดตาม progress ของ Member ในที่เดียว มีฟีเจอร์ mood check-in รายวัน, blocker flag, streak badge, และ AI summary รายเดือน (จำกัด 5 ครั้ง/เดือน/user)
+TaskHub เป็น web app สำหรับการบริหารงานในทีม ไม่ว่าจะเป็นหัวหน้ากับพนักงาน, อาจารย์กับนักศึกษา, หรือหัวหน้ากลุ่มกับเพื่อนร่วมทีม โดย Leader มอบหมายงานและติดตาม progress ของ Member ในที่เดียว มีฟีเจอร์ mood check-in รายวัน, blocker flag, streak badge, และ AI summary รายเดือน (จำกัด 4 ครั้ง/เดือน/user)
 
 ---
 
@@ -18,7 +18,7 @@ TaskHub เป็น web app สำหรับการบริหารงา
 - **Styling:** Tailwind CSS
 - **Database + Realtime:** Supabase
 - **Authentication:** NextAuth.js v5 + Google OAuth
-- **AI:** Google Gemini API (`gemini-2.0-flash`) ผ่าน `@google/generative-ai` — ฟรี 1,500 req/วัน
+- **AI:** Google Gemini API (`gemini-2.5-flash`) ผ่าน `@google/generative-ai` — ฟรี 1,500 req/วัน
 - **Font:** Prompt (heading) + Noto Sans Thai (body) จาก `next/font/google`
 - **Deploy:** Vercel
 

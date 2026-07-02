@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import WorkspaceCanvas from "@/components/WorkspaceCanvas";
-import { getDbUser, getMyTasks, getActiveTasks, getProjectById, initialsOf } from "@/lib/data";
+import { getDbUser, getMyTasks, getActiveTasks, getProjectById, getProjectMembers, getMembership, initialsOf } from "@/lib/data";
 
 export default async function MemberWorkspacePage({ params }) {
   const { projectId } = await params;
@@ -11,7 +11,11 @@ export default async function MemberWorkspacePage({ params }) {
 
   // โหมด "เห็นงานทุกคน" — แสดงผังทั้งทีม งานคนอื่นจางลง (หัวหน้าเป็นคนเปิด)
   if (project?.member_visibility === "all") {
-    const tasks = await getActiveTasks(projectId);
+    const [tasks, members] = await Promise.all([
+      getActiveTasks(projectId, user.id),
+      getProjectMembers(projectId),
+    ]);
+    const memberOpts = members.map((m) => ({ id: m.id, name: m.name, role: m.role, title: m.title }));
     const root = {
       name: project.name,
       initials: initialsOf(project.name),
@@ -26,6 +30,7 @@ export default async function MemberWorkspacePage({ params }) {
         root={root}
         tasks={tasks}
         projectId={projectId}
+        members={memberOpts}
         currentUserId={user.id}
         dimOthers
         canCreate={false}
@@ -34,14 +39,17 @@ export default async function MemberWorkspacePage({ params }) {
   }
 
   // โหมดปกติ — เห็นเฉพาะงานของตัวเอง (เรียงตาม deadline)
-  const tasks = await getMyTasks(projectId, user.id);
+  const [tasks, myMembership] = await Promise.all([
+    getMyTasks(projectId, user.id),
+    getMembership(projectId, user.id),
+  ]);
   const root = {
     name: user.name || user.email || "Member",
     initials: initialsOf(user.name || user.email || "M"),
     color: "#b8521f",
     bg: "#FFE6D6",
     accent: "#FF6B2B",
-    roleLabel: "Member",
+    roleLabel: myMembership?.title || "Member",
   };
 
   return (

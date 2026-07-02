@@ -116,9 +116,24 @@ create index if not exists idx_tasks_approved on tasks(project_id, approved_at);
 -- โหมดการมองเห็นของสมาชิก: 'own' = เห็นเฉพาะงานตัวเอง, 'all' = เห็นกิ่งทุกคน (งานคนอื่นจางลง)
 alter table projects add column if not exists member_visibility text default 'own';
 
--- โควตา AI summary (จำกัด 5 ครั้ง/เดือน/user) — reset ต้นเดือนอัตโนมัติในโค้ด
+-- โหมดการเข้าร่วม: false = หัวหน้าต้องอนุมัติก่อน, true = เข้าได้เลยไม่ต้องอนุมัติ
+alter table projects add column if not exists auto_approve boolean default false;
+
+-- รองหัวหน้า (deputy) + สิทธิ์ที่หัวหน้ามอบให้ (review / manage_tasks / manage_members / settings)
+alter table project_members drop constraint if exists project_members_role_check;
+alter table project_members add constraint project_members_role_check check (role in ('leader', 'member', 'deputy'));
+alter table project_members add column if not exists permissions text[] default '{}';
+
+-- ชื่อบทบาทที่ตั้งเอง (แสดงผล) เช่น อาจารย์ / TA / นักศึกษา / พี่เลี้ยง — แยกจากระดับสิทธิ์
+alter table project_members add column if not exists title text;
+
+-- โควตา AI summary (เดิมนับต่อ user — เลิกใช้แล้ว แต่คงคอลัมน์ไว้)
 alter table users add column if not exists ai_summary_count int default 0;
 alter table users add column if not exists ai_summary_reset_at timestamptz;
+
+-- โควตา AI summary แบบใหม่: นับต่อ "โปรเจกต์" (4 ครั้ง/เดือน แชร์กันระหว่างหัวหน้า+รองหัวหน้า) reset ต้นเดือนในโค้ด
+alter table projects add column if not exists ai_summary_count int default 0;
+alter table projects add column if not exists ai_summary_reset_at timestamptz;
 
 -- 9. join_requests (คำขอเข้าร่วม — หัวหน้าต้องอนุมัติก่อนถึงเป็นสมาชิก)
 create table if not exists join_requests (

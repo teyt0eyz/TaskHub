@@ -50,10 +50,9 @@ export default function NotificationBell() {
           "postgres_changes",
           { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${uid}` },
           (payload) => {
-            setItems((prev) => [payload.new, ...prev].slice(0, 30));
-            setUnread((u) => u + 1);
             setToast(payload.new.message);
             setTimeout(() => setToast(""), 4000);
+            load(); // ดึงใหม่เพื่อให้ได้ href สำหรับกดเปิดงาน
           }
         )
         .subscribe();
@@ -95,9 +94,11 @@ export default function NotificationBell() {
         <button
           onClick={openMenu}
           title="การแจ้งเตือน"
-          className="relative flex h-8 w-8 items-center justify-center rounded-lg text-lg hover:bg-surface-2"
+          className="relative flex h-8 w-8 items-center justify-center rounded-lg text-ink-2 hover:bg-surface-2 hover:text-ink"
         >
-          🔔
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5" aria-hidden>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a3 3 0 1 1-5.714 0m5.714 0a24.255 24.255 0 0 1-5.714 0" />
+          </svg>
           {unread > 0 && (
             <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#c1392b] px-1 text-[10px] font-bold text-white">
               {unread > 9 ? "9+" : unread}
@@ -106,17 +107,24 @@ export default function NotificationBell() {
         </button>
 
         {open && (
-          <div className="absolute right-0 top-full z-40 mt-2 w-80 overflow-hidden rounded-xl border border-line bg-white shadow-[0_8px_24px_rgba(0,0,0,.12)]">
+          <div className="fixed left-2 right-2 top-[62px] z-50 w-auto overflow-hidden rounded-xl border border-line bg-white shadow-[0_8px_24px_rgba(0,0,0,.12)] sm:absolute sm:left-auto sm:right-0 sm:top-full sm:mt-2 sm:w-80">
             <div className="border-b border-line px-3 py-2 text-sm font-semibold text-ink">การแจ้งเตือน</div>
             <div className="scroll-soft max-h-96 overflow-y-auto">
               {items.length === 0 ? (
                 <div className="px-3 py-8 text-center text-sm text-ink-3">ยังไม่มีการแจ้งเตือน</div>
               ) : (
                 items.map((n) => (
-                  <div key={n.id} className={`px-3 py-2.5 ${n.read ? "" : "bg-brand-soft"}`}>
+                  <button
+                    key={n.id}
+                    onClick={() => {
+                      setOpen(false);
+                      if (n.href) router.push(n.href);
+                    }}
+                    className={`block w-full px-3 py-2.5 text-left transition-colors hover:bg-surface-2 ${n.read ? "" : "bg-brand-soft"}`}
+                  >
                     <div className="text-sm text-ink">{n.message}</div>
                     <div className="mt-0.5 text-[11px] text-ink-3">{timeAgo(n.created_at)}</div>
-                  </div>
+                  </button>
                 ))
               )}
             </div>

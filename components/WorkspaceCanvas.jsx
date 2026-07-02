@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import TaskCard from "@/components/ui/TaskCard";
 import TaskDetail from "@/components/TaskDetail";
 import AssigneeSelect from "@/components/AssigneeSelect";
@@ -20,29 +20,33 @@ function dlVal(t) {
 }
 
 // ---------- LIST layout (Member: งานของตัวเองเรียงตาม deadline) ----------
-function computeList(tasks) {
+// getH(key) = ความสูงจริงของการ์ด (วัดหลัง render) เพื่อเว้นระยะไม่ให้ทับกัน
+function computeList(tasks, getH) {
   const W = 600;
   const center = W / 2;
-  const GAP = 60;
+  const GAP = 44;
   const firstTop = 40 + LEADER_H + GAP;
-  const items = tasks.map((t, i) => ({
-    task: t,
-    x: center - CARD_W / 2,
-    y: firstTop + i * (CARD_H + GAP),
-    badge: i + 1,
-  }));
-  const lastTop = tasks.length ? firstTop + (tasks.length - 1) * (CARD_H + GAP) : firstTop;
   const rootBottom = 40 + LEADER_H;
 
+  const items = [];
   const paths = [];
+  let y = firstTop;
+  tasks.forEach((t, i) => {
+    const h = getH(t.id);
+    items.push({ task: t, x: center - CARD_W / 2, y, badge: i + 1, h });
+    paths.push({ d: `M ${center} ${y - 14} L ${center} ${y}`, arrow: true });
+    y += h + GAP;
+  });
+
+  const lastCardTop = items.length ? items[items.length - 1].y : firstTop;
+  const contentBottom = items.length ? items[items.length - 1].y + items[items.length - 1].h : firstTop;
   if (tasks.length) {
-    paths.push({ d: `M ${center} ${rootBottom} L ${center} ${lastTop}` });
-    items.forEach((it) => paths.push({ d: `M ${center} ${it.y - 14} L ${center} ${it.y}`, arrow: true }));
+    paths.unshift({ d: `M ${center} ${rootBottom} L ${center} ${lastCardTop}` });
   }
 
   return {
     W,
-    H: Math.max(lastTop + CARD_H + 60, 400),
+    H: Math.max(contentBottom + 60, 400),
     leader: { x: center - LEADER_W / 2, y: 40, w: LEADER_W, h: LEADER_H },
     heads: [],
     items,
@@ -53,7 +57,7 @@ function computeList(tasks) {
 const MEMBER_H = 78;
 
 // ---------- TREE layout (Leader: กิ่ง = ชื่อ member แล้วงานต่อลงมาเรียงตาม deadline) ----------
-function computeTree(tasks) {
+function computeTree(tasks, getH) {
   const COL_GAP = 64;
   const ROW_GAP = 40;
   const startX = 40;
@@ -90,7 +94,7 @@ function computeTree(tasks) {
     if (numCols > 1) paths.push({ d: `M ${colCenter(0)} ${busY} L ${colCenter(numCols - 1)} ${busY}` });
   }
 
-  let maxRows = 1;
+  let maxBottom = firstCardTop;
   groups.forEach((g, i) => {
     const cx = colCenter(i);
     // leader → ชื่อ member
@@ -99,19 +103,23 @@ function computeTree(tasks) {
     // ชื่อ member → งานแรก
     paths.push({ d: `M ${cx} ${memberTop + MEMBER_H} L ${cx} ${firstCardTop}`, arrow: true });
 
-    maxRows = Math.max(maxRows, g.tasks.length);
+    // วางการ์ดต่อกันลงมาโดยเว้นระยะตามความสูงจริงของแต่ละใบ (ไม่ทับกัน)
+    let y = firstCardTop;
     g.tasks.forEach((t, j) => {
-      const y = firstCardTop + j * (CARD_H + ROW_GAP);
-      items.push({ key: `${i}-${t.id}`, task: t, x: colX(i), y, badge: j + 1 });
+      const key = `${i}-${t.id}`;
+      const h = getH(key);
+      items.push({ key, task: t, x: colX(i), y, badge: j + 1, h });
       if (j < g.tasks.length - 1) {
-        paths.push({ d: `M ${cx} ${y + CARD_H} L ${cx} ${y + CARD_H + ROW_GAP}`, arrow: true });
+        paths.push({ d: `M ${cx} ${y + h} L ${cx} ${y + h + ROW_GAP}`, arrow: true });
       }
+      y += h + ROW_GAP;
     });
+    maxBottom = Math.max(maxBottom, y - ROW_GAP);
   });
 
   const contentRight = numCols > 0 ? colX(numCols - 1) + CARD_W : startX + CARD_W;
   const W = Math.max(contentRight + 40, leaderCenter + LEADER_W / 2 + 40, 480);
-  const H = firstCardTop + maxRows * CARD_H + (maxRows - 1) * ROW_GAP + 40;
+  const H = maxBottom + 40;
 
   return {
     W,
@@ -155,21 +163,67 @@ export default function WorkspaceCanvas({
   dimOthers = false,
   canCreate = true,
   canEdit = false,
+  canReview = false,
 }) {
   const isList = variant === "list";
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const isMine = (t) => (t.assignees || [t.assignee]).some((a) => a?.id === currentUserId);
 
-  const geo = useMemo(() => (isList ? computeList(tasks) : computeTree(tasks)), [isList, tasks]);
+  // ป้าย/สีของหัวกิ่งตาม role จริงของแต่ละคน (หัวหน้ามอบงานให้ตัวเองก็จะขึ้น Leader ไม่ใช่ Member)
+  // ถ้ามีชื่อบทบาทที่ตั้งเอง (title) ให้แสดง title แทน
+  const memberOf = (id) => members.find((m) => m.id === id);
+  const roleOf = (id) => memberOf(id)?.role || "member";
+  const roleStyle = (role) =>
+    role === "leader"
+      ? { color: "#2E9E5B", label: "Leader" }
+      : role === "deputy"
+      ? { color: "#6b3fa0", label: "รองหัวหน้า" }
+      : { color: "#FF6B2B", label: "Member" };
+
+  // ความสูงจริงของการ์ด (วัดหลัง render) → ใช้จัดระยะไม่ให้การ์ดทับกัน
+  const [heights, setHeights] = useState({});
+  const cardEls = useRef({});
+  const getH = useCallback((key) => heights[key] || CARD_H, [heights]);
+
+  const geo = useMemo(() => (isList ? computeList(tasks, getH) : computeTree(tasks, getH)), [isList, tasks, getH]);
   const { W: CANVAS_W, H: CANVAS_H, leader, items, paths, heads = [] } = geo;
+
+  // วัดความสูงการ์ดจริงแล้วอัปเดต (รันเมื่อชุดงาน/มุมมองเปลี่ยน)
+  useLayoutEffect(() => {
+    const next = {};
+    for (const key in cardEls.current) {
+      const el = cardEls.current[key];
+      if (el) next[key] = el.offsetHeight;
+    }
+    const keys = Object.keys(next);
+    const changed =
+      keys.length !== Object.keys(heights).length ||
+      keys.some((k) => Math.abs((heights[k] || 0) - next[k]) > 0.5);
+    if (changed) setHeights(next);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tasks, isList]);
 
   const [zoom, setZoom] = useState(0.85);
   const [selected, setSelected] = useState(tasks[0]?.id ?? null);
   const [grabbing, setGrabbing] = useState(false);
   const [detail, setDetail] = useState(null);
   const [adding, setAdding] = useState(false);
+
+  // เปิด task detail อัตโนมัติเมื่อมาจากการกดแจ้งเตือน (?task=<id>)
+  useEffect(() => {
+    if (!projectId) return;
+    const tid = searchParams.get("task");
+    if (!tid) return;
+    const t = tasks.find((x) => x.id === tid);
+    if (t) {
+      setDetail(t);
+      router.replace(pathname, { scroll: false });
+    }
+  }, [searchParams, tasks, pathname, router, projectId]);
   const [creBusy, setCreBusy] = useState(false);
-  const [form, setForm] = useState({ title: "", priority: "medium", deadline: "", assigned_to: [], tags: "" });
+  const [form, setForm] = useState({ title: "", description: "", priority: "medium", deadline: "", assigned_to: [], tags: "" });
   const scrollRef = useRef(null);
   const panRef = useRef(null);
   const movedRef = useRef(false);
@@ -184,6 +238,7 @@ export default function WorkspaceCanvas({
       body: JSON.stringify({
         project_id: projectId,
         title: form.title.trim(),
+        description: form.description,
         priority: form.priority,
         deadline: form.deadline || null,
         assigned_to: form.assigned_to,
@@ -193,7 +248,7 @@ export default function WorkspaceCanvas({
     setCreBusy(false);
     if (res.ok) {
       setAdding(false);
-      setForm({ title: "", priority: "medium", deadline: "", assigned_to: [], tags: "" });
+      setForm({ title: "", description: "", priority: "medium", deadline: "", assigned_to: [], tags: "" });
       router.refresh();
     } else {
       alert("สร้างงานไม่สำเร็จ");
@@ -257,9 +312,18 @@ export default function WorkspaceCanvas({
   };
 
   const onWheel = (e) => {
-    if (!(e.ctrlKey || e.metaKey)) return;
-    e.preventDefault();
-    zoomBy(e.deltaY < 0 ? 0.1 : -0.1);
+    // Ctrl/Cmd + ล้อ = ซูม
+    if (e.ctrlKey || e.metaKey) {
+      e.preventDefault();
+      zoomBy(e.deltaY < 0 ? 0.1 : -0.1);
+      return;
+    }
+    // Shift + ล้อ = เลื่อนแนวนอน (สำหรับเมาส์ที่มีล้อแนวตั้งอย่างเดียว)
+    // ทัชแพด/ล้อแนวนอนยังเลื่อนได้ปกติผ่าน overflow-auto อยู่แล้ว
+    if (e.shiftKey && e.deltaX === 0 && scrollRef.current) {
+      e.preventDefault();
+      scrollRef.current.scrollLeft += e.deltaY;
+    }
   };
 
   const rootColor = root?.accent || GREEN;
@@ -318,8 +382,10 @@ export default function WorkspaceCanvas({
                 </div>
               </div>
 
-              {/* member head nodes (กิ่ง = ชื่อ member) */}
-              {heads.map((h, i) => (
+              {/* member head nodes (กิ่ง = ชื่อคน) — ป้าย/สีตาม role จริง */}
+              {heads.map((h, i) => {
+                const rs = roleStyle(roleOf(h.assignee?.id));
+                return (
                 <div
                   key={`head-${i}`}
                   style={{
@@ -332,13 +398,13 @@ export default function WorkspaceCanvas({
                 >
                   <div
                     className="flex items-center rounded-[14px] border-2 bg-white px-4"
-                    style={{ height: h.h, borderColor: "#FF6B2B", boxShadow: "0 3px 12px rgba(255,107,43,.15)" }}
+                    style={{ height: h.h, borderColor: rs.color, boxShadow: `0 3px 12px ${rs.color}26` }}
                   >
                     <div className="flex items-center gap-3">
                       <div
                         className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full border-[1.5px] text-[15px] font-semibold"
                         style={{
-                          borderColor: "#FF6B2B",
+                          borderColor: rs.color,
                           background: h.assignee?.bg || "#FFE6D6",
                           color: h.assignee?.color || "#b8521f",
                         }}
@@ -349,25 +415,34 @@ export default function WorkspaceCanvas({
                         <div className="text-base font-semibold leading-none text-ink">
                           {h.assignee?.name || "ไม่ระบุผู้รับผิดชอบ"}
                         </div>
-                        <span className="self-start rounded-md bg-accent px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
-                          Member
+                        <span
+                          className="self-start rounded-md px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white"
+                          style={{ background: rs.color }}
+                        >
+                          {memberOf(h.assignee?.id)?.title || rs.label}
                         </span>
                       </div>
                     </div>
                   </div>
                 </div>
-              ))}
+                );
+              })}
 
-              {/* task cards */}
-              {items.map((it) => (
+              {/* task cards — ความสูงยืดตามเนื้อหา (วัดจริงเพื่อจัดระยะ) */}
+              {items.map((it) => {
+                const k = it.key || it.task.id;
+                return (
                 <div
-                  key={it.key || it.task.id}
+                  key={k}
+                  ref={(el) => {
+                    if (el) cardEls.current[k] = el;
+                    else delete cardEls.current[k];
+                  }}
                   style={{
                     position: "absolute",
                     left: it.x,
                     top: it.y,
                     width: CARD_W,
-                    height: CARD_H,
                     opacity: dimOthers && !isMine(it.task) ? 0.45 : 1,
                   }}
                 >
@@ -381,7 +456,8 @@ export default function WorkspaceCanvas({
                   )}
                   <TaskCard task={it.task} selected={selected === it.task.id} onClick={() => selectCard(it.task.id)} />
                 </div>
-              ))}
+                );
+              })}
 
               {tasks.length === 0 && (
                 <div
@@ -435,6 +511,7 @@ export default function WorkspaceCanvas({
           onClose={() => setDetail(null)}
           canComment={(detail.assignees || [detail.assignee]).some((a) => a?.id === currentUserId)}
           canEdit={canEdit}
+          canReview={canReview}
           members={members}
         />
       )}
@@ -451,6 +528,16 @@ export default function WorkspaceCanvas({
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
                 placeholder="เช่น ทำหน้า login"
                 className="w-full rounded-xl border border-line px-3.5 py-2.5 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand-soft"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-semibold text-ink-2">รายละเอียด (ไม่บังคับ)</label>
+              <textarea
+                value={form.description}
+                onChange={(e) => setForm({ ...form, description: e.target.value })}
+                rows={3}
+                placeholder="อธิบายรายละเอียดงาน สิ่งที่ต้องทำ ข้อกำหนด ฯลฯ"
+                className="w-full resize-none rounded-xl border border-line px-3.5 py-2.5 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand-soft"
               />
             </div>
             <div className="flex gap-3">

@@ -20,7 +20,7 @@ export default async function InvitePage({ params }) {
 
   const { data: invite } = await supabase
     .from("invites")
-    .select("project_id, role, projects(name)")
+    .select("project_id, role, projects(name, auto_approve)")
     .eq("token", token)
     .maybeSingle();
 
@@ -48,6 +48,18 @@ export default async function InvitePage({ params }) {
     .maybeSingle();
   if (membership) {
     redirect(`/${membership.role === "leader" ? "leader" : "member"}/${invite.project_id}`);
+  }
+
+  // โหมด "เข้าได้เลย" — เพิ่มเป็นสมาชิกทันทีไม่ต้องรออนุมัติ
+  if (invite.projects?.auto_approve) {
+    await supabase
+      .from("project_members")
+      .upsert(
+        { project_id: invite.project_id, user_id: user.id, role: invite.role || "member" },
+        { onConflict: "project_id,user_id", ignoreDuplicates: true }
+      );
+    await supabase.from("join_requests").update({ status: "approved" }).eq("project_id", invite.project_id).eq("user_id", user.id);
+    redirect(`/${invite.role === "leader" ? "leader" : "member"}/${invite.project_id}`);
   }
 
   // ส่งคำขอเข้าร่วม (รอหัวหน้าอนุมัติ) — ตั้งเป็น pending เสมอ (เผื่อเคยถูกปฏิเสธแล้วขอใหม่)

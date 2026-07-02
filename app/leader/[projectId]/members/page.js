@@ -1,19 +1,23 @@
 import Avatar from "@/components/ui/Avatar";
 import AiSummaryButton from "@/components/AiSummaryButton";
+import TeamSummaryButton from "@/components/TeamSummaryButton";
 import InviteButton from "@/components/InviteButton";
 import PendingRequests from "@/components/PendingRequests";
 import RemoveMemberButton from "@/components/RemoveMemberButton";
-import VisibilityToggle from "@/components/VisibilityToggle";
+import PromoteMemberButton from "@/components/PromoteMemberButton";
 import { moods } from "@/lib/mockData";
-import { getProjectMembers, getPendingRequests, getProjectById, streakBadge } from "@/lib/data";
+import { getDbUser, getProjectMembers, getPendingRequests, getMembership, can, PERM, streakBadge } from "@/lib/data";
 
-function MemberCard({ m, projectId }) {
+const baseRole = (role) => (role === "leader" ? "Leader" : role === "deputy" ? "⭐ รองหัวหน้า" : "Member");
+const displayRole = (m) => m.title || baseRole(m.role);
+
+function MemberCard({ m, projectId, canManage, canPromote, canAI }) {
   const mood = m.mood ? moods[m.mood] : null;
   const badge = streakBadge(m.streak);
   const pct = m.tasksTotal ? Math.round((m.tasksDone / m.tasksTotal) * 100) : 0;
   return (
     <div className="relative rounded-2xl border border-line bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,.05)]">
-      {m.role !== "leader" && <RemoveMemberButton projectId={projectId} userId={m.id} name={m.name} />}
+      {canManage && m.role !== "leader" && <RemoveMemberButton projectId={projectId} userId={m.id} name={m.name} />}
 
       <div className="flex items-center gap-3 pr-8">
         <Avatar person={m} size={46} />
@@ -26,7 +30,9 @@ function MemberCard({ m, projectId }) {
               </span>
             )}
           </div>
-          <div className="text-xs text-ink-3">{m.role === "leader" ? "Leader" : "Member"}</div>
+          <div className={`text-xs ${m.role === "leader" ? "font-semibold text-brand-dark" : m.role === "deputy" ? "font-semibold text-[#6b3fa0]" : "text-ink-3"}`}>
+            {displayRole(m)}
+          </div>
         </div>
       </div>
 
@@ -61,18 +67,34 @@ function MemberCard({ m, projectId }) {
         </span>
       </div>
 
-      <AiSummaryButton projectId={projectId} memberId={m.id} memberName={m.name} />
+      <div className="mt-4 flex items-center gap-2">
+        {canAI && <AiSummaryButton projectId={projectId} memberId={m.id} memberName={m.name} />}
+        {canPromote && (
+          <PromoteMemberButton
+            projectId={projectId}
+            userId={m.id}
+            name={m.name}
+            currentRole={m.role}
+            currentPermissions={m.permissions}
+            currentTitle={m.title || ""}
+          />
+        )}
+      </div>
     </div>
   );
 }
 
 export default async function LeaderMembersPage({ params }) {
   const { projectId } = await params;
-  const [members, pending, project] = await Promise.all([
+  const user = await getDbUser();
+  const [members, pending, membership] = await Promise.all([
     getProjectMembers(projectId),
     getPendingRequests(projectId),
-    getProjectById(projectId),
+    getMembership(projectId, user?.id),
   ]);
+  const isLeader = membership?.role === "leader";
+  const canManage = can(membership, PERM.MEMBERS);
+  const canAI = can(membership, PERM.AI);
   const blocked = members.filter((m) => m.blocker);
 
   return (
@@ -82,12 +104,13 @@ export default async function LeaderMembersPage({ params }) {
           <h1 className="text-xl font-bold tracking-tight text-ink">สมาชิกทีม</h1>
           <p className="mt-0.5 text-sm text-ink-2">ภาพรวม mood, streak และความคืบหน้าของแต่ละคน</p>
         </div>
-        <InviteButton projectId={projectId} />
+        <div className="flex flex-wrap items-center gap-2">
+          {canAI && <TeamSummaryButton projectId={projectId} />}
+          {canManage && <InviteButton projectId={projectId} />}
+        </div>
       </div>
 
-      <VisibilityToggle projectId={projectId} value={project?.member_visibility || "own"} />
-
-      <PendingRequests requests={pending} />
+      {canManage && <PendingRequests requests={pending} projectId={projectId} />}
 
       {blocked.length > 0 && (
         <div className="mb-5 flex items-center gap-3 rounded-xl border border-[rgba(193,57,43,.25)] bg-[rgba(193,57,43,.06)] px-4 py-3">
@@ -105,7 +128,7 @@ export default async function LeaderMembersPage({ params }) {
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {members.map((m) => (
-            <MemberCard key={m.id} m={m} projectId={projectId} />
+            <MemberCard key={m.id} m={m} projectId={projectId} canManage={canManage} canPromote={isLeader} canAI={canAI} />
           ))}
         </div>
       )}

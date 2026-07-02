@@ -11,7 +11,7 @@ export default async function MemberCalendarPage({ params }) {
   // เห็นงานทุกคนถ้าหัวหน้าเปิดโหมด 'all' ไม่งั้นเห็นเฉพาะงานตัวเอง
   const tasks =
     project?.member_visibility === "all"
-      ? await getActiveTasks(projectId)
+      ? await getActiveTasks(projectId, user.id)
       : await getMyTasks(projectId, user.id);
 
   return <CalendarView projectId={projectId} tasks={tasks} currentUserId={user.id} />;

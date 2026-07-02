@@ -34,7 +34,7 @@ function TaskChip({ task, onClick }) {
   );
 }
 
-export default function CalendarView({ projectId, tasks = [], members = [], currentUserId, canEdit = false }) {
+export default function CalendarView({ projectId, tasks = [], members = [], currentUserId, canEdit = false, canReview = false }) {
   const today = new Date();
   const [cursor, setCursor] = useState({ y: today.getFullYear(), m: today.getMonth() });
   const [detail, setDetail] = useState(null);
@@ -86,7 +86,8 @@ export default function CalendarView({ projectId, tasks = [], members = [], curr
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-line bg-white">
+      <div className="scroll-soft overflow-x-auto rounded-2xl border border-line bg-white">
+        <div className="min-w-[700px]">
         {/* หัวตารางวัน */}
         <div className="grid grid-cols-7 border-b border-line bg-surface-2/50">
           {WEEKDAYS.map((w, i) => (
@@ -127,6 +128,7 @@ export default function CalendarView({ projectId, tasks = [], members = [], curr
             );
           })}
         </div>
+        </div>
       </div>
 
       {/* งานที่ไม่กำหนดวันส่ง */}
@@ -163,6 +165,7 @@ export default function CalendarView({ projectId, tasks = [], members = [], curr
           onClose={() => setDetail(null)}
           canComment={(detail.assignees || [detail.assignee]).some((a) => a?.id === currentUserId)}
           canEdit={canEdit}
+          canReview={canReview}
           members={members}
         />
       )}

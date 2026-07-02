@@ -25,15 +25,21 @@ function Assignees({ list = [] }) {
 export default function TaskCard({ task, selected = false, onClick, className = "" }) {
   const pri = priorityStyle[task.priority];
   const st = statusStyle[task.status];
+  // งานที่ทำเสร็จแล้วแต่หัวหน้ายังไม่ยืนยัน = รอตรวจ (เป็นตัวที่ทำให้ badge เมนูขึ้น)
+  const awaiting = task.status === "done" && !task.approved;
+
+  const boxShadow = selected
+    ? "0 0 0 3px rgba(255,107,43,0.15), 0 2px 8px rgba(0,0,0,0.07)"
+    : awaiting
+    ? "0 0 0 2px rgba(46,158,91,0.45), 0 2px 10px rgba(46,158,91,0.12)"
+    : "0 2px 8px rgba(0,0,0,0.07)";
 
   return (
     <div
       onClick={onClick}
       style={{
-        boxShadow: selected
-          ? "0 0 0 3px rgba(255,107,43,0.15), 0 2px 8px rgba(0,0,0,0.07)"
-          : "0 2px 8px rgba(0,0,0,0.07)",
-        border: selected ? "2px solid #FF6B2B" : "1px solid #E4E4E4",
+        boxShadow,
+        border: selected ? "2px solid #FF6B2B" : awaiting ? "1px solid rgba(46,158,91,.5)" : "1px solid #E4E4E4",
       }}
       className={`relative rounded-[10px] bg-white p-[14px] transition-shadow ${
         onClick ? "cursor-pointer" : ""
@@ -44,9 +50,25 @@ export default function TaskCard({ task, selected = false, onClick, className = 
         className="absolute inset-x-0 top-0 h-[3px] rounded-t-[10px]"
       />
 
-      {task.needs_revision && (
-        <div className="mb-1.5 inline-flex items-center gap-1 rounded-full bg-[rgba(193,57,43,.12)] px-2 py-0.5 text-[10px] font-semibold text-[#c1392b]">
-          ↩ ตีกลับให้แก้ไข
+      {/* แจ้งเตือนคอมเมนต์ใหม่ — มุมขวาบน เด่นชัด */}
+      {task.unreadComments > 0 && (
+        <span className="absolute -right-2 -top-2 z-10 inline-flex animate-bounce items-center gap-1 rounded-full bg-[#2c5b9e] px-2.5 py-1 text-[11px] font-bold text-white shadow-[0_3px_10px_rgba(44,91,158,.5)] ring-2 ring-white">
+          💬 {task.unreadComments} ใหม่
+        </span>
+      )}
+
+      {(awaiting || task.needs_revision) && (
+        <div className="mb-1.5 flex flex-wrap gap-1.5">
+          {awaiting && (
+            <span className="inline-flex animate-pulse items-center gap-1 rounded-full bg-brand px-2 py-0.5 text-[10px] font-semibold text-white">
+              🔔 รอหัวหน้ายืนยัน
+            </span>
+          )}
+          {task.needs_revision && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-[rgba(193,57,43,.12)] px-2 py-0.5 text-[10px] font-semibold text-[#c1392b]">
+              ↩ ตีกลับให้แก้ไข
+            </span>
+          )}
         </div>
       )}
 

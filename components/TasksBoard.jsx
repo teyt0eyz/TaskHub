@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import TaskCard from "@/components/ui/TaskCard";
 import TaskDetail from "@/components/TaskDetail";
 import AssigneeSelect from "@/components/AssigneeSelect";
@@ -12,13 +12,26 @@ const columns = [
   { key: "done", title: "Done", bar: "#2E9E5B" },
 ];
 
-export default function TasksBoard({ projectId, tasks = [], members = [], currentUserId, canEdit = false }) {
+export default function TasksBoard({ projectId, tasks = [], members = [], currentUserId, canEdit = false, canReview = false }) {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [detail, setDetail] = useState(null);
   const [q, setQ] = useState("");
-  const [form, setForm] = useState({ title: "", priority: "medium", deadline: "", assigned_to: [], tags: "" });
+
+  // เปิด task detail อัตโนมัติเมื่อมาจากการกดแจ้งเตือน (?task=<id>)
+  useEffect(() => {
+    const tid = searchParams.get("task");
+    if (!tid) return;
+    const t = tasks.find((x) => x.id === tid);
+    if (t) {
+      setDetail(t);
+      router.replace(pathname, { scroll: false });
+    }
+  }, [searchParams, tasks, pathname, router]);
+  const [form, setForm] = useState({ title: "", description: "", priority: "medium", deadline: "", assigned_to: [], tags: "" });
 
   const query = q.trim().toLowerCase();
   const visibleTasks = query
@@ -40,6 +53,7 @@ export default function TasksBoard({ projectId, tasks = [], members = [], curren
       body: JSON.stringify({
         project_id: projectId,
         title: form.title.trim(),
+        description: form.description,
         priority: form.priority,
         deadline: form.deadline || null,
         assigned_to: form.assigned_to,
@@ -49,7 +63,7 @@ export default function TasksBoard({ projectId, tasks = [], members = [], curren
     setBusy(false);
     if (res.ok) {
       setOpen(false);
-      setForm({ title: "", priority: "medium", deadline: "", assigned_to: [], tags: "" });
+      setForm({ title: "", description: "", priority: "medium", deadline: "", assigned_to: [], tags: "" });
       router.refresh();
     } else {
       alert("สร้างงานไม่สำเร็จ");
@@ -70,12 +84,14 @@ export default function TasksBoard({ projectId, tasks = [], members = [], curren
             placeholder="🔍 ค้นหางาน / แท็ก / ชื่อคน"
             className="w-52 rounded-[10px] border border-line px-3 py-2.5 text-sm outline-none focus:border-brand"
           />
-          <button
-            onClick={() => setOpen(true)}
-            className="flex items-center gap-2 rounded-[10px] bg-accent px-4 py-2.5 text-sm font-semibold text-white shadow-[0_4px_14px_rgba(255,107,43,.3)] hover:bg-[#f55e1d]"
-          >
-            <span className="text-base leading-none">+</span> สร้างงานใหม่
-          </button>
+          {canEdit && (
+            <button
+              onClick={() => setOpen(true)}
+              className="flex items-center gap-2 rounded-[10px] bg-accent px-4 py-2.5 text-sm font-semibold text-white shadow-[0_4px_14px_rgba(255,107,43,.3)] hover:bg-[#f55e1d]"
+            >
+              <span className="text-base leading-none">+</span> สร้างงานใหม่
+            </button>
+          )}
         </div>
       </div>
 
@@ -122,6 +138,16 @@ export default function TasksBoard({ projectId, tasks = [], members = [], curren
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
                 placeholder="เช่น ทำหน้า login"
                 className="w-full rounded-xl border border-line px-3.5 py-2.5 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand-soft"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-semibold text-ink-2">รายละเอียด (ไม่บังคับ)</label>
+              <textarea
+                value={form.description}
+                onChange={(e) => setForm({ ...form, description: e.target.value })}
+                rows={3}
+                placeholder="อธิบายรายละเอียดงาน สิ่งที่ต้องทำ ข้อกำหนด ฯลฯ"
+                className="w-full resize-none rounded-xl border border-line px-3.5 py-2.5 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand-soft"
               />
             </div>
             <div className="flex gap-3">
@@ -191,6 +217,7 @@ export default function TasksBoard({ projectId, tasks = [], members = [], curren
           onClose={() => setDetail(null)}
           canComment={(detail.assignees || [detail.assignee]).some((a) => a?.id === currentUserId)}
           canEdit={canEdit}
+          canReview={canReview}
           members={members}
         />
       )}

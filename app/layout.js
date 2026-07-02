@@ -1,4 +1,4 @@
-import { Noto_Sans_Thai } from "next/font/google";
+import { Noto_Sans_Thai, Prompt } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
 
@@ -8,6 +8,13 @@ const notoSansThai = Noto_Sans_Thai({
   weight: ["400", "500", "600", "700"],
 });
 
+// ฟอนต์หัวข้อ — ให้มีคาแรกเตอร์ต่างจาก body
+const prompt = Prompt({
+  variable: "--font-prompt",
+  subsets: ["thai", "latin"],
+  weight: ["500", "600", "700"],
+});
+
 export const metadata = {
   title: "TaskHub",
   description: "ระบบติดตามงานและ mood สำหรับทีมทุกประเภท",
@@ -15,7 +22,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="th" className={`${notoSansThai.variable} h-full`}>
+    <html lang="th" className={`${notoSansThai.variable} ${prompt.variable} h-full`}>
       <body className="min-h-full bg-surface text-ink antialiased">
         <Providers>{children}</Providers>
       </body>

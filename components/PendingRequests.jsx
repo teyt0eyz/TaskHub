@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function PendingRequests({ requests = [] }) {
+export default function PendingRequests({ requests = [], projectId }) {
   const router = useRouter();
   const [busyId, setBusyId] = useState(null);
+  const [bulkBusy, setBulkBusy] = useState(false);
 
   async function act(id, action) {
     setBusyId(id);
@@ -19,13 +20,44 @@ export default function PendingRequests({ requests = [] }) {
     else alert("ดำเนินการไม่สำเร็จ");
   }
 
+  async function actAll(action) {
+    if (action === "reject_all" && !confirm("ปฏิเสธคำขอทั้งหมด?")) return;
+    setBulkBusy(true);
+    const res = await fetch("/api/requests", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ projectId, action }),
+    });
+    setBulkBusy(false);
+    if (res.ok) router.refresh();
+    else alert("ดำเนินการไม่สำเร็จ");
+  }
+
   if (requests.length === 0) return null;
 
   return (
     <div className="mb-5 rounded-2xl border border-[rgba(255,107,43,.3)] bg-accent-soft p-4">
-      <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-ink">
+      <div className="mb-3 flex flex-wrap items-center gap-2 text-sm font-semibold text-ink">
         🔔 คำขอเข้าร่วม
         <span className="rounded-full bg-accent px-2 py-0.5 text-[11px] font-bold text-white">{requests.length}</span>
+        {requests.length > 1 && (
+          <div className="ml-auto flex gap-2">
+            <button
+              onClick={() => actAll("approve_all")}
+              disabled={bulkBusy}
+              className="rounded-[9px] bg-brand px-3 py-1.5 text-xs font-semibold text-white hover:bg-brand-dark disabled:opacity-60"
+            >
+              ✓ อนุมัติทั้งหมด
+            </button>
+            <button
+              onClick={() => actAll("reject_all")}
+              disabled={bulkBusy}
+              className="rounded-[9px] border border-line bg-white px-3 py-1.5 text-xs font-semibold text-ink-2 hover:bg-surface-2 disabled:opacity-60"
+            >
+              ปฏิเสธทั้งหมด
+            </button>
+          </div>
+        )}
       </div>
       <div className="space-y-2">
         {requests.map((r) => (

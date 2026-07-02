@@ -22,6 +22,7 @@
   --color-surface-2: #f4f4f4;
 
   --font-sans: var(--font-noto-sans-thai), system-ui, sans-serif;
+  --font-heading: var(--font-prompt), var(--font-noto-sans-thai), system-ui, sans-serif;
 }
 
 :root {
@@ -39,6 +40,14 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+}
+
+/* หัวข้อใช้ฟอนต์ Prompt ให้มีคาแรกเตอร์ ต่างจาก body (Noto Sans Thai) */
+h1,
+h2,
+h3 {
+  font-family: var(--font-heading);
+  letter-spacing: -0.01em;
 }
 
 ::selection {
@@ -131,4 +140,41 @@ body {
 }
 .animate-pop {
   animation: pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* ไฮไลต์แบบปากกาเน้นข้อความ (ลายมือ) ใต้คำสำคัญ */
+.hl-brush {
+  background-image: linear-gradient(120deg, rgba(46, 158, 91, 0.28), rgba(46, 158, 91, 0.28));
+  background-repeat: no-repeat;
+  background-size: 100% 38%;
+  background-position: 0 82%;
+  padding: 0 0.1em;
+}
+
+/* มินิเดโมในผังต้นไม้ — สลับ Todo ↔ Done ให้ดูเหมือนงานกำลังเสร็จ */
+@keyframes demo-todo {
+  0%, 42% { opacity: 1; }
+  52%, 100% { opacity: 0; }
+}
+@keyframes demo-done {
+  0%, 42% { opacity: 0; }
+  52%, 100% { opacity: 1; }
+}
+.demo-todo { animation: demo-todo 7s ease-in-out infinite; }
+.demo-done { animation: demo-done 7s ease-in-out infinite; }
+@keyframes demo-bar {
+  0%, 42% { background: #c4c4c4; }
+  52%, 100% { background: #2e9e5b; }
+}
+.demo-bar { animation: demo-bar 7s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-floaty,
+  .animate-floaty-slow,
+  .animate-wiggle,
+  .demo-todo,
+  .demo-done,
+  .demo-bar {
+    animation: none;
+  }
 }

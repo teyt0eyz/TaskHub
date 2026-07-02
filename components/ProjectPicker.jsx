@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
@@ -8,8 +8,8 @@ import JoinCodeButton from "@/components/JoinCodeButton";
 
 function ViewToggle({ base }) {
   const views = [
-    { key: "leader", href: "/leader", icon: "👑", label: "Leader" },
-    { key: "member", href: "/member", icon: "🙋", label: "Member" },
+    { key: "leader", href: "/leader?all=1", icon: "👑", label: "Leader" },
+    { key: "member", href: "/member?all=1", icon: "🙋", label: "Member" },
   ];
   const active = base === "/member" ? "member" : "leader";
   return (
@@ -37,8 +37,19 @@ export default function ProjectPicker({ base, projects = [] }) {
   const [creating, setCreating] = useState(false);
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
+  const [userMenu, setUserMenu] = useState(false);
+  const userRef = useRef(null);
 
+  const userName = session?.user?.name || session?.user?.email || "ผู้ใช้";
   const initials = (session?.user?.name || session?.user?.email || "?").slice(0, 2).toUpperCase();
+
+  useEffect(() => {
+    function onDoc(e) {
+      if (userRef.current && !userRef.current.contains(e.target)) setUserMenu(false);
+    }
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, []);
 
   async function createProject(e) {
     e.preventDefault();
@@ -62,21 +73,34 @@ export default function ProjectPicker({ base, projects = [] }) {
     <div className="dot-grid min-h-screen">
       <header className="border-b border-line bg-white/90 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-4">
-          <Link href="/" className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2.5 select-none">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand text-lg font-bold text-white shadow-[0_4px_10px_rgba(46,158,91,.3)]">
               T
             </div>
-            <span className="text-xl font-bold tracking-tight text-ink">TaskHub</span>
-          </Link>
+            <span className="font-heading text-xl font-bold tracking-tight text-ink">TaskHub</span>
+          </div>
           <div className="flex items-center gap-4">
             <ViewToggle base={base} />
-            <button
-              onClick={() => signOut({ callbackUrl: "/login" })}
-              title="ออกจากระบบ"
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-soft text-xs font-semibold text-brand-dark"
-            >
-              {initials}
-            </button>
+            <div className="relative" ref={userRef}>
+              <button
+                onClick={() => setUserMenu((v) => !v)}
+                title={userName}
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-soft text-xs font-semibold text-brand-dark"
+              >
+                {initials}
+              </button>
+              {userMenu && (
+                <div className="absolute right-0 top-full z-40 mt-2 w-48 overflow-hidden rounded-xl border border-line bg-white py-1 shadow-[0_8px_24px_rgba(0,0,0,.1)]">
+                  <div className="truncate border-b border-line px-3 py-2 text-[13px] font-semibold text-ink">{userName}</div>
+                  <button
+                    onClick={() => signOut({ callbackUrl: "/login" })}
+                    className="flex w-full items-center gap-2 px-3 py-2 text-left text-[13px] font-medium text-ink-2 hover:bg-surface-2"
+                  >
+                    ออกจากระบบ
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </header>
