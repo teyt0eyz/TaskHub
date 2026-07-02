@@ -192,7 +192,7 @@ function WindowFrame({ children }) {
         <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
         <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
         <span className="h-3 w-3 rounded-full bg-[#28c840]" />
-        <span className="ml-2 text-xs font-medium text-ink-3">TaskHub · Workspace</span>
+        <span className="ml-2 text-lg font-medium text-ink-3">TaskHub · Workspace</span>
       </div>
       <div className="dot-grid flex items-center justify-center px-4 py-8">{children}</div>
     </div>
@@ -212,7 +212,6 @@ export default function HomePage() {
       <header className="sticky top-0 z-30 border-b border-line bg-white/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand text-base font-bold text-white">T</div>
             <span className="font-heading text-lg font-bold text-ink">TaskHub</span>
           </div>
           <div className="flex items-center gap-1.5">
@@ -300,10 +299,7 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="border-t border-line bg-white">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-5 py-6 text-sm text-ink-3 sm:flex-row">
-          <div className="flex items-center gap-2">
-            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-brand text-xs font-bold text-white">T</div>
-            <span className="font-semibold text-ink-2">TaskHub</span>
-          </div>
+          <span className="font-semibold text-ink-2">TaskHub</span>
           <span>© 2026 TaskHub · Capstone Project</span>
         </div>
       </footer>

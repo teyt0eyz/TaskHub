@@ -74,9 +74,6 @@ export default function ProjectPicker({ base, projects = [] }) {
       <header className="border-b border-line bg-white/90 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-4">
           <div className="flex items-center gap-2.5 select-none">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand text-lg font-bold text-white shadow-[0_4px_10px_rgba(46,158,91,.3)]">
-              T
-            </div>
             <span className="font-heading text-xl font-bold tracking-tight text-ink">TaskHub</span>
           </div>
           <div className="flex items-center gap-4">

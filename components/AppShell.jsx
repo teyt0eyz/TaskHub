@@ -123,9 +123,6 @@ export default function AppShell({ nav = [], title = "Project Alpha", roleLabel,
               title="ดูโปรเจกต์ทั้งหมด"
               className="flex items-center gap-2.5 overflow-hidden rounded-lg px-1 py-0.5 transition-colors hover:bg-surface-2"
             >
-              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-brand text-[15px] font-bold text-white">
-                T
-              </div>
               <span className="font-heading whitespace-nowrap text-[15px] font-bold text-ink">TaskHub</span>
             </Link>
           )}
