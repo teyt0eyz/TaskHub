@@ -131,6 +131,9 @@ alter table project_members add column if not exists title text;
 alter table users add column if not exists ai_summary_count int default 0;
 alter table users add column if not exists ai_summary_reset_at timestamptz;
 
+-- ผู้ใช้เลือกได้ว่าจะรับอีเมลแจ้งเตือนไหม (true = รับ, ค่าเริ่มต้นเปิด)
+alter table users add column if not exists email_notifications boolean default true;
+
 -- โควตา AI summary แบบใหม่: นับต่อ "โปรเจกต์" (4 ครั้ง/เดือน แชร์กันระหว่างหัวหน้า+รองหัวหน้า) reset ต้นเดือนในโค้ด
 alter table projects add column if not exists ai_summary_count int default 0;
 alter table projects add column if not exists ai_summary_reset_at timestamptz;

@@ -177,7 +177,7 @@ export default function ProjectPicker({ base, projects = [] }) {
             </button>
           )}
 
-          {!isLeader && (
+          {!isLeader && projects.length > 0 && (
             <JoinCodeButton className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-line bg-white/50 p-5 text-ink-3 transition-colors hover:border-accent hover:text-accent">
               <span className="flex h-12 w-12 items-center justify-center rounded-xl border border-dashed border-current text-2xl">
                 +

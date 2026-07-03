@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
+import EmailNotifyToggle from "@/components/EmailNotifyToggle";
 import InviteButton from "@/components/InviteButton";
 import CreateProjectButton from "@/components/CreateProjectButton";
 import JoinCodeButton from "@/components/JoinCodeButton";
@@ -344,6 +345,8 @@ export default function AppShell({ nav = [], title = "Project Alpha", roleLabel,
                   <div className="truncate border-b border-line px-3 py-2 text-[13px] font-semibold text-ink">
                     {userName}
                   </div>
+                  <EmailNotifyToggle />
+                  <div className="my-1 border-t border-line" />
                   <button
                     onClick={() => signOut({ callbackUrl: "/login" })}
                     className="flex w-full items-center gap-2 px-3 py-2 text-left text-[13px] font-medium text-ink-2 hover:bg-surface-2"
