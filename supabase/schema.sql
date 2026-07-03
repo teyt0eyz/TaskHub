@@ -135,6 +135,23 @@ alter table users add column if not exists ai_summary_reset_at timestamptz;
 alter table projects add column if not exists ai_summary_count int default 0;
 alter table projects add column if not exists ai_summary_reset_at timestamptz;
 
+-- สถานะ presence ที่สมาชิกตั้งเอง (ว่าง/ประชุม/พักเที่ยง/ฯลฯ) ให้คนอื่นในทีมเห็น
+alter table project_members add column if not exists status text;
+alter table project_members add column if not exists status_updated_at timestamptz;
+
+-- เก็บผลสรุป AI ไว้ในระบบ (หัวหน้าเห็นสรุปที่รองหัวหน้า generate ได้ / แชร์ประวัติร่วมกัน)
+-- target_user_id = null → เป็นสรุปทั้งทีม (scope='team')
+create table if not exists ai_summaries (
+  id uuid primary key default gen_random_uuid(),
+  project_id uuid references projects(id) on delete cascade,
+  target_user_id uuid references users(id) on delete cascade,
+  scope text check (scope in ('member', 'team')) not null default 'member',
+  summary text not null,
+  generated_by uuid references users(id),
+  created_at timestamptz default now()
+);
+create index if not exists idx_ai_summaries_lookup on ai_summaries(project_id, scope, target_user_id, created_at desc);
+
 -- 9. join_requests (คำขอเข้าร่วม — หัวหน้าต้องอนุมัติก่อนถึงเป็นสมาชิก)
 create table if not exists join_requests (
   id uuid primary key default gen_random_uuid(),

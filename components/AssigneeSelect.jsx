@@ -11,10 +11,18 @@ const ROLE_ORDER = ["leader", "deputy", "member"];
 const metaOf = (m) => ROLE_META[m?.role] || ROLE_META.member;
 const chipLabel = (m) => m?.title || metaOf(m).label;
 
-export default function AssigneeSelect({ members = [], value = [], onChange }) {
+const RANK = { leader: 3, deputy: 2, member: 1 };
+
+export default function AssigneeSelect({ members = [], value = [], onChange, currentUserId = null }) {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const ref = useRef(null);
+
+  // มอบหมายได้เฉพาะตัวเอง + คนตำแหน่ง "ต่ำกว่า" (ถ้ารู้ตำแหน่งของผู้ใช้ปัจจุบัน)
+  const actorRank = RANK[members.find((m) => m.id === currentUserId)?.role] || 0;
+  const pool = actorRank
+    ? members.filter((m) => m.id === currentUserId || (RANK[m.role] || 1) < actorRank)
+    : members;
 
   useEffect(() => {
     function onDoc(e) {
@@ -26,14 +34,14 @@ export default function AssigneeSelect({ members = [], value = [], onChange }) {
 
   const toggle = (id) => onChange(value.includes(id) ? value.filter((x) => x !== id) : [...value, id]);
 
-  const allIds = members.map((m) => m.id);
+  const allIds = pool.map((m) => m.id);
   const everyone = allIds.length > 0 && allIds.every((id) => value.includes(id));
   const toggleAll = () => onChange(everyone ? [] : allIds);
 
   // จัดกลุ่มตาม role (สำหรับปุ่มเลือกทั้งหมดตามหมวด)
   const groups = ROLE_ORDER.map((role) => ({
     role,
-    ids: members.filter((m) => (m.role || "member") === role).map((m) => m.id),
+    ids: pool.filter((m) => (m.role || "member") === role).map((m) => m.id),
   })).filter((g) => g.ids.length > 0);
   const groupAllSelected = (ids) => ids.length > 0 && ids.every((id) => value.includes(id));
   const toggleGroup = (ids) =>
@@ -47,7 +55,7 @@ export default function AssigneeSelect({ members = [], value = [], onChange }) {
     ? members.find((m) => m.id === value[0])?.name || "1 คน"
     : `เลือกแล้ว ${value.length} คน`;
 
-  const filtered = members.filter((m) => m.name.toLowerCase().includes(q.trim().toLowerCase()));
+  const filtered = pool.filter((m) => m.name.toLowerCase().includes(q.trim().toLowerCase()));
 
   return (
     <div className="relative" ref={ref}>
@@ -71,7 +79,7 @@ export default function AssigneeSelect({ members = [], value = [], onChange }) {
             />
           </div>
 
-          {members.length > 0 && (
+          {pool.length > 0 && (
             <div className="border-b border-line px-2 py-2">
               {/* มอบให้ทุกคน */}
               <label className="flex cursor-pointer items-center gap-2 rounded-lg px-1.5 py-1.5 hover:bg-surface-2">
@@ -107,10 +115,10 @@ export default function AssigneeSelect({ members = [], value = [], onChange }) {
           )}
 
           <div className="scroll-soft max-h-52 overflow-y-auto overscroll-contain py-1">
-            {members.length === 0 && (
+            {pool.length === 0 && (
               <div className="px-3 py-2 text-xs text-ink-3">ไม่มีสมาชิก — จะมอบให้ตัวเอง</div>
             )}
-            {members.length > 0 && filtered.length === 0 && (
+            {pool.length > 0 && filtered.length === 0 && (
               <div className="px-3 py-2 text-xs text-ink-3">ไม่พบสมาชิกที่ค้นหา</div>
             )}
             {filtered.map((m) => {

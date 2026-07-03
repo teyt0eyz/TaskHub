@@ -2,6 +2,7 @@ import Avatar from "@/components/ui/Avatar";
 import AiSummaryButton from "@/components/AiSummaryButton";
 import TeamSummaryButton from "@/components/TeamSummaryButton";
 import InviteButton from "@/components/InviteButton";
+import StatusControl from "@/components/StatusControl";
 import PendingRequests from "@/components/PendingRequests";
 import RemoveMemberButton from "@/components/RemoveMemberButton";
 import PromoteMemberButton from "@/components/PromoteMemberButton";
@@ -33,6 +34,7 @@ function MemberCard({ m, projectId, canManage, canPromote, canAI }) {
           <div className={`text-xs ${m.role === "leader" ? "font-semibold text-brand-dark" : m.role === "deputy" ? "font-semibold text-[#6b3fa0]" : "text-ink-3"}`}>
             {displayRole(m)}
           </div>
+          {m.status && <div className="mt-0.5 truncate text-xs text-ink-2">{m.status}</div>}
         </div>
       </div>
 
@@ -96,6 +98,7 @@ export default async function LeaderMembersPage({ params }) {
   const canManage = can(membership, PERM.MEMBERS);
   const canAI = can(membership, PERM.AI);
   const blocked = members.filter((m) => m.blocker);
+  const me = members.find((m) => m.id === user?.id);
 
   return (
     <div className="h-full overflow-auto p-6">
@@ -105,6 +108,7 @@ export default async function LeaderMembersPage({ params }) {
           <p className="mt-0.5 text-sm text-ink-2">ภาพรวม mood, streak และความคืบหน้าของแต่ละคน</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          {me && <StatusControl projectId={projectId} current={me.status} />}
           {canAI && <TeamSummaryButton projectId={projectId} />}
           {canManage && <InviteButton projectId={projectId} />}
         </div>

@@ -7,8 +7,6 @@ import GeminiKeyField, { readGeminiKey } from "@/components/GeminiKeyField";
 const MAX_HISTORY = 12;
 
 export default function TeamSummaryButton({ projectId }) {
-  const storeKey = `taskhub:team-summary:${projectId}`;
-
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState([]); // [{ id, summary, projectName, at }] ใหม่สุดอยู่บน
@@ -23,36 +21,22 @@ export default function TeamSummaryButton({ projectId }) {
     [history, selectedId]
   );
 
-  function persist(list) {
-    try {
-      localStorage.setItem(storeKey, JSON.stringify(list));
-    } catch {}
-  }
-
-  // โหลดประวัติที่เก็บไว้ + โควตา + ฟังการอัปเดตจากปุ่มอื่น
+  // โหลดโควตา + ประวัติสรุปทีม (จากระบบ — แชร์กันในทีมผู้จัดการ) + ฟังการอัปเดตจากปุ่มอื่น
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(storeKey);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        // รองรับรูปแบบเก่า (object เดี่ยว) → แปลงเป็น array
-        const list = Array.isArray(parsed) ? parsed : parsed?.summary ? [{ id: parsed.at || "old", ...parsed }] : [];
-        // ลบอัตโนมัติ: ทิ้งฉบับที่เก็บไว้เกิน 1 เดือน
-        const cutoff = new Date();
-        cutoff.setMonth(cutoff.getMonth() - 1);
-        const fresh = list.filter((h) => new Date(h.at).getTime() >= cutoff.getTime());
-        if (fresh.length !== list.length) persist(fresh);
-        setHistory(fresh);
-        setSelectedId(fresh[0]?.id || null);
-      }
-    } catch {}
-
-    fetch(`/api/ai/summary?projectId=${projectId}`)
+    fetch(`/api/ai/summary?projectId=${projectId}`, { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
-        if (d) {
-          setRemaining(d.remaining);
-          setLimit(d.limit || 4);
+        if (!d) return;
+        setRemaining(d.remaining);
+        setLimit(d.limit || 4);
+      })
+      .catch(() => {});
+    fetch(`/api/ai/team-summary?projectId=${projectId}`, { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (d && Array.isArray(d.history)) {
+          setHistory(d.history);
+          setSelectedId(d.history[0]?.id || null);
         }
       })
       .catch(() => {});
@@ -94,18 +78,14 @@ export default function TeamSummaryButton({ projectId }) {
       if (!res.ok)
         throw new Error(data.error === "no_members" ? "ยังไม่มีสมาชิกในทีม" : data.detail || data.error || "failed");
 
-      const entry = {
+      const entry = data.entry || {
         id: new Date().toISOString(),
         summary: data.summary || "",
         projectName: data.projectName || "",
         at: new Date().toISOString(),
       };
       // เพิ่มเข้าประวัติ (ไม่ทับของเก่า) จำกัดไว้ล่าสุด MAX_HISTORY อัน
-      setHistory((prev) => {
-        const next = [entry, ...prev].slice(0, MAX_HISTORY);
-        persist(next);
-        return next;
-      });
+      setHistory((prev) => [entry, ...prev.filter((h) => h.id !== entry.id)].slice(0, MAX_HISTORY));
       setSelectedId(entry.id);
       if (typeof data.remaining === "number") {
         setRemaining(data.remaining);
@@ -118,24 +98,26 @@ export default function TeamSummaryButton({ projectId }) {
     }
   }
 
-  function deleteCurrent() {
+  async function deleteCurrent() {
     if (!current) return;
     if (!confirm("ลบสรุปฉบับนี้ออกจากประวัติ?")) return;
+    const id = current.id;
     setHistory((prev) => {
-      const next = prev.filter((h) => h.id !== current.id);
-      persist(next);
+      const next = prev.filter((h) => h.id !== id);
       setSelectedId(next[0]?.id || null);
       return next;
     });
+    try {
+      await fetch("/api/ai/summary", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, projectId }),
+      });
+    } catch {}
   }
 
   const fmtDate = (iso) => new Date(iso).toLocaleString("th-TH", { dateStyle: "medium", timeStyle: "short" });
   const fmtShort = (iso) => new Date(iso).toLocaleString("th-TH", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
-  const expiryDate = (iso) => {
-    const d = new Date(iso);
-    d.setMonth(d.getMonth() + 1);
-    return d.toLocaleDateString("th-TH", { dateStyle: "medium" });
-  };
 
   function fileBase() {
     const d = current ? current.at.slice(0, 10) : new Date().toISOString().slice(0, 10);
@@ -210,7 +192,7 @@ export default function TeamSummaryButton({ projectId }) {
                 </h2>
                 {current && (
                   <p className="mt-0.5 text-xs text-ink-3">
-                    สรุปเมื่อ {fmtDate(current.at)} · ลบอัตโนมัติ {expiryDate(current.at)}
+                    สรุปเมื่อ {fmtDate(current.at)}{current.by ? ` · โดย ${current.by}` : ""}
                   </p>
                 )}
               </div>
@@ -219,7 +201,7 @@ export default function TeamSummaryButton({ projectId }) {
 
             {/* แจ้งนโยบายการเก็บ */}
             <div className="border-b border-line bg-brand-soft/40 px-5 py-1.5 text-[11px] text-ink-3">
-              💾 เก็บไว้ในเบราว์เซอร์นี้ (ล่าสุด {MAX_HISTORY} ฉบับ) · ระบบจะลบให้อัตโนมัติเมื่อครบ 1 เดือน
+              💾 เก็บในระบบ (ล่าสุด {MAX_HISTORY} ฉบับ) · หัวหน้าและรองหัวหน้าเห็นประวัติร่วมกัน
             </div>
 
             {/* แถบประวัติ — เลือกดูย้อนหลังได้ (ไม่ทับกันเมื่อสรุปใหม่) */}

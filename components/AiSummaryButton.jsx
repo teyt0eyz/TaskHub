@@ -7,8 +7,6 @@ import GeminiKeyField, { readGeminiKey } from "@/components/GeminiKeyField";
 const MAX_HISTORY = 12;
 
 export default function AiSummaryButton({ projectId, memberId, memberName }) {
-  const storeKey = `taskhub:member-summary:${projectId}:${memberId}`;
-
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState([]); // [{ id, summary, at }] ใหม่สุดอยู่บน
@@ -20,32 +18,17 @@ export default function AiSummaryButton({ projectId, memberId, memberName }) {
 
   const current = useMemo(() => history.find((h) => h.id === selectedId) || history[0] || null, [history, selectedId]);
 
-  function persist(list) {
-    try {
-      localStorage.setItem(storeKey, JSON.stringify(list));
-    } catch {}
-  }
-
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(storeKey);
-      if (raw) {
-        const list = JSON.parse(raw) || [];
-        const cutoff = new Date();
-        cutoff.setMonth(cutoff.getMonth() - 1);
-        const fresh = list.filter((h) => new Date(h.at).getTime() >= cutoff.getTime());
-        if (fresh.length !== list.length) persist(fresh);
-        setHistory(fresh);
-        setSelectedId(fresh[0]?.id || null);
-      }
-    } catch {}
-
-    fetch(`/api/ai/summary?projectId=${projectId}`)
+    // โหลดประวัติ + โควตาจากเซิร์ฟเวอร์ (no-store: กันเบราว์เซอร์ cache ค่าโควตาเก่าตอนกลับเข้าหน้าใหม่)
+    fetch(`/api/ai/summary?projectId=${projectId}&memberId=${memberId}`, { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
-        if (d) {
-          setRemaining(d.remaining);
-          setLimit(d.limit || 4);
+        if (!d) return;
+        setRemaining(d.remaining);
+        setLimit(d.limit || 4);
+        if (Array.isArray(d.history)) {
+          setHistory(d.history);
+          setSelectedId(d.history[0]?.id || null);
         }
       })
       .catch(() => {});
@@ -81,12 +64,8 @@ export default function AiSummaryButton({ projectId, memberId, memberName }) {
       }
       if (!res.ok) throw new Error(data.detail || data.error || "failed");
 
-      const entry = { id: new Date().toISOString(), summary: data.summary || "", at: new Date().toISOString() };
-      setHistory((prev) => {
-        const next = [entry, ...prev].slice(0, MAX_HISTORY);
-        persist(next);
-        return next;
-      });
+      const entry = data.entry || { id: new Date().toISOString(), summary: data.summary || "", at: new Date().toISOString() };
+      setHistory((prev) => [entry, ...prev.filter((h) => h.id !== entry.id)].slice(0, MAX_HISTORY));
       setSelectedId(entry.id);
       if (typeof data.remaining === "number") {
         setRemaining(data.remaining);
@@ -99,24 +78,26 @@ export default function AiSummaryButton({ projectId, memberId, memberName }) {
     }
   }
 
-  function deleteCurrent() {
+  async function deleteCurrent() {
     if (!current) return;
     if (!confirm("ลบสรุปฉบับนี้ออกจากประวัติ?")) return;
+    const id = current.id;
     setHistory((prev) => {
-      const next = prev.filter((h) => h.id !== current.id);
-      persist(next);
+      const next = prev.filter((h) => h.id !== id);
       setSelectedId(next[0]?.id || null);
       return next;
     });
+    try {
+      await fetch("/api/ai/summary", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, projectId }),
+      });
+    } catch {}
   }
 
   const fmtDate = (iso) => new Date(iso).toLocaleString("th-TH", { dateStyle: "medium", timeStyle: "short" });
   const fmtShort = (iso) => new Date(iso).toLocaleString("th-TH", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
-  const expiryDate = (iso) => {
-    const d = new Date(iso);
-    d.setMonth(d.getMonth() + 1);
-    return d.toLocaleDateString("th-TH", { dateStyle: "medium" });
-  };
   const stripMd = (s) => String(s).replace(/^#{1,6}\s+/gm, "").replace(/\*\*([^*]+)\*\*/g, "$1");
   function fileBase() {
     const d = current ? current.at.slice(0, 10) : new Date().toISOString().slice(0, 10);
@@ -180,13 +161,13 @@ export default function AiSummaryButton({ projectId, memberId, memberName }) {
             <div className="flex items-center justify-between border-b border-line px-5 py-4">
               <div>
                 <h2 className="text-lg font-bold text-ink">สรุปสัปดาห์ — {memberName}</h2>
-                {current && <p className="mt-0.5 text-xs text-ink-3">สรุปเมื่อ {fmtDate(current.at)} · ลบอัตโนมัติ {expiryDate(current.at)}</p>}
+                {current && <p className="mt-0.5 text-xs text-ink-3">สรุปเมื่อ {fmtDate(current.at)}{current.by ? ` · โดย ${current.by}` : ""}</p>}
               </div>
               <button onClick={() => setOpen(false)} className="text-ink-3 hover:text-ink">✕</button>
             </div>
 
             <div className="border-b border-line bg-brand-soft/40 px-5 py-1.5 text-[11px] text-ink-3">
-              💾 เก็บไว้ในเบราว์เซอร์นี้ (ล่าสุด {MAX_HISTORY} ฉบับ) · ระบบจะลบให้อัตโนมัติเมื่อครบ 1 เดือน
+              💾 เก็บในระบบ (ล่าสุด {MAX_HISTORY} ฉบับ) · หัวหน้าและรองหัวหน้าเห็นประวัติร่วมกัน
             </div>
 
             {history.length > 0 && (

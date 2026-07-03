@@ -11,7 +11,7 @@ const STATUSES = [
   { key: "done", label: "Done", bg: "#2E9E5B", color: "#fff" },
 ];
 
-export default function TaskDetail({ task, projectId, onClose, canComment = true, canEdit = false, canReview = false, members = [] }) {
+export default function TaskDetail({ task, projectId, onClose, canComment = true, canEdit = false, canReview = false, members = [], currentUserId = null }) {
   const router = useRouter();
   const fileRef = useRef(null);
   const [status, setStatus] = useState(task.status);
@@ -288,7 +288,7 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
             </div>
             <div>
               <label className="mb-1 block text-xs font-semibold text-ink-2">มอบหมายให้ (เลือกได้หลายคน)</label>
-              <AssigneeSelect members={members} value={edit.assigned_to} onChange={(v) => setEdit({ ...edit, assigned_to: v })} />
+              <AssigneeSelect members={members} currentUserId={currentUserId} value={edit.assigned_to} onChange={(v) => setEdit({ ...edit, assigned_to: v })} />
             </div>
             <div>
               <label className="mb-1 block text-xs font-semibold text-ink-2">แท็ก</label>

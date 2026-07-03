@@ -1,4 +1,4 @@
-import { getDbUser, getMembership, can, PERM } from "@/lib/data";
+import { getDbUser, getMembership, can, canTargetRole, getProjectRoleMap, PERM } from "@/lib/data";
 import { getSupabaseAdmin } from "@/lib/supabase";
 import { createNotifications } from "@/lib/notify";
 
@@ -32,6 +32,12 @@ export async function POST(req) {
     : [];
   const assignees = [...new Set(raw.filter(Boolean))];
   const effective = assignees.length ? assignees : [user.id];
+
+  // มอบงานได้เฉพาะตัวเอง + คนตำแหน่งต่ำกว่า — ห้ามมอบให้คนที่ตำแหน่งสูงกว่า
+  const roleMap = await getProjectRoleMap(project_id);
+  if (effective.some((uid) => uid !== user.id && !canTargetRole(membership.role, roleMap[uid], false))) {
+    return Response.json({ error: "rank_forbidden", message: "มอบงานให้ตำแหน่งที่สูงกว่าไม่ได้" }, { status: 403 });
+  }
 
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
@@ -115,6 +121,17 @@ export async function PATCH(req) {
     const m = await getMembership(t.project_id, user.id);
     if (editsContent && !can(m, PERM.TASKS)) return Response.json({ error: "forbidden" }, { status: 403 });
     if (needsReview && !can(m, PERM.REVIEW)) return Response.json({ error: "forbidden" }, { status: 403 });
+
+    // เปลี่ยนผู้รับผิดชอบ: ห้ามมอบให้คนที่ตำแหน่งสูงกว่าตัวเอง
+    if (editsContent && body.assigned_to !== undefined) {
+      const rawA = Array.isArray(body.assigned_to) ? body.assigned_to : body.assigned_to ? [body.assigned_to] : [];
+      const target = [...new Set(rawA.filter(Boolean))];
+      const eff = target.length ? target : [user.id];
+      const roleMap = await getProjectRoleMap(t.project_id);
+      if (eff.some((uid) => uid !== user.id && !canTargetRole(m.role, roleMap[uid], false))) {
+        return Response.json({ error: "rank_forbidden", message: "มอบงานให้ตำแหน่งที่สูงกว่าไม่ได้" }, { status: 403 });
+      }
+    }
   }
 
   const update = {};

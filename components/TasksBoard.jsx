@@ -177,6 +177,7 @@ export default function TasksBoard({ projectId, tasks = [], members = [], curren
               <label className="mb-1 block text-xs font-semibold text-ink-2">มอบหมายให้ (เลือกได้หลายคน)</label>
               <AssigneeSelect
                 members={members}
+                currentUserId={currentUserId}
                 value={form.assigned_to}
                 onChange={(v) => setForm({ ...form, assigned_to: v })}
               />
@@ -219,6 +220,7 @@ export default function TasksBoard({ projectId, tasks = [], members = [], curren
           canEdit={canEdit}
           canReview={canReview}
           members={members}
+          currentUserId={currentUserId}
         />
       )}
     </div>

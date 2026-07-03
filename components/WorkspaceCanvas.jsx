@@ -513,6 +513,7 @@ export default function WorkspaceCanvas({
           canEdit={canEdit}
           canReview={canReview}
           members={members}
+          currentUserId={currentUserId}
         />
       )}
 
@@ -558,6 +559,7 @@ export default function WorkspaceCanvas({
               <label className="mb-1 block text-xs font-semibold text-ink-2">มอบหมายให้ (เลือกได้หลายคน)</label>
               <AssigneeSelect
                 members={members}
+                currentUserId={currentUserId}
                 value={form.assigned_to}
                 onChange={(v) => setForm({ ...form, assigned_to: v })}
               />

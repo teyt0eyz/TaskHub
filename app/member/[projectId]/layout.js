@@ -14,6 +14,7 @@ export default async function MemberProjectLayout({ children, params }) {
     { href: `/member/${projectId}`, label: "งานของฉัน", icon: "📋", color: "#FF6B2B", badge: counts.revision },
     { href: `/member/${projectId}/calendar`, label: "ปฏิทิน", icon: "🗓", color: "#c0873a" },
     { href: `/member/${projectId}/history`, label: "งานที่เสร็จ", icon: "🏆", color: "#2E9E5B" },
+    { href: `/member/${projectId}/members`, label: "สมาชิกในทีม", icon: "👥", color: "#2c5b9e" },
     { href: `/member/${projectId}/checkin`, label: "เช็คอินวันนี้", icon: "✅", color: "#2E9E5B" },
   ];
 
