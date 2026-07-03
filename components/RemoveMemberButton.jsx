@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import TrashIcon from "@/components/icons/TrashIcon";
 
 export default function RemoveMemberButton({ projectId, userId, name }) {
   const router = useRouter();
@@ -30,7 +31,7 @@ export default function RemoveMemberButton({ projectId, userId, name }) {
       title="ลบสมาชิกออก"
       className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-lg text-ink-3 hover:bg-[rgba(193,57,43,.08)] hover:text-[#c1392b] disabled:opacity-50"
     >
-      🗑
+      <TrashIcon size={15} />
     </button>
   );
 }

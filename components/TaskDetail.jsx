@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { priorityStyle } from "@/lib/mockData";
 import AssigneeSelect from "@/components/AssigneeSelect";
+import TrashIcon from "@/components/icons/TrashIcon";
 
 const STATUSES = [
   { key: "todo", label: "Todo", bg: "#F0F0F0", color: "#5A5A5A" },
@@ -499,8 +500,8 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
         {/* footer: ผู้มีสิทธิ์จัดการงาน ลบงาน */}
         {canEdit && !editing && (
           <div className="border-t border-line px-5 py-3">
-            <button onClick={deleteTask} disabled={busy} className="text-sm font-semibold text-[#c1392b] hover:underline disabled:opacity-60">
-              🗑 ลบงานนี้
+            <button onClick={deleteTask} disabled={busy} className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#c1392b] hover:underline disabled:opacity-60">
+              <TrashIcon size={15} /> ลบงานนี้
             </button>
           </div>
         )}

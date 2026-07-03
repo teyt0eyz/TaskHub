@@ -7,14 +7,13 @@ import PendingRequests from "@/components/PendingRequests";
 import RemoveMemberButton from "@/components/RemoveMemberButton";
 import PromoteMemberButton from "@/components/PromoteMemberButton";
 import { moods } from "@/lib/mockData";
-import { getDbUser, getProjectMembers, getPendingRequests, getMembership, can, PERM, streakBadge } from "@/lib/data";
+import { getDbUser, getProjectMembers, getPendingRequests, getMembership, can, PERM } from "@/lib/data";
 
 const baseRole = (role) => (role === "leader" ? "Leader" : role === "deputy" ? "⭐ รองหัวหน้า" : "Member");
 const displayRole = (m) => m.title || baseRole(m.role);
 
 function MemberCard({ m, projectId, canManage, canPromote, canAI }) {
   const mood = m.mood ? moods[m.mood] : null;
-  const badge = streakBadge(m.streak);
   const pct = m.tasksTotal ? Math.round((m.tasksDone / m.tasksTotal) * 100) : 0;
   return (
     <div className="relative rounded-2xl border border-line bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,.05)]">
@@ -50,7 +49,7 @@ function MemberCard({ m, projectId, canManage, canPromote, canAI }) {
         </div>
       </div>
 
-      <div className="mt-4 flex items-center justify-between">
+      <div className="mt-4 flex items-center">
         {mood ? (
           <span
             className="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[12px] font-semibold"
@@ -63,10 +62,6 @@ function MemberCard({ m, projectId, canManage, canPromote, canAI }) {
             😶 ยังไม่เช็คอิน
           </span>
         )}
-        <span className="flex items-center gap-1.5 text-xs text-ink-2">
-          🔥 streak <b className="text-ink">{m.streak}</b> วัน
-          {badge && <span title={badge.label}>{badge.emoji}</span>}
-        </span>
       </div>
 
       <div className="mt-4 flex items-center gap-2">
@@ -105,7 +100,7 @@ export default async function LeaderMembersPage({ params }) {
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-ink">สมาชิกทีม</h1>
-          <p className="mt-0.5 text-sm text-ink-2">ภาพรวม mood, streak และความคืบหน้าของแต่ละคน</p>
+          <p className="mt-0.5 text-sm text-ink-2">ภาพรวม mood และความคืบหน้าของแต่ละคน</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           {me && <StatusControl projectId={projectId} current={me.status} />}

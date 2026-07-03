@@ -70,7 +70,7 @@ export default function CheckinPage() {
           </div>
           <h2 className="text-xl font-bold text-ink">เช็คอินสำเร็จ!</h2>
           <p className="mt-1.5 text-sm text-ink-2">
-            mood วันนี้: {moods[mood].emoji} {moods[mood].label} · streak +1
+            mood วันนี้: {moods[mood].emoji} {moods[mood].label}
           </p>
           <div className="mt-6 flex justify-center gap-3">
             <button

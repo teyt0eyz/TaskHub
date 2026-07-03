@@ -174,6 +174,15 @@ export default function ProjectPicker({ base, projects = [] }) {
               <span className="text-sm font-semibold">สร้างโปรเจกต์ใหม่</span>
             </button>
           )}
+
+          {!isLeader && (
+            <JoinCodeButton className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-line bg-white/50 p-5 text-ink-3 transition-colors hover:border-accent hover:text-accent">
+              <span className="flex h-12 w-12 items-center justify-center rounded-xl border border-dashed border-current text-2xl">
+                🔑
+              </span>
+              <span className="text-sm font-semibold">เข้าร่วมด้วยโค้ด</span>
+            </JoinCodeButton>
+          )}
         </div>
       </main>
 

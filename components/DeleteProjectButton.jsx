@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import TrashIcon from "@/components/icons/TrashIcon";
 
 export default function DeleteProjectButton({ projectId, projectName = "" }) {
   const router = useRouter();
@@ -41,9 +42,9 @@ export default function DeleteProjectButton({ projectId, projectName = "" }) {
           {!confirming ? (
             <button
               onClick={() => setConfirming(true)}
-              className="mt-2.5 rounded-[9px] border border-[#c1392b] px-3 py-1.5 text-xs font-semibold text-[#c1392b] hover:bg-[rgba(193,57,43,.06)]"
+              className="mt-2.5 inline-flex items-center gap-1.5 rounded-[9px] border border-[#c1392b] px-3 py-1.5 text-xs font-semibold text-[#c1392b] hover:bg-[rgba(193,57,43,.06)]"
             >
-              🗑 ลบโปรเจกต์
+              <TrashIcon size={14} /> ลบโปรเจกต์
             </button>
           ) : (
             <div className="mt-2.5 space-y-2">

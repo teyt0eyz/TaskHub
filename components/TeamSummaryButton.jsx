@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Markdown from "@/components/Markdown";
 import GeminiKeyField, { readGeminiKey } from "@/components/GeminiKeyField";
+import TrashIcon from "@/components/icons/TrashIcon";
 
 const MAX_HISTORY = 12;
 
@@ -260,8 +261,8 @@ export default function TeamSummaryButton({ projectId }) {
                   >
                     ➕ สรุปใหม่
                   </button>
-                  <button onClick={deleteCurrent} className="rounded-[10px] border border-line px-3 py-2 text-sm font-semibold text-[#c1392b] hover:bg-[rgba(193,57,43,.06)]">
-                    🗑 ลบฉบับนี้
+                  <button onClick={deleteCurrent} className="inline-flex items-center gap-1.5 rounded-[10px] border border-line px-3 py-2 text-sm font-semibold text-[#c1392b] hover:bg-[rgba(193,57,43,.06)]">
+                    <TrashIcon size={15} /> ลบฉบับนี้
                   </button>
                 </div>
                 <div className="flex gap-2">
