@@ -219,8 +219,8 @@ export default function AppShell({ nav = [], title = "Project Alpha", roleLabel,
         {(() => {
           const view = pathname.startsWith("/member") ? "member" : "leader";
           const views = [
-            { key: "leader", href: "/leader", icon: "👑", label: "Leader" },
-            { key: "member", href: "/member", icon: "🙋", label: "Member" },
+            { key: "leader", href: "/leader", label: "Leader" },
+            { key: "member", href: "/member", label: "Member" },
           ];
           return open ? (
             <div className="mb-4 flex rounded-xl bg-surface-2 p-1">
@@ -228,11 +228,10 @@ export default function AppShell({ nav = [], title = "Project Alpha", roleLabel,
                 <Link
                   key={v.key}
                   href={v.href}
-                  className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg py-1.5 text-[13px] font-semibold transition-all ${
+                  className={`flex flex-1 items-center justify-center rounded-lg py-1.5 text-[13px] font-semibold transition-all ${
                     view === v.key ? "bg-white text-ink shadow-sm" : "text-ink-2 hover:text-ink"
                   }`}
                 >
-                  <span>{v.icon}</span>
                   {v.label}
                 </Link>
               ))}
@@ -244,11 +243,11 @@ export default function AppShell({ nav = [], title = "Project Alpha", roleLabel,
                   key={v.key}
                   href={v.href}
                   title={`${v.label} view`}
-                  className={`flex items-center justify-center rounded-lg py-2 text-base transition-all ${
-                    view === v.key ? "bg-white shadow-sm ring-1 ring-line" : "opacity-60 hover:opacity-100"
+                  className={`flex items-center justify-center rounded-lg py-2 text-sm font-bold transition-all ${
+                    view === v.key ? "bg-white text-ink shadow-sm ring-1 ring-line" : "text-ink-3 hover:text-ink"
                   }`}
                 >
-                  {v.icon}
+                  {v.label[0]}
                 </Link>
               ))}
             </div>

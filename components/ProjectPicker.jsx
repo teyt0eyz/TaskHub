@@ -5,11 +5,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import JoinCodeButton from "@/components/JoinCodeButton";
+import ProjectCardMenu from "@/components/ProjectCardMenu";
 
 function ViewToggle({ base }) {
   const views = [
-    { key: "leader", href: "/leader?all=1", icon: "👑", label: "Leader" },
-    { key: "member", href: "/member?all=1", icon: "🙋", label: "Member" },
+    { key: "leader", href: "/leader?all=1", label: "Leader" },
+    { key: "member", href: "/member?all=1", label: "Member" },
   ];
   const active = base === "/member" ? "member" : "leader";
   return (
@@ -18,11 +19,10 @@ function ViewToggle({ base }) {
         <Link
           key={v.key}
           href={v.href}
-          className={`flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-[13px] font-semibold transition-all ${
+          className={`flex items-center rounded-lg px-3.5 py-1.5 text-[13px] font-semibold transition-all ${
             active === v.key ? "bg-white text-ink shadow-sm" : "text-ink-2 hover:text-ink"
           }`}
         >
-          <span>{v.icon}</span>
           {v.label}
         </Link>
       ))}
@@ -124,11 +124,12 @@ export default function ProjectPicker({ base, projects = [] }) {
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {projects.map((p) => (
-            <Link
-              key={p.id}
-              href={`${base}/${p.id}`}
-              className="group flex flex-col rounded-2xl border border-line bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,.05)] transition-all hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(0,0,0,.10)]"
-            >
+            <div key={p.id} className="relative">
+              {p.myRole === "leader" && <ProjectCardMenu projectId={p.id} projectName={p.name} />}
+              <Link
+                href={`${base}/${p.id}`}
+                className="group flex flex-col rounded-2xl border border-line bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,.05)] transition-all hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(0,0,0,.10)]"
+              >
               <div className="flex items-center gap-3">
                 <div
                   className="flex h-12 w-12 items-center justify-center rounded-xl text-sm font-bold text-white"
@@ -160,7 +161,8 @@ export default function ProjectPicker({ base, projects = [] }) {
               >
                 เข้าโปรเจกต์ →
               </span>
-            </Link>
+              </Link>
+            </div>
           ))}
 
           {isLeader && (
@@ -178,7 +180,7 @@ export default function ProjectPicker({ base, projects = [] }) {
           {!isLeader && (
             <JoinCodeButton className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-line bg-white/50 p-5 text-ink-3 transition-colors hover:border-accent hover:text-accent">
               <span className="flex h-12 w-12 items-center justify-center rounded-xl border border-dashed border-current text-2xl">
-                🔑
+                +
               </span>
               <span className="text-sm font-semibold">เข้าร่วมด้วยโค้ด</span>
             </JoinCodeButton>
