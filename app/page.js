@@ -218,7 +218,7 @@ export default function HomePage() {
             <a href="#features" className="hidden rounded-lg px-3.5 py-2 text-sm font-semibold text-ink-2 hover:bg-surface-2 hover:text-ink sm:block">
               Features
             </a>
-            <Link href="/login" className="rounded-lg bg-ink px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-black">
+            <Link href="/login" className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-dark">
               Log in
             </Link>
           </div>
@@ -226,9 +226,9 @@ export default function HomePage() {
       </header>
 
       {/* Hero — centered, ollama-style */}
-      <section className="flex-1 px-5 pb-4 pt-16 sm:pt-24">
+      <section className="flex-1 bg-linear-to-b from-brand-soft/60 via-white to-white px-5 pb-4 pt-16 sm:pt-24">
         <div className="mx-auto max-w-3xl text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-line bg-white px-3.5 py-1.5 text-xs font-semibold text-ink-2 shadow-sm">
+          <span className="inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand-soft px-3.5 py-1.5 text-xs font-semibold text-brand-dark shadow-sm">
             ✨ Track your team's tasks + mood in one place
           </span>
           <h1 className="mt-6 font-heading text-4xl font-bold leading-[1.1] tracking-tight text-ink sm:text-6xl">
@@ -262,7 +262,7 @@ export default function HomePage() {
       </section>
 
       {/* Features — clean */}
-      <section id="features" className="border-t border-line bg-surface-2/30">
+      <section id="features" className="border-t border-line bg-brand-soft/40">
         <div className="mx-auto max-w-5xl px-5 py-20">
           <Reveal className="mx-auto mb-12 max-w-lg text-center">
             <h2 className="font-heading text-2xl font-bold tracking-tight text-ink sm:text-3xl">Everything your team needs</h2>
@@ -272,7 +272,7 @@ export default function HomePage() {
             {features.map((f, i) => (
               <Reveal key={f.title} delay={i * 120}>
                 <div className="flex h-full flex-col items-center rounded-2xl border border-line bg-white p-7 text-center shadow-[0_2px_10px_rgba(0,0,0,.03)]">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-surface-2 text-2xl">{f.emoji}</div>
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-soft text-2xl ring-1 ring-brand/15">{f.emoji}</div>
                   <h3 className="mt-4 text-base font-semibold text-ink">{f.title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-ink-2">{f.desc}</p>
                 </div>
@@ -282,14 +282,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="border-t border-line bg-white">
+      {/* CTA — green band */}
+      <section className="bg-brand">
         <Reveal className="mx-auto max-w-3xl px-5 py-20 text-center">
-          <h2 className="font-heading text-2xl font-bold tracking-tight text-ink sm:text-3xl">Ready to make your team more productive?</h2>
-          <p className="mx-auto mt-3 max-w-md text-ink-2">Start free today — just log in with Google.</p>
+          <h2 className="font-heading text-2xl font-bold tracking-tight text-white sm:text-3xl">Ready to make your team more productive?</h2>
+          <p className="mx-auto mt-3 max-w-md text-white/85">Start free today — just log in with Google.</p>
           <Link
             href="/login"
-            className="mt-7 inline-block rounded-xl bg-brand px-7 py-3 text-sm font-bold text-white shadow-[0_10px_24px_rgba(46,158,91,.28)] transition-transform hover:-translate-y-0.5 hover:bg-brand-dark"
+            className="mt-7 inline-block rounded-xl bg-white px-7 py-3 text-sm font-bold text-brand-dark shadow-[0_10px_24px_rgba(0,0,0,.18)] transition-transform hover:-translate-y-0.5 hover:bg-brand-soft"
           >
             Get started free →
           </Link>
