@@ -65,7 +65,7 @@ function NavRow({ item, active, open }) {
   );
 }
 
-export default function AppShell({ nav = [], title = "Project Alpha", roleLabel, isLeader = false, base = "/leader", projects = [], projectId, projectSettings = null, children }) {
+export default function AppShell({ nav = [], title = "Project Alpha", roleLabel, isLeader = false, base = "/leader", projects = [], projectId, projectSettings = null, hideViewToggle = false, children }) {
   const [open, setOpen] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -216,8 +216,8 @@ export default function AppShell({ nav = [], title = "Project Alpha", roleLabel,
           );
         })()}
 
-        {/* view switcher — the same account can act as Leader or Member */}
-        {(() => {
+        {/* view switcher — the same account can act as Leader or Member (ซ่อนสำหรับรองหัวหน้า) */}
+        {!hideViewToggle && (() => {
           const view = pathname.startsWith("/member") ? "member" : "leader";
           const views = [
             { key: "leader", href: "/leader", label: "Leader" },

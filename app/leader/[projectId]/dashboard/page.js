@@ -85,6 +85,7 @@ export default async function DashboardPage({ params }) {
   const maxMembers = Math.max(1, members.length);
 
   const maxTasks = Math.max(1, ...members.map((m) => m.tasksTotal));
+  const blocked = members.filter((m) => m.blocker);
 
   return (
     <div className="h-full overflow-auto p-6">
@@ -92,6 +93,15 @@ export default async function DashboardPage({ params }) {
         <h1 className="text-xl font-bold tracking-tight text-ink">Dashboard</h1>
         <p className="mt-0.5 text-sm text-ink-2">Team progress and wellbeing at a glance</p>
       </div>
+
+      {blocked.length > 0 && (
+        <div className="mb-5 flex items-start gap-3 rounded-xl border border-[rgba(193,57,43,.25)] bg-[rgba(193,57,43,.06)] px-4 py-3">
+          <span className="text-lg leading-none">🚧</span>
+          <div className="text-sm text-ink">
+            <b>{blocked.map((m) => m.name).join(", ")}</b> {blocked.length === 1 ? "is" : "are"} stuck — consider stepping in to help.
+          </div>
+        </div>
+      )}
 
       {/* stat cards */}
       <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">

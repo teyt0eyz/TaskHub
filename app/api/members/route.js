@@ -116,7 +116,7 @@ export async function PATCH(req) {
         project_id,
         type: promoted ? "role_promoted" : "role_changed",
         message: promoted
-          ? "🎉 You’ve been made a deputy — leader tools are now available"
+          ? "🎉 You’ve been made a deputy — extra management menus have been added to your workspace"
           : "Your role was changed back to member",
       },
     ]);
