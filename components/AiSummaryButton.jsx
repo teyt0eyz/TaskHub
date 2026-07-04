@@ -61,7 +61,7 @@ export default function AiSummaryButton({ projectId, memberId, memberName }) {
       if (res.status === 429) {
         setRemaining(0);
         window.dispatchEvent(new CustomEvent("taskhub:ai-quota", { detail: { remaining: 0 } }));
-        throw new Error("โปรเจกต์นี้ใช้ครบ 4 ครั้งเดือนนี้แล้ว — ใส่ API key ของคุณเองด้านล่างเพื่อ gen ต่อได้ไม่จำกัด");
+        throw new Error("This project has used all 4 credits this month — add your own API key below to keep generating unlimited");
       }
       if (!res.ok) throw new Error(data.detail || data.error || "failed");
 
@@ -73,7 +73,7 @@ export default function AiSummaryButton({ projectId, memberId, memberName }) {
         window.dispatchEvent(new CustomEvent("taskhub:ai-quota", { detail: { remaining: data.remaining } }));
       }
     } catch (e) {
-      setError("สรุปไม่สำเร็จ: " + e.message);
+      setError("Summary failed: " + e.message);
     } finally {
       setLoading(false);
     }
@@ -81,7 +81,7 @@ export default function AiSummaryButton({ projectId, memberId, memberName }) {
 
   async function deleteCurrent() {
     if (!current) return;
-    if (!confirm("ลบสรุปฉบับนี้ออกจากประวัติ?")) return;
+    if (!confirm("Delete this summary from history?")) return;
     const id = current.id;
     setHistory((prev) => {
       const next = prev.filter((h) => h.id !== id);
@@ -102,11 +102,11 @@ export default function AiSummaryButton({ projectId, memberId, memberName }) {
   const stripMd = (s) => String(s).replace(/^#{1,6}\s+/gm, "").replace(/\*\*([^*]+)\*\*/g, "$1");
   function fileBase() {
     const d = current ? current.at.slice(0, 10) : new Date().toISOString().slice(0, 10);
-    return `TaskHub-สรุป-${(memberName || "member").replace(/\s+/g, "_")}-${d}`;
+    return `TaskHub-summary-${(memberName || "member").replace(/\s+/g, "_")}-${d}`;
   }
   function downloadTxt() {
     if (!current) return;
-    const header = `สรุปรายคน — ${memberName}\nวันที่ ${fmtDate(current.at)}\n\n`;
+    const header = `Individual summary — ${memberName}\nDate ${fmtDate(current.at)}\n\n`;
     const blob = new Blob([header + stripMd(current.summary)], { type: "text/plain;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -129,8 +129,8 @@ export default function AiSummaryButton({ projectId, memberId, memberName }) {
         pre{white-space:pre-wrap;font-family:inherit;font-size:14px;margin:0}
         .brand{color:#2E9E5B;font-weight:700}
       </style></head><body>
-      <h1><span class="brand">TaskHub</span> · สรุปรายคน ${esc(memberName)}</h1>
-      <div class="meta">สรุปโดย AI (Gemini) · ${esc(fmtDate(current.at))}</div>
+      <h1><span class="brand">TaskHub</span> · Individual summary ${esc(memberName)}</h1>
+      <div class="meta">Summarized by AI (Gemini) · ${esc(fmtDate(current.at))}</div>
       <pre>${esc(stripMd(current.summary))}</pre>
       <script>window.onload=function(){setTimeout(function(){window.print();},350);}<\/script>
       </body></html>`
@@ -139,7 +139,7 @@ export default function AiSummaryButton({ projectId, memberId, memberName }) {
   }
 
   const out = !hasKey && remaining === 0;
-  const quotaText = hasKey ? "ไม่จำกัด 🔑" : remaining !== null ? `เหลือ ${remaining}/${limit}` : "";
+  const quotaText = hasKey ? "Unlimited 🔑" : remaining !== null ? `${remaining}/${limit} left` : "";
 
   return (
     <>
@@ -147,7 +147,7 @@ export default function AiSummaryButton({ projectId, memberId, memberName }) {
         onClick={() => setOpen(true)}
         className="relative mt-4 w-full rounded-[10px] border border-brand bg-brand-soft px-3 py-2 text-[13px] font-semibold text-brand-dark hover:bg-brand/15"
       >
-        🤖 สรุปด้วย AI
+        🤖 AI summary
         {quotaText && <span className="ml-1 font-normal text-ink-3">({quotaText})</span>}
         {history.length > 0 && (
           <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand px-1 text-[10px] font-bold text-white ring-2 ring-white">
@@ -161,19 +161,19 @@ export default function AiSummaryButton({ projectId, memberId, memberName }) {
           <div onClick={(e) => e.stopPropagation()} className="flex max-h-[88vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-line bg-white shadow-xl">
             <div className="flex items-center justify-between border-b border-line px-5 py-4">
               <div>
-                <h2 className="text-lg font-bold text-ink">สรุปสัปดาห์ — {memberName}</h2>
-                {current && <p className="mt-0.5 text-xs text-ink-3">สรุปเมื่อ {fmtDate(current.at)}{current.by ? ` · โดย ${current.by}` : ""}</p>}
+                <h2 className="text-lg font-bold text-ink">Weekly summary — {memberName}</h2>
+                {current && <p className="mt-0.5 text-xs text-ink-3">Summarized {fmtDate(current.at)}{current.by ? ` · by ${current.by}` : ""}</p>}
               </div>
               <button onClick={() => setOpen(false)} className="text-ink-3 hover:text-ink">✕</button>
             </div>
 
             <div className="border-b border-line bg-brand-soft/40 px-5 py-1.5 text-[11px] text-ink-3">
-              💾 เก็บในระบบ (ล่าสุด {MAX_HISTORY} ฉบับ) · หัวหน้าและรองหัวหน้าเห็นประวัติร่วมกัน
+              💾 Stored in the system (latest {MAX_HISTORY}  entries) · leaders and deputies share this history
             </div>
 
             {history.length > 0 && (
               <div className="flex items-center gap-2 overflow-x-auto border-b border-line bg-surface-2/40 px-5 py-2">
-                <span className="shrink-0 text-[11px] font-semibold text-ink-3">ประวัติ:</span>
+                <span className="shrink-0 text-[11px] font-semibold text-ink-3">History:</span>
                 {history.map((h) => (
                   <button
                     key={h.id}
@@ -190,21 +190,21 @@ export default function AiSummaryButton({ projectId, memberId, memberName }) {
 
             <div className="flex-1 overflow-y-auto px-5 py-4">
               {loading ? (
-                <div className="py-12 text-center text-sm text-ink-2">⏳ กำลังให้ Gemini สรุป...</div>
+                <div className="py-12 text-center text-sm text-ink-2">⏳ Gemini is summarizing...</div>
               ) : current ? (
                 <Markdown text={current.summary} />
               ) : (
                 <div className="py-10 text-center">
-                  <p className="text-sm text-ink-2">สรุปผลงานและ mood สัปดาห์นี้ของ {memberName} ด้วย AI</p>
+                  <p className="text-sm text-ink-2">Summarize this week’s work and mood for {memberName} with AI</p>
                   <button
                     onClick={generate}
                     disabled={out}
                     className="mt-4 rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-white shadow-[0_4px_14px_rgba(46,158,91,.3)] hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    ▶ เริ่มสรุป
+                    ▶ Start summary
                   </button>
                   <div className="mt-2 text-xs text-ink-3">
-                    {hasKey ? "ใช้ API key ของคุณเอง — ไม่จำกัด 🔑" : `โควตาโปรเจกต์เหลือ ${remaining ?? "-"}/${limit} ครั้งเดือนนี้`}
+                    {hasKey ? "Using your own API key — unlimited 🔑" : `Project credits left ${remaining ?? "-"}/${limit} this month`}
                   </div>
                 </div>
               )}
@@ -222,18 +222,18 @@ export default function AiSummaryButton({ projectId, memberId, memberName }) {
                     disabled={out}
                     className="rounded-[10px] border border-brand px-3 py-2 text-sm font-semibold text-brand-dark hover:bg-brand-soft disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    ➕ สรุปใหม่
+                    ➕ New summary
                   </button>
                   <button onClick={deleteCurrent} className="inline-flex items-center gap-1.5 rounded-[10px] border border-line px-3 py-2 text-sm font-semibold text-[#c1392b] hover:bg-[rgba(193,57,43,.06)]">
-                    <TrashIcon size={15} /> ลบฉบับนี้
+                    <TrashIcon size={15} /> Delete this one
                   </button>
                 </div>
                 <div className="flex gap-2">
                   <button onClick={downloadTxt} className="rounded-[10px] border border-line px-3.5 py-2 text-sm font-semibold text-ink-2 hover:bg-surface-2">
-                    ⬇ ดาวน์โหลด .txt
+                    ⬇ Download .txt
                   </button>
                   <button onClick={exportPdf} className="rounded-[10px] bg-brand px-3.5 py-2 text-sm font-semibold text-white hover:bg-brand-dark">
-                    📄 บันทึก PDF
+                    📄 Save PDF
                   </button>
                 </div>
               </div>

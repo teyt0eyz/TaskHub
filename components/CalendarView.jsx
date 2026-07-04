@@ -4,10 +4,10 @@ import { useMemo, useState } from "react";
 import TaskDetail from "@/components/TaskDetail";
 import { statusStyle } from "@/lib/mockData";
 
-const WEEKDAYS = ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"];
+const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTHS_TH = [
-  "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
-  "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม",
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
 ];
 
 const pad = (n) => String(n).padStart(2, "0");
@@ -73,16 +73,16 @@ export default function CalendarView({ projectId, tasks = [], members = [], curr
     <div className="h-full overflow-auto p-6">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-ink">ปฏิทินกำหนดส่ง</h1>
-          <p className="mt-0.5 text-sm text-ink-2">ดูงานทั้งหมดตามวัน deadline</p>
+          <h1 className="text-xl font-bold tracking-tight text-ink">Deadline calendar</h1>
+          <p className="mt-0.5 text-sm text-ink-2">See all tasks by deadline</p>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={() => shift(-1)} className="flex h-9 w-9 items-center justify-center rounded-[10px] border border-line text-ink-2 hover:bg-surface-2" title="เดือนก่อนหน้า">‹</button>
+          <button onClick={() => shift(-1)} className="flex h-9 w-9 items-center justify-center rounded-[10px] border border-line text-ink-2 hover:bg-surface-2" title="Previous month">‹</button>
           <div className="min-w-40 text-center text-sm font-semibold text-ink">
             {MONTHS_TH[cursor.m]} {cursor.y + 543}
           </div>
-          <button onClick={() => shift(1)} className="flex h-9 w-9 items-center justify-center rounded-[10px] border border-line text-ink-2 hover:bg-surface-2" title="เดือนถัดไป">›</button>
-          <button onClick={goToday} className="rounded-[10px] border border-brand bg-brand-soft px-3 py-2 text-sm font-semibold text-brand-dark hover:bg-brand/15">วันนี้</button>
+          <button onClick={() => shift(1)} className="flex h-9 w-9 items-center justify-center rounded-[10px] border border-line text-ink-2 hover:bg-surface-2" title="Next month">›</button>
+          <button onClick={goToday} className="rounded-[10px] border border-brand bg-brand-soft px-3 py-2 text-sm font-semibold text-brand-dark hover:bg-brand/15">Today</button>
         </div>
       </div>
 
@@ -121,7 +121,7 @@ export default function CalendarView({ projectId, tasks = [], members = [], curr
                     <TaskChip key={t.id} task={t} onClick={() => openDetail(t)} />
                   ))}
                   {items.length > 3 && (
-                    <div className="px-1.5 text-[10px] font-medium text-ink-3">+{items.length - 3} งาน</div>
+                    <div className="px-1.5 text-[10px] font-medium text-ink-3">+{items.length - 3} tasks</div>
                   )}
                 </div>
               </div>
@@ -131,10 +131,10 @@ export default function CalendarView({ projectId, tasks = [], members = [], curr
         </div>
       </div>
 
-      {/* งานที่ไม่กำหนดวันส่ง */}
+      {/* Tasks with no deadline */}
       {noDate.length > 0 && (
         <div className="mt-5">
-          <div className="mb-2 text-sm font-semibold text-ink-2">ไม่กำหนดวันส่ง ({noDate.length})</div>
+          <div className="mb-2 text-sm font-semibold text-ink-2">No deadline ({noDate.length})</div>
           <div className="flex flex-wrap gap-2">
             {noDate.map((t) => (
               <button
@@ -155,7 +155,7 @@ export default function CalendarView({ projectId, tasks = [], members = [], curr
         <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full" style={{ background: statusStyle.todo.bar }} /> Todo</span>
         <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full" style={{ background: statusStyle.in_progress.bar }} /> In Progress</span>
         <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full" style={{ background: statusStyle.done.bar }} /> Done</span>
-        <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-[#c1392b]" /> เลยกำหนด</span>
+        <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-[#c1392b]" /> Overdue</span>
       </div>
 
       {detail && (

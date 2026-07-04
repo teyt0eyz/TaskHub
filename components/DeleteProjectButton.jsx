@@ -23,7 +23,7 @@ export default function DeleteProjectButton({ projectId, projectName = "" }) {
       router.push("/leader");
       router.refresh();
     } else {
-      alert("ลบไม่สำเร็จ");
+      alert("Delete failed");
     }
   }
 
@@ -31,12 +31,12 @@ export default function DeleteProjectButton({ projectId, projectName = "" }) {
     <div className="mt-5 border-t border-line pt-4">
       <details onToggle={(e) => !e.currentTarget.open && setConfirming(false)}>
         <summary className="cursor-pointer list-none text-xs font-medium text-ink-3 hover:text-[#c1392b]">
-          โซนอันตราย ▾
+          Danger zone ▾
         </summary>
         <div className="mt-3 rounded-xl border border-[rgba(193,57,43,.25)] bg-[rgba(193,57,43,.04)] p-3">
-          <div className="text-[13px] font-semibold text-ink">ลบโปรเจกต์นี้</div>
+          <div className="text-[13px] font-semibold text-ink">Delete this project</div>
           <p className="mt-0.5 text-[11px] text-ink-3">
-            ลบถาวรพร้อมงาน สมาชิก คอมเมนต์ และข้อมูลทั้งหมด — ย้อนกลับไม่ได้
+            Permanently deletes all tasks, members, comments and data — this cannot be undone
           </p>
 
           {!confirming ? (
@@ -44,12 +44,12 @@ export default function DeleteProjectButton({ projectId, projectName = "" }) {
               onClick={() => setConfirming(true)}
               className="mt-2.5 inline-flex items-center gap-1.5 rounded-[9px] border border-[#c1392b] px-3 py-1.5 text-xs font-semibold text-[#c1392b] hover:bg-[rgba(193,57,43,.06)]"
             >
-              <TrashIcon size={14} /> ลบโปรเจกต์
+              <TrashIcon size={14} /> Delete project
             </button>
           ) : (
             <div className="mt-2.5 space-y-2">
               <p className="text-[11px] text-ink-2">
-                พิมพ์ชื่อโปรเจกต์ <b className="text-ink">{projectName}</b> เพื่อยืนยัน
+                Type the project name <b className="text-ink">{projectName}</b> to confirm
               </p>
               <input
                 autoFocus
@@ -66,14 +66,14 @@ export default function DeleteProjectButton({ projectId, projectName = "" }) {
                   }}
                   className="rounded-[9px] border border-line px-3 py-1.5 text-xs font-semibold text-ink-2 hover:bg-surface-2"
                 >
-                  ยกเลิก
+                  Cancel
                 </button>
                 <button
                   onClick={del}
                   disabled={busy || text.trim() !== projectName.trim()}
                   className="rounded-[9px] bg-[#c1392b] px-3 py-1.5 text-xs font-semibold text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
                 >
-                  {busy ? "กำลังลบ..." : "ลบถาวร"}
+                  {busy ? "Deleting..." : "Delete permanently"}
                 </button>
               </div>
             </div>

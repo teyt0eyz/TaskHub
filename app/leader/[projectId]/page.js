@@ -14,12 +14,12 @@ export default async function LeaderWorkspacePage({ params }) {
 
   const projColor = project?.color || "#2E9E5B";
   const root = {
-    name: project?.name || "โปรเจกต์",
+    name: project?.name || "Project",
     initials: initialsOf(project?.name || "P"),
     color: projColor,
     bg: `${projColor}22`,
     accent: projColor,
-    roleLabel: "โปรเจกต์",
+    roleLabel: "Project",
   };
 
   // tree แสดง 4 งานแรกของโปรเจกต์

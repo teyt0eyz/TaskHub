@@ -1,7 +1,7 @@
 import { getDbUser, getMembership, can, PERM } from "@/lib/data";
 import { getSupabaseAdmin } from "@/lib/supabase";
 
-// POST /api/projects — สร้างโปรเจกต์ใหม่ (ผู้สร้างกลายเป็น leader)
+// POST /api/projects — New project (ผู้สร้างกลายเป็น leader)
 export async function POST(req) {
   const user = await getDbUser();
   if (!user) return Response.json({ error: "unauthorized" }, { status: 401 });
@@ -30,7 +30,7 @@ export async function POST(req) {
   return Response.json({ project });
 }
 
-// PATCH /api/projects — เปลี่ยนชื่อโปรเจกต์ (เฉพาะ leader)
+// PATCH /api/projects — Rename project (เฉพาะ leader)
 export async function PATCH(req) {
   const user = await getDbUser();
   if (!user) return Response.json({ error: "unauthorized" }, { status: 401 });
@@ -63,7 +63,7 @@ export async function PATCH(req) {
   return Response.json({ project: data });
 }
 
-// DELETE /api/projects  { id } — ลบโปรเจกต์ทั้งหมด (เฉพาะหัวหน้าจริงเท่านั้น)
+// DELETE /api/projects  { id } — Delete projectทั้งหมด (เฉพาะหัวหน้าจริงเท่านั้น)
 export async function DELETE(req) {
   const user = await getDbUser();
   if (!user) return Response.json({ error: "unauthorized" }, { status: 401 });

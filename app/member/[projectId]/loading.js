@@ -10,7 +10,7 @@ export default function Loading() {
           style={{ animationDelay: `${i * 120}ms` }}
         />
       ))}
-      <p className="mt-2 text-sm font-medium text-ink-3">กำลังโหลดงานของคุณ...</p>
+      <p className="mt-2 text-sm font-medium text-ink-3">Loading your tasks...</p>
     </div>
   );
 }

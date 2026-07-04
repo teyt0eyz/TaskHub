@@ -86,12 +86,12 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
       setTimeout(() => setSent(false), 2500);
       router.refresh();
     } else {
-      alert("ส่งไม่สำเร็จ ลองใหม่อีกครั้ง");
+      alert("Failed to send, please try again");
     }
   }
 
   async function deleteAttachment(id) {
-    if (!confirm("ลบไฟล์นี้?")) return;
+    if (!confirm("Delete this file?")) return;
     const res = await fetch("/api/attachments", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
@@ -100,7 +100,7 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
     if (res.ok) loadAttachments();
     else {
       const d = await res.json().catch(() => ({}));
-      alert(d.error === "forbidden" ? "ลบได้เฉพาะเจ้าของไฟล์หรือหัวหน้าทีม" : "ลบไม่สำเร็จ");
+      alert(d.error === "forbidden" ? "Only the file owner or a team leader can delete this" : "Delete failed");
     }
   }
 
@@ -117,11 +117,11 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
     if (res.ok) loadAttachments();
     else {
       const d = await res.json().catch(() => ({}));
-      alert(d.error || "อัปโหลดไม่สำเร็จ");
+      alert(d.error || "Upload failed");
     }
   }
 
-  // leader ยืนยันงานผ่าน → เก็บเข้าประวัติ + เคลียร์ออกจากกิ่ง
+  // leader Approve task → เก็บเข้าประวัติ + เคลียร์ออกจากกิ่ง
   async function approve() {
     setBusy(true);
     const res = await fetch("/api/tasks", {
@@ -134,7 +134,7 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
       router.refresh();
       onClose();
     } else {
-      alert("ยืนยันไม่สำเร็จ");
+      alert("Approval failed");
     }
   }
 
@@ -150,7 +150,7 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
     await fetch("/api/comments", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ taskId: task.id, body: "↩ ตีกลับให้แก้ไข: " + rejectText.trim() }),
+      body: JSON.stringify({ taskId: task.id, body: "↩ Send back for changes: " + rejectText.trim() }),
     });
     setBusy(false);
     router.refresh();
@@ -181,12 +181,12 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
       onClose();
     } else {
       const d = await res.json().catch(() => ({}));
-      alert(d.error === "forbidden" ? "แก้ไขได้เฉพาะหัวหน้าทีม" : "บันทึกไม่สำเร็จ");
+      alert(d.error === "forbidden" ? "Only a team leader can edit" : "Save failed");
     }
   }
 
   async function deleteTask() {
-    if (!confirm("ลบงานนี้? การลบไม่สามารถย้อนกลับได้")) return;
+    if (!confirm("Delete this task? This cannot be undone")) return;
     setBusy(true);
     const res = await fetch("/api/tasks", {
       method: "DELETE",
@@ -198,7 +198,7 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
       router.refresh();
       onClose();
     } else {
-      alert("ลบไม่สำเร็จ");
+      alert("Delete failed");
     }
   }
 
@@ -244,8 +244,8 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
           </div>
           <div className="flex shrink-0 items-center gap-3">
             {canEdit && !editing && (
-              <button onClick={() => setEditing(true)} title="แก้ไขงาน" className="text-sm font-semibold text-brand hover:underline">
-                ✏️ แก้ไข
+              <button onClick={() => setEditing(true)} title="Edit task" className="text-sm font-semibold text-brand hover:underline">
+                ✏️ Edit
               </button>
             )}
             <button onClick={onClose} className="text-ink-3 hover:text-ink">✕</button>
@@ -255,7 +255,7 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
         {editing ? (
           <form onSubmit={saveEdit} className="flex-1 space-y-3 overflow-y-auto p-5">
             <div>
-              <label className="mb-1 block text-xs font-semibold text-ink-2">ชื่องาน</label>
+              <label className="mb-1 block text-xs font-semibold text-ink-2">Task name</label>
               <input
                 autoFocus
                 value={edit.title}
@@ -264,46 +264,46 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-semibold text-ink-2">รายละเอียด</label>
+              <label className="mb-1 block text-xs font-semibold text-ink-2">Description</label>
               <textarea
                 value={edit.description}
                 onChange={(e) => setEdit({ ...edit, description: e.target.value })}
                 rows={3}
-                placeholder="อธิบายรายละเอียดงาน..."
+                placeholder="Describe the task..."
                 className="w-full resize-none rounded-xl border border-line px-3.5 py-2.5 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand-soft"
               />
             </div>
             <div className="flex gap-3">
               <div className="flex-1">
-                <label className="mb-1 block text-xs font-semibold text-ink-2">ความด่วน</label>
+                <label className="mb-1 block text-xs font-semibold text-ink-2">Priority</label>
                 <select value={edit.priority} onChange={(e) => setEdit({ ...edit, priority: e.target.value })} className="w-full rounded-xl border border-line px-3 py-2.5 text-sm outline-none focus:border-brand">
-                  <option value="low">ต่ำ (Low)</option>
-                  <option value="medium">ปานกลาง (Medium)</option>
-                  <option value="high">สูง (High)</option>
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
                 </select>
               </div>
               <div className="flex-1">
-                <label className="mb-1 block text-xs font-semibold text-ink-2">กำหนดส่ง</label>
+                <label className="mb-1 block text-xs font-semibold text-ink-2">Deadline</label>
                 <input type="date" value={edit.deadline || ""} onChange={(e) => setEdit({ ...edit, deadline: e.target.value })} className="w-full rounded-xl border border-line px-3 py-2.5 text-sm outline-none focus:border-brand" />
               </div>
             </div>
             <div>
-              <label className="mb-1 block text-xs font-semibold text-ink-2">มอบหมายให้ (เลือกได้หลายคน)</label>
+              <label className="mb-1 block text-xs font-semibold text-ink-2">Assign to (multiple allowed)</label>
               <AssigneeSelect members={members} currentUserId={currentUserId} value={edit.assigned_to} onChange={(v) => setEdit({ ...edit, assigned_to: v })} />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-semibold text-ink-2">แท็ก</label>
+              <label className="mb-1 block text-xs font-semibold text-ink-2">Tags</label>
               <input
                 value={edit.tags}
                 onChange={(e) => setEdit({ ...edit, tags: e.target.value })}
-                placeholder="คั่นด้วย , เช่น Design, Frontend"
+                placeholder="Separate with commas, e.g. Design, Frontend"
                 className="w-full rounded-xl border border-line px-3.5 py-2.5 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand-soft"
               />
             </div>
             <div className="flex justify-end gap-2 pt-1">
-              <button type="button" onClick={() => setEditing(false)} className="rounded-[10px] border border-line px-4 py-2 text-sm font-semibold text-ink-2 hover:bg-surface-2">ยกเลิก</button>
+              <button type="button" onClick={() => setEditing(false)} className="rounded-[10px] border border-line px-4 py-2 text-sm font-semibold text-ink-2 hover:bg-surface-2">Cancel</button>
               <button type="submit" disabled={busy} className="rounded-[10px] bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-dark disabled:opacity-60">
-                {busy ? "กำลังบันทึก..." : "บันทึกการแก้ไข"}
+                {busy ? "Saving..." : "Save changes"}
               </button>
             </div>
           </form>
@@ -317,20 +317,20 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
 
           {needsRev && (
             <div className="mb-4 rounded-xl border border-[rgba(193,57,43,.25)] bg-[rgba(193,57,43,.06)] px-3 py-2 text-sm font-medium text-[#c1392b]">
-              ↩ งานนี้ถูกตีกลับให้แก้ไข — ดูรายละเอียดในความคืบหน้าด้านล่าง
+              ↩ This task was sent back — see details in the progress below
             </div>
           )}
 
           {task.approved && (
             <div className="mb-4 rounded-xl border border-brand/30 bg-brand-soft px-3 py-2 text-sm font-semibold text-brand-dark">
-              🎉 งานนี้ผ่านการตรวจแล้ว — ถูกเก็บเข้าประวัติงานเสร็จ
+              🎉 This task is approved — saved to completed history
             </div>
           )}
 
           {/* status */}
           <div className="mb-5">
             <div className="mb-2 text-xs font-semibold text-ink-2">
-              สถานะงาน {isLeader && <span className="font-normal text-ink-3">(ผู้รับผิดชอบเป็นผู้อัปเดต)</span>}
+              Task status {isLeader && <span className="font-normal text-ink-3">(assignees update this)</span>}
             </div>
             {isLeader ? (
               <span
@@ -358,7 +358,7 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
               </div>
             )}
 
-            {/* ผู้มีสิทธิ์ตรวจงาน: ยืนยันผ่าน / ตีกลับ งานที่เสร็จแล้ว */}
+            {/* ผู้มีสิทธิ์Review work: ยืนยันผ่าน / ตีกลับ Completedแล้ว */}
             {canReview && status === "done" && !task.approved && (
               <div className="mt-3">
                 {!rejecting ? (
@@ -368,13 +368,13 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
                       disabled={busy}
                       className="rounded-[10px] bg-brand px-3 py-2 text-[13px] font-semibold text-white hover:bg-brand-dark disabled:opacity-60"
                     >
-                      ✅ ยืนยันงานผ่าน
+                      ✅ Approve task
                     </button>
                     <button
                       onClick={() => setRejecting(true)}
                       className="rounded-[10px] border border-[#c1392b] px-3 py-2 text-[13px] font-semibold text-[#c1392b] hover:bg-[rgba(193,57,43,.06)]"
                     >
-                      ↩ ตีกลับให้แก้ไข
+                      ↩ Send back for changes
                     </button>
                   </div>
                 ) : (
@@ -384,19 +384,19 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
                       value={rejectText}
                       onChange={(e) => setRejectText(e.target.value)}
                       rows={3}
-                      placeholder="บอกสิ่งที่ต้องแก้ไข..."
+                      placeholder="Describe what needs fixing..."
                       className="w-full resize-none rounded-xl border border-line px-3 py-2 text-sm outline-none focus:border-[#c1392b] focus:ring-2 focus:ring-[rgba(193,57,43,.12)]"
                     />
                     <div className="flex justify-end gap-2">
                       <button onClick={() => setRejecting(false)} className="rounded-[10px] border border-line px-3 py-1.5 text-sm font-semibold text-ink-2 hover:bg-surface-2">
-                        ยกเลิก
+                        Cancel
                       </button>
                       <button
                         onClick={reject}
                         disabled={busy}
                         className="rounded-[10px] bg-[#c1392b] px-3 py-1.5 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60"
                       >
-                        ตีกลับ
+                        Send back
                       </button>
                     </div>
                   </div>
@@ -408,18 +408,18 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
           {/* attachments */}
           <div className="mb-5">
             <div className="mb-2 flex items-center justify-between">
-              <span className="text-xs font-semibold text-ink-2">ไฟล์ / รูปแนบ</span>
+              <span className="text-xs font-semibold text-ink-2">Files / attachments</span>
               {canComment && (
                 <>
                   <button onClick={() => fileRef.current?.click()} className="text-xs font-semibold text-brand hover:underline">
-                    {uploading ? "กำลังอัปโหลด..." : "+ แนบไฟล์"}
+                    {uploading ? "Uploading..." : "+ Attach file"}
                   </button>
                   <input ref={fileRef} type="file" className="hidden" onChange={uploadFile} />
                 </>
               )}
             </div>
             {attachments.length === 0 ? (
-              <div className="rounded-lg border border-dashed border-line py-4 text-center text-xs text-ink-3">ยังไม่มีไฟล์แนบ</div>
+              <div className="rounded-lg border border-dashed border-line py-4 text-center text-xs text-ink-3">No attachments yet</div>
             ) : (
               <div className="flex flex-wrap gap-2">
                 {attachments.map((a) =>
@@ -431,7 +431,7 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
                       {canComment && (
                         <button
                           onClick={() => deleteAttachment(a.id)}
-                          title="ลบไฟล์"
+                          title="Delete file"
                           className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-[#c1392b] text-[11px] text-white shadow opacity-0 transition-opacity group-hover:opacity-100"
                         >
                           ✕
@@ -444,7 +444,7 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
                         📎 {a.file_name}
                       </a>
                       {canComment && (
-                        <button onClick={() => deleteAttachment(a.id)} title="ลบไฟล์" className="ml-1 text-ink-3 hover:text-[#c1392b]">
+                        <button onClick={() => deleteAttachment(a.id)} title="Delete file" className="ml-1 text-ink-3 hover:text-[#c1392b]">
                           ✕
                         </button>
                       )}
@@ -458,12 +458,12 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
           {/* progress / comments */}
           <div>
             <div className="mb-2 text-xs font-semibold text-ink-2">
-              ความคืบหน้า{canComment ? " / คอมเมนต์" : " & การตีกลับ"}
+              Progress{canComment ? " / comments" : " & revisions"}
             </div>
             <div className="space-y-2.5">
               {comments.length === 0 && (
                 <div className="text-xs text-ink-3">
-                  {canComment ? "ยังไม่มีอัปเดต — เขียนความคืบหน้าได้เลย" : "ผู้รับผิดชอบยังไม่ได้อัปเดต"}
+                  {canComment ? "No updates yet — post your progress" : "The assignee hasn’t updated yet"}
                 </div>
               )}
               {comments.map((c) => (
@@ -479,16 +479,16 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
                   <input
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
-                    placeholder="อัปเดตความคืบหน้า..."
+                    placeholder="Update progress..."
                     className="flex-1 rounded-xl border border-line px-3 py-2 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand-soft"
                   />
                   <button type="submit" disabled={busy} className="rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-dark disabled:opacity-60">
-                    {busy ? "กำลังส่ง..." : "ส่ง"}
+                    {busy ? "Sending..." : "Send"}
                   </button>
                 </form>
                 {sent && (
                   <div className="mt-2 flex items-center gap-1.5 text-xs font-semibold text-brand animate-fade-up">
-                    ✓ ส่งความคืบหน้าเรียบร้อยแล้ว
+                    ✓ Progress posted
                   </div>
                 )}
               </>
@@ -497,11 +497,11 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
         </div>
         )}
 
-        {/* footer: ผู้มีสิทธิ์จัดการงาน ลบงาน */}
+        {/* footer: ผู้มีสิทธิ์Manage tasks ลบงาน */}
         {canEdit && !editing && (
           <div className="border-t border-line px-5 py-3">
             <button onClick={deleteTask} disabled={busy} className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#c1392b] hover:underline disabled:opacity-60">
-              <TrashIcon size={15} /> ลบงานนี้
+              <TrashIcon size={15} /> Delete task
             </button>
           </div>
         )}

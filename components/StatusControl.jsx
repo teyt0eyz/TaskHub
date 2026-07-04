@@ -5,12 +5,12 @@ import { useRouter } from "next/navigation";
 
 // สถานะสำเร็จรูป — เลือกเร็ว หรือจะพิมพ์เองก็ได้
 const PRESETS = [
-  "🟢 ว่าง",
-  "🔴 ไม่ว่าง",
-  "📅 ประชุมอยู่",
-  "🍚 พักเที่ยง",
-  "🏠 ทำงานนอกสถานที่",
-  "🎯 โฟกัสงาน ห้ามรบกวน",
+  "🟢 Available",
+  "🔴 Busy",
+  "📅 In a meeting",
+  "🍚 Lunch break",
+  "🏠 Working remotely",
+  "🎯 Focusing — do not disturb",
 ];
 
 export default function StatusControl({ projectId, current = null }) {
@@ -49,14 +49,14 @@ export default function StatusControl({ projectId, current = null }) {
         onClick={() => setOpen((v) => !v)}
         className="flex items-center gap-2 rounded-[10px] border border-line bg-white px-3 py-2 text-sm font-medium text-ink-2 hover:border-brand"
       >
-        <span className="text-ink-3">สถานะฉัน:</span>
-        <span className="font-semibold text-ink">{current || "— ยังไม่ตั้ง"}</span>
+        <span className="text-ink-3">My status:</span>
+        <span className="font-semibold text-ink">{current || "— Not set"}</span>
         <span className="text-ink-3">▾</span>
       </button>
 
       {open && (
         <div className="absolute right-0 z-50 mt-1 w-64 overflow-hidden rounded-xl border border-line bg-white p-2 shadow-[0_8px_24px_rgba(0,0,0,.12)]">
-          <div className="px-1 pb-1.5 text-[11px] font-semibold text-ink-3">เลือกสถานะ</div>
+          <div className="px-1 pb-1.5 text-[11px] font-semibold text-ink-3">Choose status</div>
           <div className="flex flex-col gap-0.5">
             {PRESETS.map((p) => (
               <button
@@ -81,7 +81,7 @@ export default function StatusControl({ projectId, current = null }) {
               value={text}
               onChange={(e) => setText(e.target.value)}
               maxLength={60}
-              placeholder="✏️ พิมพ์สถานะเอง..."
+              placeholder="✏️ Type your own status..."
               className="w-full rounded-lg border border-line px-2.5 py-1.5 text-sm outline-none focus:border-brand"
             />
             <div className="mt-2 flex justify-between">
@@ -91,14 +91,14 @@ export default function StatusControl({ projectId, current = null }) {
                 onClick={() => save("")}
                 className="rounded-lg px-2 py-1 text-xs font-semibold text-[#c1392b] hover:bg-[rgba(193,57,43,.06)] disabled:opacity-40"
               >
-                ล้างสถานะ
+                Clear status
               </button>
               <button
                 type="submit"
                 disabled={busy || !text.trim()}
                 className="rounded-lg bg-brand px-3 py-1 text-xs font-semibold text-white hover:bg-brand-dark disabled:opacity-40"
               >
-                ตั้งค่า
+                Set
               </button>
             </div>
           </form>

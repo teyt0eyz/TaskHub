@@ -7,7 +7,7 @@ export default async function LeaderProjectLayout({ children, params }) {
   const user = await getDbUser();
   const membership = await getMembership(projectId, user?.id);
 
-  // มุมมองจัดการ = หัวหน้า หรือ รองหัวหน้าที่มีสิทธิ์อย่างน้อย 1 อย่าง — คนอื่นเด้งไปมุมมองสมาชิก
+  // มุมมองจัดการ = หัวหน้า หรือ Deputyที่มีสิทธิ์อย่างน้อย 1 อย่าง — คนอื่นเด้งไปมุมมองสมาชิก
   const hasMgmtAccess =
     membership &&
     (membership.role === "leader" ||
@@ -22,21 +22,21 @@ export default async function LeaderProjectLayout({ children, params }) {
     getLeaderNavCounts(projectId),
   ]);
   const isLeader = membership?.role === "leader";
-  const roleTitle = membership?.title || (isLeader ? "Leader" : "รองหัวหน้า");
+  const roleTitle = membership?.title || (isLeader ? "Leader" : "Deputy");
 
   const nav = [
     { href: `/leader/${projectId}`, label: "Workspace", icon: "🌳", color: "#2E9E5B", badge: counts.approval },
     { href: `/leader/${projectId}/dashboard`, label: "Dashboard", icon: "📊", color: "#6b3fa0" },
-    { href: `/leader/${projectId}/tasks`, label: "งานทั้งหมด", icon: "🗂", color: "#FF6B2B", badge: counts.approval },
-    { href: `/leader/${projectId}/calendar`, label: "ปฏิทิน", icon: "🗓", color: "#c0873a" },
-    { href: `/leader/${projectId}/history`, label: "ประวัติงานเสร็จ", icon: "🏆", color: "#2E9E5B" },
-    { href: `/leader/${projectId}/members`, label: "สมาชิกทีม", icon: "👥", color: "#2c5b9e", badge: counts.requests },
+    { href: `/leader/${projectId}/tasks`, label: "All tasks", icon: "🗂", color: "#FF6B2B", badge: counts.approval },
+    { href: `/leader/${projectId}/calendar`, label: "Calendar", icon: "🗓", color: "#c0873a" },
+    { href: `/leader/${projectId}/history`, label: "Completed history", icon: "🏆", color: "#2E9E5B" },
+    { href: `/leader/${projectId}/members`, label: "Team", icon: "👥", color: "#2c5b9e", badge: counts.requests },
   ];
 
   return (
     <AppShell
       nav={nav}
-      title={project?.name || "โปรเจกต์"}
+      title={project?.name || "Project"}
       roleLabel={roleTitle}
       isLeader={isLeader}
       base="/leader"

@@ -13,8 +13,8 @@ function TaskRow({ t }) {
       <div className="min-w-0 flex-1">
         <div className="truncate text-sm font-semibold text-ink">{t.title}</div>
         <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-ink-3">
-          <span>ผ่านเมื่อ {fmt(t._approvedAt)}</span>
-          {t.deadline && t.deadline !== "ไม่กำหนด" && <span>· กำหนดส่ง {t.deadline}</span>}
+          <span>Approved {fmt(t._approvedAt)}</span>
+          {t.deadline && t.deadline !== "No deadline" && <span>· Deadline {t.deadline}</span>}
           {t.tags?.slice(0, 3).map((tag) => (
             <span key={tag} className="rounded-full bg-surface-2 px-2 py-0.5 text-[11px] text-ink-2">#{tag}</span>
           ))}
@@ -33,7 +33,7 @@ export default function CompletedHistory({ groups = [], showMemberHeader = true 
   if (totalTasks === 0) {
     return (
       <div className="rounded-2xl border border-dashed border-line bg-white/60 p-10 text-center text-ink-3">
-        ยังไม่มีงานที่ผ่านการยืนยัน — งานจะมาอยู่ที่นี่เมื่อหัวหน้ากด “ยืนยันงานผ่าน”
+        No approved work yet — tasks appear here once a leader clicks “Approve task”
       </div>
     );
   }
@@ -50,9 +50,9 @@ export default function CompletedHistory({ groups = [], showMemberHeader = true 
               >
                 {g.member?.initials || "?"}
               </span>
-              <span className="text-base font-semibold text-ink">{g.member?.name || "ไม่ระบุ"}</span>
+              <span className="text-base font-semibold text-ink">{g.member?.name || "Unassigned"}</span>
               <span className="rounded-full bg-brand-soft px-2 py-0.5 text-xs font-semibold text-brand-dark">
-                {g.tasks.length} งานเสร็จ
+                {g.tasks.length} tasks done
               </span>
             </div>
           )}

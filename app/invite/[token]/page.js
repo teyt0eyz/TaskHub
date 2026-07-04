@@ -28,12 +28,12 @@ export default async function InvitePage({ params }) {
     return (
       <Card>
         <div className="text-3xl">🔗</div>
-        <h1 className="mt-2 text-lg font-bold text-ink">ลิงก์เชิญไม่ถูกต้องหรือหมดอายุ</h1>
+        <h1 className="mt-2 text-lg font-bold text-ink">This invite link is invalid or expired</h1>
       </Card>
     );
   }
 
-  const projectName = invite.projects?.name || "โปรเจกต์";
+  const projectName = invite.projects?.name || "Project";
   const user = await getDbUser();
   if (!user) {
     return <InviteJoin token={token} projectName={projectName} />;
@@ -50,7 +50,7 @@ export default async function InvitePage({ params }) {
     redirect(`/${membership.role === "leader" ? "leader" : "member"}/${invite.project_id}`);
   }
 
-  // โหมด "เข้าได้เลย" — เพิ่มเป็นสมาชิกทันทีไม่ต้องรออนุมัติ
+  // โหมด "Instant join" — เพิ่มเป็นสมาชิกทันทีไม่ต้องรอApprove
   if (invite.projects?.auto_approve) {
     await supabase
       .from("project_members")
@@ -62,7 +62,7 @@ export default async function InvitePage({ params }) {
     redirect(`/${invite.role === "leader" ? "leader" : "member"}/${invite.project_id}`);
   }
 
-  // ส่งคำขอเข้าร่วม (รอหัวหน้าอนุมัติ) — ตั้งเป็น pending เสมอ (เผื่อเคยถูกปฏิเสธแล้วขอใหม่)
+  // ส่งJoin requests (รอหัวหน้าApprove) — ตั้งเป็น pending เสมอ (เผื่อเคยถูกRejectแล้วขอใหม่)
   await supabase
     .from("join_requests")
     .upsert(
@@ -75,16 +75,16 @@ export default async function InvitePage({ params }) {
       <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-brand-soft text-3xl">
         ⏳
       </div>
-      <h1 className="text-lg font-bold text-ink">ส่งคำขอเข้าร่วมแล้ว</h1>
+      <h1 className="text-lg font-bold text-ink">Join request sent</h1>
       <p className="mt-1 text-sm text-ink-2">
-        รอหัวหน้าโปรเจกต์ <b className="text-ink">{projectName}</b> อนุมัติ
-        เมื่อได้รับอนุมัติแล้วโปรเจกต์จะปรากฏในหน้า Member ของคุณ
+        Waiting for the project leader <b className="text-ink">{projectName}</b> to approve
+        Once approved, the project will appear on your Member page
       </p>
       <Link
         href="/member"
         className="mt-6 inline-block rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-dark"
       >
-        ไปหน้า Member
+        Go to Member page
       </Link>
     </Card>
   );

@@ -1,7 +1,7 @@
 import { getDbUser } from "@/lib/data";
 import { getSupabaseAdmin } from "@/lib/supabase";
 
-// GET /api/notifications — รายการแจ้งเตือนของฉัน + จำนวนที่ยังไม่อ่าน
+// GET /api/notifications — My notifications + จำนวนที่ยังไม่อ่าน
 export async function GET() {
   const user = await getDbUser();
   if (!user) return Response.json({ error: "unauthorized" }, { status: 401 });
@@ -57,7 +57,7 @@ export async function PATCH(req) {
     const body = await req.json();
     taskId = body?.taskId || null;
   } catch {
-    /* ไม่มี body = อ่านทั้งหมด */
+    /* ไม่มี body = Mark all read */
   }
 
   const supabase = getSupabaseAdmin();

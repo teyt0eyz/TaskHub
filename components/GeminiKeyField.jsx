@@ -52,9 +52,9 @@ export default function GeminiKeyField() {
   return (
     <div className="rounded-xl border border-line bg-surface-2/40 p-3">
       <div className="flex items-center justify-between gap-2">
-        <div className="text-[13px] font-semibold text-ink">🔑 ใช้ API key ของตัวเอง (generate ไม่จำกัด)</div>
+        <div className="text-[13px] font-semibold text-ink">🔑 Use your own API key (unlimited)</div>
         {saved && !editing && (
-          <span className="rounded-full bg-brand-soft px-2 py-0.5 text-[10px] font-semibold text-brand-dark">กำลังใช้อยู่</span>
+          <span className="rounded-full bg-brand-soft px-2 py-0.5 text-[10px] font-semibold text-brand-dark">In use</span>
         )}
       </div>
 
@@ -62,8 +62,8 @@ export default function GeminiKeyField() {
         <div className="mt-2 flex items-center justify-between gap-2">
           <span className="truncate text-xs text-ink-2">{masked}</span>
           <div className="flex gap-2">
-            <button onClick={() => setEditing(true)} className="text-xs font-semibold text-brand hover:underline">แก้</button>
-            <button onClick={clear} className="text-xs font-semibold text-[#c1392b] hover:underline">ลบ</button>
+            <button onClick={() => setEditing(true)} className="text-xs font-semibold text-brand hover:underline">Edit</button>
+            <button onClick={clear} className="text-xs font-semibold text-[#c1392b] hover:underline">Delete</button>
           </div>
         </div>
       ) : (
@@ -73,15 +73,15 @@ export default function GeminiKeyField() {
               type="password"
               value={val}
               onChange={(e) => setVal(e.target.value)}
-              placeholder="วาง Gemini API key..."
+              placeholder="Paste your Gemini API key..."
               className="flex-1 rounded-lg border border-line px-2.5 py-1.5 text-sm outline-none focus:border-brand"
             />
             <button onClick={save} className="rounded-lg bg-brand px-3 py-1.5 text-sm font-semibold text-white hover:bg-brand-dark">
-              บันทึก
+              Save
             </button>
           </div>
           <p className="mt-1.5 text-[11px] text-ink-3">
-            เก็บในเบราว์เซอร์นี้เท่านั้น · ขอคีย์ฟรีได้ที่{" "}
+            Stored in this browser only · get a free key at{" "}
             <a href="https://aistudio.google.com/apikey" target="_blank" rel="noreferrer" className="text-brand hover:underline">
               aistudio.google.com/apikey
             </a>

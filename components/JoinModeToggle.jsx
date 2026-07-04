@@ -4,8 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 const OPTS = [
-  { val: false, label: "ต้องอนุมัติก่อน", desc: "หัวหน้ากดยอมรับก่อนถึงเข้าได้" },
-  { val: true, label: "เข้าได้เลย", desc: "ใครมีลิงก์/โค้ดเข้าได้ทันที" },
+  { val: false, label: "Requires approval", desc: "A leader must approve before joining" },
+  { val: true, label: "Instant join", desc: "Anyone with the link or code joins instantly" },
 ];
 
 export default function JoinModeToggle({ projectId, value = false }) {
@@ -22,14 +22,14 @@ export default function JoinModeToggle({ projectId, value = false }) {
     });
     setBusy(false);
     if (res.ok) router.refresh();
-    else alert("เปลี่ยนโหมดไม่สำเร็จ");
+    else alert("Failed to change mode");
   }
 
   return (
     <div className="mb-5 rounded-2xl border border-line bg-white p-4">
-      <div className="text-sm font-semibold text-ink">โหมดการเข้าร่วมทีม</div>
+      <div className="text-sm font-semibold text-ink">Join mode</div>
       <p className="mt-0.5 text-xs text-ink-2">
-        เลือกว่าเมื่อมีคนใช้ลิงก์/โค้ดเชิญ จะต้องให้หัวหน้าอนุมัติก่อน หรือเข้าร่วมได้ทันที — ปรับได้เฉพาะหัวหน้า
+        Choose whether people who use an invite link or code need leader approval or can join instantly — leaders only
       </p>
       <div className="mt-3 flex w-full max-w-md gap-2">
         {OPTS.map((o) => (

@@ -1,9 +1,10 @@
 import { getDbUser, getMembership, can, PERM } from "@/lib/data";
 import { getSupabaseAdmin } from "@/lib/supabase";
+import { createNotifications } from "@/lib/notify";
 
 const VALID_PERMS = [PERM.REVIEW, PERM.TASKS, PERM.MEMBERS, PERM.SETTINGS, PERM.AI];
 
-// DELETE /api/members  { project_id, user_id }  — นำสมาชิกออก (ต้องมีสิทธิ์จัดการสมาชิก)
+// DELETE /api/members  { project_id, user_id }  — นำสมาชิกออก (ต้องมีสิทธิ์Manage members)
 export async function DELETE(req) {
   const user = await getDbUser();
   if (!user) return Response.json({ error: "unauthorized" }, { status: 401 });
@@ -19,7 +20,7 @@ export async function DELETE(req) {
     return Response.json({ error: "project_id and user_id are required" }, { status: 400 });
   }
   if (user_id === user.id) {
-    return Response.json({ error: "ลบตัวเองไม่ได้" }, { status: 400 });
+    return Response.json({ error: "You can't remove yourself" }, { status: 400 });
   }
 
   const supabase = getSupabaseAdmin();
@@ -37,7 +38,7 @@ export async function DELETE(req) {
     .eq("user_id", user_id)
     .maybeSingle();
   if (target?.role === "leader") {
-    return Response.json({ error: "ลบหัวหน้าไม่ได้" }, { status: 400 });
+    return Response.json({ error: "You can't remove the leader" }, { status: 400 });
   }
 
   await supabase.from("project_members").delete().eq("project_id", project_id).eq("user_id", user_id);
@@ -53,7 +54,7 @@ export async function DELETE(req) {
   return Response.json({ ok: true });
 }
 
-// PATCH /api/members  { project_id, user_id, role, permissions } — แต่งตั้งรองหัวหน้า/ปลด (เฉพาะหัวหน้าจริง)
+// PATCH /api/members  { project_id, user_id, role, permissions } — แต่งตั้งDeputy/ปลด (เฉพาะหัวหน้าจริง)
 export async function PATCH(req) {
   const user = await getDbUser();
   if (!user) return Response.json({ error: "unauthorized" }, { status: 401 });
@@ -88,13 +89,13 @@ export async function PATCH(req) {
   const cleanTitle = typeof title === "string" && title.trim() ? title.trim().slice(0, 30) : null;
   const update = { title: cleanTitle };
 
-  // หัวหน้า: แก้ได้เฉพาะชื่อบทบาท (title) ไม่เปลี่ยนระดับสิทธิ์
+  // หัวหน้า: แก้ได้เฉพาะชื่อบทบาท (title) ไม่เปลี่ยนPermission level
   if (target.role !== "leader") {
     if (!["member", "deputy"].includes(role)) {
       return Response.json({ error: "role must be member or deputy" }, { status: 400 });
     }
     const perms = role === "deputy" ? [...new Set((permissions || []).filter((p) => VALID_PERMS.includes(p)))] : [];
-    // ผู้ช่วยที่ไม่มีสิทธิ์เลย = สมาชิกทั่วไป
+    // ผู้ช่วยที่ไม่มีสิทธิ์เลย = Regular member
     update.role = role === "deputy" && perms.length > 0 ? "deputy" : "member";
     update.permissions = update.role === "deputy" ? perms : [];
   }
@@ -105,6 +106,21 @@ export async function PATCH(req) {
     .eq("project_id", project_id)
     .eq("user_id", user_id);
   if (error) return Response.json({ error: error.message }, { status: 500 });
+
+  // แจ้งเตือนผู้ถูกเปลี่ยนสิทธิ์ (เฉพาะเมื่อ role เปลี่ยนจริง) — เด้ง realtime ให้เขาสลับ workspace อัตโนมัติด้วย
+  if (update.role && update.role !== target.role && user_id !== user.id) {
+    const promoted = update.role === "deputy";
+    await createNotifications([
+      {
+        user_id,
+        project_id,
+        type: promoted ? "role_promoted" : "role_changed",
+        message: promoted
+          ? "🎉 You’ve been made a deputy — leader tools are now available"
+          : "Your role was changed back to member",
+      },
+    ]);
+  }
 
   return Response.json({ ok: true });
 }

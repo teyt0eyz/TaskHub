@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import TrashIcon from "@/components/icons/TrashIcon";
 
-// เมนู "จุดสามจุด" บนการ์ดโปรเจกต์ (หน้าเลือกโปรเจกต์) — ลบโปรเจกต์ได้ เฉพาะหัวหน้า
+// เมนู "จุดสามจุด" บนการ์ดโปรเจกต์ (หน้าChoose a project) — Delete projectได้ เฉพาะหัวหน้า
 export default function ProjectCardMenu({ projectId, projectName }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -35,7 +35,7 @@ export default function ProjectCardMenu({ projectId, projectName }) {
       setConfirming(false);
       router.refresh();
     } else {
-      alert("ลบไม่สำเร็จ");
+      alert("Delete failed");
     }
   }
 
@@ -43,7 +43,7 @@ export default function ProjectCardMenu({ projectId, projectName }) {
     <div className="absolute right-3 top-3 z-10" ref={ref}>
       <button
         onClick={() => setOpen((v) => !v)}
-        title="ตัวเลือก"
+        title="Options"
         className="flex h-8 w-8 items-center justify-center rounded-lg text-ink-3 hover:bg-surface-2 hover:text-ink"
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -62,7 +62,7 @@ export default function ProjectCardMenu({ projectId, projectName }) {
             }}
             className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm font-medium text-[#c1392b] hover:bg-[rgba(193,57,43,.06)]"
           >
-            <TrashIcon size={15} /> ลบโปรเจกต์
+            <TrashIcon size={15} /> Delete project
           </button>
         </div>
       )}
@@ -72,9 +72,9 @@ export default function ProjectCardMenu({ projectId, projectName }) {
         createPortal(
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4" onClick={() => !busy && setConfirming(false)}>
             <div onClick={(e) => e.stopPropagation()} className="w-full max-w-sm rounded-2xl border border-line bg-white p-6 shadow-xl">
-              <h2 className="text-lg font-bold text-ink">ลบโปรเจกต์?</h2>
+              <h2 className="text-lg font-bold text-ink">Delete project?</h2>
               <p className="mt-1.5 text-sm text-ink-2">
-                ลบ <b className="text-ink">{projectName}</b> ถาวร พร้อมงาน สมาชิก คอมเมนต์ และข้อมูลทั้งหมด — ย้อนกลับไม่ได้
+                Delete <b className="text-ink">{projectName}</b> permanently, along with all tasks, members, comments and data — this cannot be undone
               </p>
               <div className="mt-5 flex justify-end gap-2">
                 <button
@@ -82,14 +82,14 @@ export default function ProjectCardMenu({ projectId, projectName }) {
                   disabled={busy}
                   className="rounded-[10px] border border-line px-4 py-2 text-sm font-semibold text-ink-2 hover:bg-surface-2 disabled:opacity-60"
                 >
-                  ยกเลิก
+                  Cancel
                 </button>
                 <button
                   onClick={del}
                   disabled={busy}
                   className="rounded-[10px] bg-[#c1392b] px-4 py-2 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60"
                 >
-                  {busy ? "กำลังลบ..." : "ลบถาวร"}
+                  {busy ? "Deleting..." : "Delete permanently"}
                 </button>
               </div>
             </div>

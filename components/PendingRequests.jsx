@@ -17,11 +17,11 @@ export default function PendingRequests({ requests = [], projectId }) {
     });
     setBusyId(null);
     if (res.ok) router.refresh();
-    else alert("ดำเนินการไม่สำเร็จ");
+    else alert("Action failed");
   }
 
   async function actAll(action) {
-    if (action === "reject_all" && !confirm("ปฏิเสธคำขอทั้งหมด?")) return;
+    if (action === "reject_all" && !confirm("Reject all requests?")) return;
     setBulkBusy(true);
     const res = await fetch("/api/requests", {
       method: "POST",
@@ -30,7 +30,7 @@ export default function PendingRequests({ requests = [], projectId }) {
     });
     setBulkBusy(false);
     if (res.ok) router.refresh();
-    else alert("ดำเนินการไม่สำเร็จ");
+    else alert("Action failed");
   }
 
   if (requests.length === 0) return null;
@@ -38,7 +38,7 @@ export default function PendingRequests({ requests = [], projectId }) {
   return (
     <div className="mb-5 rounded-2xl border border-[rgba(255,107,43,.3)] bg-accent-soft p-4">
       <div className="mb-3 flex flex-wrap items-center gap-2 text-sm font-semibold text-ink">
-        🔔 คำขอเข้าร่วม
+        🔔 Join requests
         <span className="rounded-full bg-accent px-2 py-0.5 text-[11px] font-bold text-white">{requests.length}</span>
         {requests.length > 1 && (
           <div className="ml-auto flex gap-2">
@@ -47,14 +47,14 @@ export default function PendingRequests({ requests = [], projectId }) {
               disabled={bulkBusy}
               className="rounded-[9px] bg-brand px-3 py-1.5 text-xs font-semibold text-white hover:bg-brand-dark disabled:opacity-60"
             >
-              ✓ อนุมัติทั้งหมด
+              ✓ Approve all
             </button>
             <button
               onClick={() => actAll("reject_all")}
               disabled={bulkBusy}
               className="rounded-[9px] border border-line bg-white px-3 py-1.5 text-xs font-semibold text-ink-2 hover:bg-surface-2 disabled:opacity-60"
             >
-              ปฏิเสธทั้งหมด
+              Reject all
             </button>
           </div>
         )}
@@ -77,14 +77,14 @@ export default function PendingRequests({ requests = [], projectId }) {
               disabled={busyId === r.id}
               className="rounded-[9px] bg-brand px-3 py-1.5 text-xs font-semibold text-white hover:bg-brand-dark disabled:opacity-60"
             >
-              อนุมัติ
+              Approve
             </button>
             <button
               onClick={() => act(r.id, "reject")}
               disabled={busyId === r.id}
               className="rounded-[9px] border border-line px-3 py-1.5 text-xs font-semibold text-ink-2 hover:bg-surface-2 disabled:opacity-60"
             >
-              ปฏิเสธ
+              Reject
             </button>
           </div>
         ))}

@@ -8,7 +8,7 @@ export default async function MemberCalendarPage({ params }) {
   if (!user) redirect("/login");
 
   const project = await getProjectById(projectId);
-  // เห็นงานทุกคนถ้าหัวหน้าเปิดโหมด 'all' ไม่งั้นเห็นเฉพาะงานตัวเอง
+  // Everyone’s tasksถ้าหัวหน้าเปิดโหมด 'all' ไม่งั้นOwn tasks only
   const tasks =
     project?.member_visibility === "all"
       ? await getActiveTasks(projectId, user.id)

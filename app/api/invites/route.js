@@ -1,7 +1,7 @@
 import { getDbUser } from "@/lib/data";
 import { getSupabaseAdmin } from "@/lib/supabase";
 
-// โค้ดห้อง 6 หลัก: ตัวอักษร+ตัวเลข (ตัด 0/O/1/I/L กันสับสน)
+// Room code+ตัวเลข (ตัด 0/O/1/I/L กันสับสน)
 const CODE_CHARS = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
 function genCode() {
   let s = "";
@@ -9,7 +9,7 @@ function genCode() {
   return s;
 }
 
-// POST /api/invites — หัวหน้าสร้างลิงก์เชิญเข้าโปรเจกต์
+// POST /api/invites — Leaders create an invite link for the project
 export async function POST(req) {
   const user = await getDbUser();
   if (!user) return Response.json({ error: "unauthorized" }, { status: 401 });

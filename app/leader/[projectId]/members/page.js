@@ -9,7 +9,7 @@ import PromoteMemberButton from "@/components/PromoteMemberButton";
 import { moods } from "@/lib/mockData";
 import { getDbUser, getProjectMembers, getPendingRequests, getMembership, can, PERM } from "@/lib/data";
 
-const baseRole = (role) => (role === "leader" ? "Leader" : role === "deputy" ? "⭐ รองหัวหน้า" : "Member");
+const baseRole = (role) => (role === "leader" ? "Leader" : role === "deputy" ? "⭐ Deputy" : "Member");
 const displayRole = (m) => m.title || baseRole(m.role);
 
 function MemberCard({ m, projectId, canManage, canPromote, canAI }) {
@@ -26,7 +26,7 @@ function MemberCard({ m, projectId, canManage, canPromote, canAI }) {
             <span className="text-base font-semibold text-ink">{m.name}</span>
             {m.blocker && (
               <span className="rounded-full bg-[rgba(193,57,43,.12)] px-2 py-0.5 text-[10px] font-semibold text-[#c1392b]">
-                ● ติดปัญหา
+                ● Stuck
               </span>
             )}
           </div>
@@ -39,7 +39,7 @@ function MemberCard({ m, projectId, canManage, canPromote, canAI }) {
 
       <div className="mt-4">
         <div className="mb-1.5 flex items-center justify-between text-xs text-ink-2">
-          <span>ความคืบหน้างาน</span>
+          <span>Task progress</span>
           <span className="font-semibold text-ink">
             {m.tasksDone}/{m.tasksTotal}
           </span>
@@ -59,7 +59,7 @@ function MemberCard({ m, projectId, canManage, canPromote, canAI }) {
           </span>
         ) : (
           <span className="flex items-center gap-1.5 rounded-full bg-surface-2 px-2.5 py-1 text-[12px] font-medium text-ink-3">
-            😶 ยังไม่เช็คอิน
+            😶 Not checked in
           </span>
         )}
       </div>
@@ -99,8 +99,8 @@ export default async function LeaderMembersPage({ params }) {
     <div className="h-full overflow-auto p-6">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-ink">สมาชิกทีม</h1>
-          <p className="mt-0.5 text-sm text-ink-2">ภาพรวม mood และความคืบหน้าของแต่ละคน</p>
+          <h1 className="text-xl font-bold tracking-tight text-ink">Team</h1>
+          <p className="mt-0.5 text-sm text-ink-2">Each person’s mood and progress at a glance</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           {me && <StatusControl projectId={projectId} current={me.status} />}
@@ -115,14 +115,14 @@ export default async function LeaderMembersPage({ params }) {
         <div className="mb-5 flex items-center gap-3 rounded-xl border border-[rgba(193,57,43,.25)] bg-[rgba(193,57,43,.06)] px-4 py-3">
           <span className="text-lg">🚧</span>
           <div className="text-sm text-ink">
-            <b>{blocked.map((m) => m.name).join(", ")}</b> กำลังติดปัญหา — ควรเข้าไปช่วยเหลือ
+            <b>{blocked.map((m) => m.name).join(", ")}</b> is stuck — consider stepping in to help
           </div>
         </div>
       )}
 
       {members.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-line bg-white/60 p-10 text-center text-ink-3">
-          ยังไม่มีสมาชิกในโปรเจกต์นี้
+          No members in this project yet
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

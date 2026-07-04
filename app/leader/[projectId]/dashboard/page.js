@@ -90,23 +90,23 @@ export default async function DashboardPage({ params }) {
     <div className="h-full overflow-auto p-6">
       <div className="mb-5">
         <h1 className="text-xl font-bold tracking-tight text-ink">Dashboard</h1>
-        <p className="mt-0.5 text-sm text-ink-2">ภาพรวมความคืบหน้าและสุขภาพของทีม</p>
+        <p className="mt-0.5 text-sm text-ink-2">Team progress and wellbeing at a glance</p>
       </div>
 
       {/* stat cards */}
       <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatCard label="งานทั้งหมด" value={total} accent="#1C1C1C" />
-        <StatCard label="เสร็จแล้ว" value={counts.done} sub={`${donePct}%`} accent="#2E9E5B" />
-        <StatCard label="กำลังทำ" value={counts.in_progress} accent="#FF6B2B" />
-        <StatCard label="เกินกำหนด" value={overdue} accent="#c1392b" />
+        <StatCard label="All tasks" value={total} accent="#1C1C1C" />
+        <StatCard label="Done" value={counts.done} sub={`${donePct}%`} accent="#2E9E5B" />
+        <StatCard label="In progress" value={counts.in_progress} accent="#FF6B2B" />
+        <StatCard label="Overdue" value={overdue} accent="#c1392b" />
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {/* status donut */}
         <div className="rounded-2xl border border-line bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,.04)]">
-          <h2 className="mb-4 text-sm font-semibold text-ink">สัดส่วนสถานะงาน</h2>
+          <h2 className="mb-4 text-sm font-semibold text-ink">Task status breakdown</h2>
           <div className="flex items-center gap-6">
-            <Donut segments={segments} total={total} centerLabel={`${donePct}%`} centerSub="เสร็จแล้ว" />
+            <Donut segments={segments} total={total} centerLabel={`${donePct}%`} centerSub="Done" />
             <div className="space-y-2">
               {segments.map((s) => (
                 <div key={s.label} className="flex items-center gap-2 text-sm">
@@ -121,9 +121,9 @@ export default async function DashboardPage({ params }) {
 
         {/* mood today */}
         <div className="rounded-2xl border border-line bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,.04)]">
-          <h2 className="mb-4 text-sm font-semibold text-ink">Mood ของทีม</h2>
+          <h2 className="mb-4 text-sm font-semibold text-ink">Team mood</h2>
           {moodKeys.length === 0 ? (
-            <div className="py-8 text-center text-sm text-ink-3">ยังไม่มีข้อมูล mood</div>
+            <div className="py-8 text-center text-sm text-ink-3">No mood data yet</div>
           ) : (
             <div className="space-y-3">
               {moodKeys.map((k) => {
@@ -147,9 +147,9 @@ export default async function DashboardPage({ params }) {
 
         {/* tasks per member */}
         <div className="rounded-2xl border border-line bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,.04)] lg:col-span-2">
-          <h2 className="mb-4 text-sm font-semibold text-ink">งานต่อสมาชิก (เสร็จ / ทั้งหมด)</h2>
+          <h2 className="mb-4 text-sm font-semibold text-ink">Tasks per member (done / total)</h2>
           {members.length === 0 ? (
-            <div className="py-8 text-center text-sm text-ink-3">ยังไม่มีสมาชิก</div>
+            <div className="py-8 text-center text-sm text-ink-3">No members yet</div>
           ) : (
             <div className="space-y-3">
               {members.map((m) => (

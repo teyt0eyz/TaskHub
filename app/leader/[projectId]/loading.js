@@ -11,7 +11,7 @@ export default function Loading() {
           </div>
         ))}
       </div>
-      <p className="mt-2 text-sm font-medium text-ink-3">กำลังโหลด workspace...</p>
+      <p className="mt-2 text-sm font-medium text-ink-3">Loading workspace...</p>
     </div>
   );
 }

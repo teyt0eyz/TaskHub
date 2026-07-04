@@ -17,7 +17,7 @@ const prompt = Prompt({
 
 export const metadata = {
   title: "TaskHub",
-  description: "ระบบติดตามงานและ mood สำหรับทีมทุกประเภท",
+  description: "Task and mood tracking for every kind of team",
 };
 
 export default function RootLayout({ children }) {

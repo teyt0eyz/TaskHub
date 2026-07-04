@@ -55,7 +55,7 @@ export default function CheckinPage() {
       }
       setSubmitted(true);
     } catch (e) {
-      setError("บันทึกไม่สำเร็จ: " + e.message);
+      setError("Save failed: " + e.message);
     } finally {
       setBusy(false);
     }
@@ -68,22 +68,22 @@ export default function CheckinPage() {
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-brand-soft text-3xl">
             🎉
           </div>
-          <h2 className="text-xl font-bold text-ink">เช็คอินสำเร็จ!</h2>
+          <h2 className="text-xl font-bold text-ink">Checked in!</h2>
           <p className="mt-1.5 text-sm text-ink-2">
-            mood วันนี้: {moods[mood].emoji} {moods[mood].label}
+            Today's mood: {moods[mood].emoji} {moods[mood].label}
           </p>
           <div className="mt-6 flex justify-center gap-3">
             <button
               onClick={() => setSubmitted(false)}
               className="rounded-[10px] border border-line bg-white px-4 py-2.5 text-sm font-semibold text-ink-2 hover:bg-surface-2"
             >
-              แก้ไข
+              Edit
             </button>
             <Link
               href={backHref}
               className="rounded-[10px] bg-brand px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-dark"
             >
-              กลับหน้างาน
+              Back to tasks
             </Link>
           </div>
         </div>
@@ -95,14 +95,14 @@ export default function CheckinPage() {
     <div className="h-full overflow-auto p-6">
       <div className="mx-auto max-w-2xl">
         <div className="mb-5">
-          <h1 className="text-xl font-bold tracking-tight text-ink">เช็คอินประจำวัน</h1>
-          <p className="mt-0.5 text-sm text-ink-2">บันทึกความคืบหน้าและ mood ของคุณวันนี้</p>
+          <h1 className="text-xl font-bold tracking-tight text-ink">Daily check-in</h1>
+          <p className="mt-0.5 text-sm text-ink-2">Log your progress and mood for today</p>
         </div>
 
         <div className="space-y-6 rounded-2xl border border-line bg-white p-6 shadow-[0_2px_8px_rgba(0,0,0,.05)]">
           {/* Mood selector */}
           <div>
-            <label className="mb-2.5 block text-sm font-semibold text-ink">วันนี้รู้สึกอย่างไร?</label>
+            <label className="mb-2.5 block text-sm font-semibold text-ink">How are you feeling today?</label>
             <div className="flex flex-wrap gap-2.5">
               {moodOrder.map((key) => {
                 const m = moods[key];
@@ -134,23 +134,23 @@ export default function CheckinPage() {
           <div className="h-px bg-line-soft" />
 
           <Field
-            label="วันนี้ทำอะไรไปบ้าง?"
+            label="What did you get done today?"
             value={done}
             onChange={setDone}
-            placeholder="เช่น ออกแบบหน้า landing เสร็จ 80%..."
+            placeholder="e.g. Landing page design 80% done..."
           />
           <Field
-            label="ติดปัญหาอะไรหรือไม่?"
-            hint="ถ้าเลือก mood ติดปัญหา หัวหน้าจะเห็น alert ทันที"
+            label="Any blockers?"
+            hint="If you pick 'Stuck', the leader is alerted immediately"
             value={blockers}
             onChange={setBlockers}
-            placeholder="เช่น รอ API จากทีม backend..."
+            placeholder="e.g. Waiting on the backend team’s API..."
           />
           <Field
-            label="พรุ่งนี้วางแผนจะทำอะไร?"
+            label="What’s your plan for tomorrow?"
             value={plan}
             onChange={setPlan}
-            placeholder="เช่น ต่อหน้า dashboard และเชื่อม API..."
+            placeholder="e.g. Build the dashboard and connect the API..."
           />
 
           {error && (
@@ -162,14 +162,14 @@ export default function CheckinPage() {
               href={backHref}
               className="rounded-[10px] border border-line bg-white px-4 py-2.5 text-sm font-semibold text-ink-2 hover:bg-surface-2"
             >
-              ยกเลิก
+              Cancel
             </Link>
             <button
               onClick={handleSubmit}
               disabled={busy}
               className="rounded-[10px] bg-brand px-5 py-2.5 text-sm font-semibold text-white shadow-[0_4px_14px_rgba(46,158,91,.3)] hover:bg-brand-dark disabled:opacity-60"
             >
-              {busy ? "กำลังบันทึก..." : "บันทึกเช็คอิน"}
+              {busy ? "Saving..." : "Save check-in"}
             </button>
           </div>
         </div>

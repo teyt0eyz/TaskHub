@@ -6,10 +6,10 @@ import { getSupabase } from "@/lib/supabase";
 
 function timeAgo(iso) {
   const d = (Date.now() - new Date(iso).getTime()) / 1000;
-  if (d < 60) return "เมื่อสักครู่";
-  if (d < 3600) return `${Math.floor(d / 60)} นาทีก่อน`;
-  if (d < 86400) return `${Math.floor(d / 3600)} ชม.ก่อน`;
-  return `${Math.floor(d / 86400)} วันก่อน`;
+  if (d < 60) return "just now";
+  if (d < 3600) return `${Math.floor(d / 60)} min ago`;
+  if (d < 86400) return `${Math.floor(d / 3600)} h ago`;
+  return `${Math.floor(d / 86400)} d ago`;
 }
 
 export default function NotificationBell() {
@@ -93,7 +93,7 @@ export default function NotificationBell() {
       <div className="relative" ref={ref}>
         <button
           onClick={openMenu}
-          title="การแจ้งเตือน"
+          title="Notifications"
           className="relative flex h-8 w-8 items-center justify-center rounded-lg text-ink-2 hover:bg-surface-2 hover:text-ink"
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5" aria-hidden>
@@ -108,10 +108,10 @@ export default function NotificationBell() {
 
         {open && (
           <div className="fixed left-2 right-2 top-[62px] z-50 w-auto overflow-hidden rounded-xl border border-line bg-white shadow-[0_8px_24px_rgba(0,0,0,.12)] sm:absolute sm:left-auto sm:right-0 sm:top-full sm:mt-2 sm:w-80">
-            <div className="border-b border-line px-3 py-2 text-sm font-semibold text-ink">การแจ้งเตือน</div>
+            <div className="border-b border-line px-3 py-2 text-sm font-semibold text-ink">Notifications</div>
             <div className="scroll-soft max-h-96 overflow-y-auto">
               {items.length === 0 ? (
-                <div className="px-3 py-8 text-center text-sm text-ink-3">ยังไม่มีการแจ้งเตือน</div>
+                <div className="px-3 py-8 text-center text-sm text-ink-3">No notifications yet</div>
               ) : (
                 items.map((n) => (
                   <button

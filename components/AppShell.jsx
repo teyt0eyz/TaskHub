@@ -97,10 +97,10 @@ export default function AppShell({ nav = [], title = "Project Alpha", roleLabel,
       setRenaming(false);
       router.refresh();
     } else {
-      alert("เปลี่ยนชื่อไม่สำเร็จ");
+      alert("Rename failed");
     }
   }
-  const userName = session?.user?.name || session?.user?.email || "ผู้ใช้";
+  const userName = session?.user?.name || session?.user?.email || "User";
   const userInitials = initialsOf(session?.user?.name || session?.user?.email);
 
   return (
@@ -121,7 +121,7 @@ export default function AppShell({ nav = [], title = "Project Alpha", roleLabel,
           {open && (
             <Link
               href={`${base}?all=1`}
-              title="ดูโปรเจกต์ทั้งหมด"
+              title="View all projects"
               className="flex items-center gap-2.5 overflow-hidden rounded-lg px-1 py-0.5 transition-colors hover:bg-surface-2"
             >
               <span className="font-heading whitespace-nowrap text-[15px] font-bold text-ink">TaskHub</span>
@@ -129,7 +129,7 @@ export default function AppShell({ nav = [], title = "Project Alpha", roleLabel,
           )}
           <button
             onClick={() => setOpen((v) => !v)}
-            title={open ? "ย่อ" : "ขยาย"}
+            title={open ? "Collapse" : "Expand"}
             className="hidden h-8 w-8 items-center justify-center rounded-lg text-base text-ink-2 hover:bg-surface-2 md:flex"
           >
             {open ? "«" : "»"}
@@ -137,7 +137,7 @@ export default function AppShell({ nav = [], title = "Project Alpha", roleLabel,
           {/* ปุ่มปิด drawer (เฉพาะมือถือ) */}
           <button
             onClick={() => setMobileOpen(false)}
-            title="ปิดเมนู"
+            title="Close menu"
             className="flex h-8 w-8 items-center justify-center rounded-lg text-lg text-ink-2 hover:bg-surface-2 md:hidden"
           >
             ✕
@@ -147,11 +147,11 @@ export default function AppShell({ nav = [], title = "Project Alpha", roleLabel,
         {/* create project (leader) / join by code (member) — เหนือ project switcher */}
         {base === "/member" ? (
           <JoinCodeButton className="mb-2 flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-line py-2 text-[13px] font-semibold text-ink-2 transition-colors hover:border-accent hover:text-accent">
-            {open ? "🔑 กรอกโค้ดเข้าร่วม" : "🔑"}
+            {open ? "🔑 Enter join code" : "🔑"}
           </JoinCodeButton>
         ) : (
           <CreateProjectButton className="mb-2 flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-line py-2 text-[13px] font-semibold text-ink-2 transition-colors hover:border-brand hover:text-brand">
-            {open ? <><span className="text-base leading-none">+</span> สร้างโปรเจกต์</> : "+"}
+            {open ? <><span className="text-base leading-none">+</span> Create project</> : "+"}
           </CreateProjectButton>
         )}
 
@@ -184,7 +184,7 @@ export default function AppShell({ nav = [], title = "Project Alpha", roleLabel,
                   {current.initials}
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block text-[10px] font-semibold uppercase tracking-wide text-ink-3">โปรเจกต์</span>
+                  <span className="block text-[10px] font-semibold uppercase tracking-wide text-ink-3">Projects</span>
                   <span className="block truncate text-[13px] font-semibold text-ink">{current.name}</span>
                 </span>
                 <span className="text-ink-3">{projOpen ? "▴" : "▾"}</span>
@@ -280,13 +280,13 @@ export default function AppShell({ nav = [], title = "Project Alpha", roleLabel,
         <header className="z-20 flex h-[60px] shrink-0 items-center gap-4 border-b border-line bg-white/85 px-4 backdrop-blur sm:px-5">
           <button
             onClick={() => setMobileOpen(true)}
-            title="เมนู"
+            title="Menu"
             className="-ml-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-xl text-ink-2 hover:bg-surface-2 md:hidden"
           >
             ☰
           </button>
           <div className="relative flex min-w-0 items-center gap-1.5">
-            {/* ชื่อโปรเจกต์ซ่อนบนมือถือ (ดูจาก sidebar ผ่าน hamburger แทน) */}
+            {/* Project nameซ่อนบนมือถือ (ดูจาก sidebar ผ่าน hamburger แทน) */}
             <span className="font-heading hidden truncate px-1.5 py-1 text-[15px] font-semibold text-ink md:block">
               {title}
             </span>
@@ -296,7 +296,7 @@ export default function AppShell({ nav = [], title = "Project Alpha", roleLabel,
                   setRenameVal(title);
                   setRenaming(true);
                 }}
-                title="เปลี่ยนชื่อโปรเจกต์"
+                title="Rename project"
                 className="hidden text-ink-3 hover:text-brand md:inline"
               >
                 ✎
@@ -314,7 +314,7 @@ export default function AppShell({ nav = [], title = "Project Alpha", roleLabel,
             {projectId && projectSettings && (
               <button
                 onClick={() => setSettingsOpen(true)}
-                title="ตั้งค่าโปรเจกต์"
+                title="Project settings"
                 className="flex h-8 w-8 items-center justify-center rounded-lg text-ink-2 transition-colors hover:bg-surface-2 hover:text-ink"
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5" aria-hidden>
@@ -351,7 +351,7 @@ export default function AppShell({ nav = [], title = "Project Alpha", roleLabel,
                     onClick={() => signOut({ callbackUrl: "/login" })}
                     className="flex w-full items-center gap-2 px-3 py-2 text-left text-[13px] font-medium text-ink-2 hover:bg-surface-2"
                   >
-                    ออกจากระบบ
+                    Log out
                   </button>
                 </div>
               )}
@@ -373,7 +373,7 @@ export default function AppShell({ nav = [], title = "Project Alpha", roleLabel,
             className="scroll-soft max-h-[88vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-line bg-white p-6 shadow-xl"
           >
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-ink">⚙️ ตั้งค่าโปรเจกต์</h2>
+              <h2 className="text-lg font-bold text-ink">⚙️ Project settings</h2>
               <button onClick={() => setSettingsOpen(false)} className="text-ink-3 hover:text-ink">✕</button>
             </div>
             <VisibilityToggle projectId={projectId} value={projectSettings.member_visibility || "own"} />
@@ -387,7 +387,7 @@ export default function AppShell({ nav = [], title = "Project Alpha", roleLabel,
       {renaming && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4" onClick={() => setRenaming(false)}>
           <form onClick={(e) => e.stopPropagation()} onSubmit={saveRename} className="w-full max-w-sm rounded-2xl border border-line bg-white p-6 shadow-xl">
-            <h2 className="text-lg font-bold text-ink">เปลี่ยนชื่อโปรเจกต์</h2>
+            <h2 className="text-lg font-bold text-ink">Rename project</h2>
             <input
               autoFocus
               value={renameVal}
@@ -396,10 +396,10 @@ export default function AppShell({ nav = [], title = "Project Alpha", roleLabel,
             />
             <div className="mt-5 flex justify-end gap-2">
               <button type="button" onClick={() => setRenaming(false)} className="rounded-[10px] border border-line px-4 py-2 text-sm font-semibold text-ink-2 hover:bg-surface-2">
-                ยกเลิก
+                Cancel
               </button>
               <button type="submit" disabled={renameBusy} className="rounded-[10px] bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-dark disabled:opacity-60">
-                {renameBusy ? "กำลังบันทึก..." : "บันทึก"}
+                {renameBusy ? "Saving..." : "Save"}
               </button>
             </div>
           </form>

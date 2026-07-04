@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 
 export default function InviteButton({
   projectId,
-  triggerLabel = "🔗 เชิญสมาชิก",
+  triggerLabel = "🔗 Invite members",
   triggerClassName = "flex items-center gap-2 rounded-[10px] bg-brand px-4 py-2.5 text-sm font-semibold text-white shadow-[0_4px_14px_rgba(46,158,91,.3)] hover:bg-brand-dark",
 }) {
   const [open, setOpen] = useState(false);
@@ -33,7 +33,7 @@ export default function InviteButton({
       setLink(data.url || "");
       setCode(data.token || "");
     } catch (e) {
-      setError("สร้างลิงก์ไม่สำเร็จ: " + e.message);
+      setError("Failed to create link: " + e.message);
     } finally {
       setBusy(false);
     }
@@ -59,12 +59,12 @@ export default function InviteButton({
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4" onClick={() => setOpen(false)}>
           <div onClick={(e) => e.stopPropagation()} className="w-full max-w-md rounded-2xl border border-line bg-white p-6 shadow-xl">
             <div className="mb-3 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-ink">เชิญเข้าโปรเจกต์</h2>
+              <h2 className="text-lg font-bold text-ink">Invite to project</h2>
               <button onClick={() => setOpen(false)} className="text-ink-3 hover:text-ink">✕</button>
             </div>
-            <p className="text-sm text-ink-2">ให้ลูกทีมกรอก "โค้ดห้อง" หรือเปิดลิงก์ — ล็อกอินแล้วจะส่งคำขอมาให้คุณอนุมัติก่อนเข้าร่วม</p>
+            <p className="text-sm text-ink-2">Have members enter the room code or open the link — after signing in they’ll send a request for you to approve</p>
 
-            {busy && <div className="mt-4 text-center text-sm text-ink-2">⏳ กำลังสร้างโค้ด...</div>}
+            {busy && <div className="mt-4 text-center text-sm text-ink-2">⏳ Generating code...</div>}
 
             {error && (
               <div className="mt-4 rounded-lg bg-[rgba(193,57,43,.08)] p-3 text-sm text-[#c1392b]">{error}</div>
@@ -73,7 +73,7 @@ export default function InviteButton({
             {code && (
               <>
                 <div className="mt-4">
-                  <div className="mb-1 text-xs font-semibold text-ink-2">โค้ดห้อง</div>
+                  <div className="mb-1 text-xs font-semibold text-ink-2">Room code</div>
                   <div className="flex items-center gap-2">
                     <div className="min-w-0 flex-1 truncate rounded-xl border border-line bg-surface-2 py-3 text-center font-mono text-2xl font-bold tracking-[0.25em] text-ink">
                       {code}
@@ -82,12 +82,12 @@ export default function InviteButton({
                       onClick={() => copy(code, "code")}
                       className="shrink-0 rounded-xl bg-brand px-4 py-3 text-sm font-semibold text-white hover:bg-brand-dark"
                     >
-                      {copied === "code" ? "✓" : "คัดลอก"}
+                      {copied === "code" ? "✓" : "Copy"}
                     </button>
                   </div>
                 </div>
                 <div className="mt-3">
-                  <div className="mb-1 text-xs font-semibold text-ink-2">หรือส่งลิงก์</div>
+                  <div className="mb-1 text-xs font-semibold text-ink-2">or share a link</div>
                   <div className="flex gap-2">
                     <input
                       readOnly
@@ -99,7 +99,7 @@ export default function InviteButton({
                       onClick={() => copy(link, "link")}
                       className="shrink-0 rounded-xl border border-line px-4 py-2.5 text-sm font-semibold text-ink-2 hover:bg-surface-2"
                     >
-                      {copied === "link" ? "✓" : "คัดลอก"}
+                      {copied === "link" ? "✓" : "Copy"}
                     </button>
                   </div>
                 </div>

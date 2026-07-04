@@ -4,8 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 const OPTS = [
-  { key: "own", label: "เห็นเฉพาะงานตัวเอง" },
-  { key: "all", label: "เห็นงานทุกคน" },
+  { key: "own", label: "Own tasks only" },
+  { key: "all", label: "Everyone’s tasks" },
 ];
 
 export default function VisibilityToggle({ projectId, value = "own" }) {
@@ -22,14 +22,14 @@ export default function VisibilityToggle({ projectId, value = "own" }) {
     });
     setBusy(false);
     if (res.ok) router.refresh();
-    else alert("เปลี่ยนโหมดไม่สำเร็จ");
+    else alert("Failed to change mode");
   }
 
   return (
     <div className="mb-5 rounded-2xl border border-line bg-white p-4">
-      <div className="text-sm font-semibold text-ink">โหมดการมองเห็นของสมาชิก</div>
+      <div className="text-sm font-semibold text-ink">Member visibility</div>
       <p className="mt-0.5 text-xs text-ink-2">
-        เลือกว่าสมาชิกจะเห็นเฉพาะงานของตัวเอง หรือเห็นกิ่งงานของทุกคน (งานคนอื่นจะจางลงเพื่อให้เห็นงานตัวเองเด่นชัด) — ปรับได้เฉพาะหัวหน้า
+        Choose whether members see only their own tasks or everyone’s branches (others’ tasks dim so yours stand out) — leaders only
       </p>
       <div className="mt-3 flex w-full max-w-sm rounded-xl bg-surface-2 p-1">
         {OPTS.map((o) => (

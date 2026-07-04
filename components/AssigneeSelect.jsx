@@ -3,9 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 
 const ROLE_META = {
-  leader: { label: "หัวหน้า", color: "#2E9E5B", bg: "rgba(46,158,91,.14)" },
-  deputy: { label: "รองหัวหน้า", color: "#6b3fa0", bg: "#EDE0FF" },
-  member: { label: "สมาชิก", color: "#b8521f", bg: "#FFE6D6" },
+  leader: { label: "Leader", color: "#2E9E5B", bg: "rgba(46,158,91,.14)" },
+  deputy: { label: "Deputy", color: "#6b3fa0", bg: "#EDE0FF" },
+  member: { label: "Member", color: "#b8521f", bg: "#FFE6D6" },
 };
 const ROLE_ORDER = ["leader", "deputy", "member"];
 const metaOf = (m) => ROLE_META[m?.role] || ROLE_META.member;
@@ -48,12 +48,12 @@ export default function AssigneeSelect({ members = [], value = [], onChange, cur
     onChange(groupAllSelected(ids) ? value.filter((v) => !ids.includes(v)) : [...new Set([...value, ...ids])]);
 
   const label = everyone
-    ? `ทุกคน (${allIds.length} คน)`
+    ? `Everyone (${allIds.length} people)`
     : value.length === 0
-    ? "มอบหมายให้ฉัน (ค่าเริ่มต้น)"
+    ? "Assign to me (default)"
     : value.length === 1
-    ? members.find((m) => m.id === value[0])?.name || "1 คน"
-    : `เลือกแล้ว ${value.length} คน`;
+    ? members.find((m) => m.id === value[0])?.name || "1 person"
+    : `Selected ${value.length} people`;
 
   const filtered = pool.filter((m) => m.name.toLowerCase().includes(q.trim().toLowerCase()));
 
@@ -74,17 +74,17 @@ export default function AssigneeSelect({ members = [], value = [], onChange, cur
               autoFocus
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="🔍 ค้นหาสมาชิก..."
+              placeholder="🔍 Search members..."
               className="w-full rounded-lg border border-line px-2.5 py-1.5 text-sm outline-none focus:border-brand"
             />
           </div>
 
           {pool.length > 0 && (
             <div className="border-b border-line px-2 py-2">
-              {/* มอบให้ทุกคน */}
+              {/* Assign to everyone */}
               <label className="flex cursor-pointer items-center gap-2 rounded-lg px-1.5 py-1.5 hover:bg-surface-2">
                 <input type="checkbox" checked={everyone} onChange={toggleAll} className="h-4 w-4 accent-[#2E9E5B]" />
-                <span className="text-sm font-semibold text-ink">👥 มอบให้ทุกคน ({allIds.length})</span>
+                <span className="text-sm font-semibold text-ink">👥 Assign to everyone ({allIds.length})</span>
               </label>
               {/* เลือกทั้งหมดตาม role */}
               {groups.length > 1 && (
@@ -105,7 +105,7 @@ export default function AssigneeSelect({ members = [], value = [], onChange, cur
                         }
                       >
                         {on ? "✓ " : "+ "}
-                        {meta.label}ทั้งหมด ({g.ids.length})
+                        All {meta.label} ({g.ids.length})
                       </button>
                     );
                   })}
@@ -116,10 +116,10 @@ export default function AssigneeSelect({ members = [], value = [], onChange, cur
 
           <div className="scroll-soft max-h-52 overflow-y-auto overscroll-contain py-1">
             {pool.length === 0 && (
-              <div className="px-3 py-2 text-xs text-ink-3">ไม่มีสมาชิก — จะมอบให้ตัวเอง</div>
+              <div className="px-3 py-2 text-xs text-ink-3">No members — will assign to you</div>
             )}
             {pool.length > 0 && filtered.length === 0 && (
-              <div className="px-3 py-2 text-xs text-ink-3">ไม่พบสมาชิกที่ค้นหา</div>
+              <div className="px-3 py-2 text-xs text-ink-3">No members found</div>
             )}
             {filtered.map((m) => {
               const meta = metaOf(m);

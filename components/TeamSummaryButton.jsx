@@ -22,7 +22,7 @@ export default function TeamSummaryButton({ projectId }) {
     [history, selectedId]
   );
 
-  // โหลดโควตา + ประวัติสรุปทีม (จากระบบ — แชร์กันในทีมผู้จัดการ) + ฟังการอัปเดตจากปุ่มอื่น
+  // โหลดโควตา + ประวัติTeam summary (จากระบบ — แชร์กันในทีมผู้จัดการ) + ฟังการอัปเดตจากปุ่มอื่น
   useEffect(() => {
     fetch(`/api/ai/summary?projectId=${projectId}`, { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
@@ -74,10 +74,10 @@ export default function TeamSummaryButton({ projectId }) {
       if (res.status === 429) {
         setRemaining(0);
         broadcastQuota(0, data.limit || limit);
-        throw new Error("โปรเจกต์นี้ใช้ครบ 4 ครั้งเดือนนี้แล้ว — ใส่ API key ของคุณเองด้านล่างเพื่อ gen ต่อได้ไม่จำกัด");
+        throw new Error("This project has used all 4 credits this month — add your own API key below to keep generating unlimited");
       }
       if (!res.ok)
-        throw new Error(data.error === "no_members" ? "ยังไม่มีสมาชิกในทีม" : data.detail || data.error || "failed");
+        throw new Error(data.error === "no_members" ? "No team members yet" : data.detail || data.error || "failed");
 
       const entry = data.entry || {
         id: new Date().toISOString(),
@@ -93,7 +93,7 @@ export default function TeamSummaryButton({ projectId }) {
         broadcastQuota(data.remaining, data.limit || limit);
       }
     } catch (e) {
-      setError("สรุปไม่สำเร็จ: " + e.message);
+      setError("Summary failed: " + e.message);
     } finally {
       setLoading(false);
     }
@@ -101,7 +101,7 @@ export default function TeamSummaryButton({ projectId }) {
 
   async function deleteCurrent() {
     if (!current) return;
-    if (!confirm("ลบสรุปฉบับนี้ออกจากประวัติ?")) return;
+    if (!confirm("Delete this summary from history?")) return;
     const id = current.id;
     setHistory((prev) => {
       const next = prev.filter((h) => h.id !== id);
@@ -128,7 +128,7 @@ export default function TeamSummaryButton({ projectId }) {
 
   function downloadTxt() {
     if (!current) return;
-    const header = `สรุปทีม — ${current.projectName}\nวันที่ ${fmtDate(current.at)}\n\n`;
+    const header = `Team summary — ${current.projectName}\nDate ${fmtDate(current.at)}\n\n`;
     const blob = new Blob([header + stripMd(current.summary)], { type: "text/plain;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -152,8 +152,8 @@ export default function TeamSummaryButton({ projectId }) {
         pre{white-space:pre-wrap;font-family:inherit;font-size:14px;margin:0}
         .brand{color:#2E9E5B;font-weight:700}
       </style></head><body>
-      <h1><span class="brand">TaskHub</span> · สรุปทีม ${esc(current.projectName)}</h1>
-      <div class="meta">สรุปโดย AI (Gemini) · ${esc(fmtDate(current.at))}</div>
+      <h1><span class="brand">TaskHub</span> · Team summary ${esc(current.projectName)}</h1>
+      <div class="meta">Summarized by AI (Gemini) · ${esc(fmtDate(current.at))}</div>
       <pre>${esc(stripMd(current.summary))}</pre>
       <script>window.onload=function(){setTimeout(function(){window.print();},350);}<\/script>
       </body></html>`
@@ -162,19 +162,19 @@ export default function TeamSummaryButton({ projectId }) {
   }
 
   const out = !hasKey && remaining === 0;
-  const quotaText = hasKey ? "ไม่จำกัด 🔑" : remaining !== null ? `เหลือ ${remaining}/${limit}` : "";
+  const quotaText = hasKey ? "Unlimited 🔑" : remaining !== null ? `${remaining}/${limit} left` : "";
 
   return (
     <>
       <button
         onClick={() => setOpen(true)}
-        title="สรุปผลงานทั้งทีมด้วย AI"
+        title="Summarize the whole team with AI"
         className="relative flex items-center gap-2 rounded-[10px] bg-[#6b3fa0] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_4px_14px_rgba(107,63,160,.3)] transition-transform hover:-translate-y-0.5"
       >
-        🤖 สรุปทั้งทีมด้วย AI
+        🤖 Summarize whole team with AI
         {quotaText && <span className="font-normal opacity-80">({quotaText})</span>}
         {history.length > 0 && (
-          <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand px-1 text-[10px] font-bold ring-2 ring-white" title={`มีสรุปเก็บไว้ ${history.length} ฉบับ`}>
+          <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand px-1 text-[10px] font-bold ring-2 ring-white" title={`summaries saved ${history.length}`}>
             {history.length}
           </span>
         )}
@@ -189,11 +189,11 @@ export default function TeamSummaryButton({ projectId }) {
             <div className="flex items-center justify-between border-b border-line px-5 py-4">
               <div>
                 <h2 className="text-lg font-bold text-ink">
-                  สรุปทีมด้วย AI {current?.projectName && `— ${current.projectName}`}
+                  Team AI summary {current?.projectName && `— ${current.projectName}`}
                 </h2>
                 {current && (
                   <p className="mt-0.5 text-xs text-ink-3">
-                    สรุปเมื่อ {fmtDate(current.at)}{current.by ? ` · โดย ${current.by}` : ""}
+                    Summarized {fmtDate(current.at)}{current.by ? ` · by ${current.by}` : ""}
                   </p>
                 )}
               </div>
@@ -202,13 +202,13 @@ export default function TeamSummaryButton({ projectId }) {
 
             {/* แจ้งนโยบายการเก็บ */}
             <div className="border-b border-line bg-brand-soft/40 px-5 py-1.5 text-[11px] text-ink-3">
-              💾 เก็บในระบบ (ล่าสุด {MAX_HISTORY} ฉบับ) · หัวหน้าและรองหัวหน้าเห็นประวัติร่วมกัน
+              💾 Stored in the system (latest {MAX_HISTORY}  entries) · leaders and deputies share this history
             </div>
 
-            {/* แถบประวัติ — เลือกดูย้อนหลังได้ (ไม่ทับกันเมื่อสรุปใหม่) */}
+            {/* แถบประวัติ — เลือกดูย้อนหลังได้ (ไม่ทับกันเมื่อNew summary) */}
             {history.length > 0 && (
               <div className="flex items-center gap-2 overflow-x-auto border-b border-line bg-surface-2/40 px-5 py-2">
-                <span className="shrink-0 text-[11px] font-semibold text-ink-3">ประวัติ:</span>
+                <span className="shrink-0 text-[11px] font-semibold text-ink-3">History:</span>
                 {history.map((h) => (
                   <button
                     key={h.id}
@@ -225,23 +225,23 @@ export default function TeamSummaryButton({ projectId }) {
 
             <div className="flex-1 overflow-y-auto px-5 py-4">
               {loading ? (
-                <div className="py-12 text-center text-sm text-ink-2">⏳ กำลังให้ Gemini อ่านข้อมูลของทุกคนและสรุป...</div>
+                <div className="py-12 text-center text-sm text-ink-2">⏳ Gemini is reading everyone’s data and summarizing...</div>
               ) : current ? (
                 <Markdown text={current.summary} />
               ) : (
                 <div className="py-10 text-center">
-                  <p className="text-sm text-ink-2">ดึงข้อมูล check-in และงานของสมาชิกทุกคนมาให้ AI สรุปแยกตามชื่อ</p>
+                  <p className="text-sm text-ink-2">Pulls every member’s check-ins and tasks for the AI to summarize by name</p>
                   <button
                     onClick={generate}
                     disabled={out}
                     className="mt-4 rounded-xl bg-[#6b3fa0] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_4px_14px_rgba(107,63,160,.3)] hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    ▶ เริ่มสรุปทั้งทีม (ใช้ 1 โควตา)
+                    ▶ Summarize whole team (uses 1 credit)
                   </button>
                   <div className="mt-2 text-xs text-ink-3">
-                    {hasKey ? "ใช้ API key ของคุณเอง — ไม่จำกัด 🔑" : `โควตาโปรเจกต์เหลือ ${remaining ?? "-"}/${limit} ครั้งเดือนนี้`}
+                    {hasKey ? "Using your own API key — unlimited 🔑" : `Project credits left ${remaining ?? "-"}/${limit} this month`}
                   </div>
-                  {out && <div className="mt-1 text-xs text-[#c1392b]">ใช้ครบโควตาโปรเจกต์แล้ว — ใส่ API key ของคุณเองด้านล่างเพื่อ gen ต่อ</div>}
+                  {out && <div className="mt-1 text-xs text-[#c1392b]">Project credits used up — add your own API key below to keep generating</div>}
                 </div>
               )}
               {error && <div className="mt-3 rounded-lg bg-[rgba(193,57,43,.08)] p-3 text-sm text-[#c1392b]">{error}</div>}
@@ -256,21 +256,21 @@ export default function TeamSummaryButton({ projectId }) {
                   <button
                     onClick={generate}
                     disabled={out}
-                    title={out ? "ใช้ครบโควตาแล้ว" : "สร้างสรุปใหม่ (เก็บเพิ่มในประวัติ ไม่ทับของเก่า)"}
+                    title={out ? "Out of credits" : "Create a new summary (added to history, never overwrites)"}
                     className="rounded-[10px] border border-[#6b3fa0] px-3 py-2 text-sm font-semibold text-[#6b3fa0] hover:bg-[#6b3fa0]/10 disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    ➕ สรุปใหม่
+                    ➕ New summary
                   </button>
                   <button onClick={deleteCurrent} className="inline-flex items-center gap-1.5 rounded-[10px] border border-line px-3 py-2 text-sm font-semibold text-[#c1392b] hover:bg-[rgba(193,57,43,.06)]">
-                    <TrashIcon size={15} /> ลบฉบับนี้
+                    <TrashIcon size={15} /> Delete this one
                   </button>
                 </div>
                 <div className="flex gap-2">
                   <button onClick={downloadTxt} className="rounded-[10px] border border-line px-3.5 py-2 text-sm font-semibold text-ink-2 hover:bg-surface-2">
-                    ⬇ ดาวน์โหลด .txt
+                    ⬇ Download .txt
                   </button>
                   <button onClick={exportPdf} className="rounded-[10px] bg-brand px-3.5 py-2 text-sm font-semibold text-white hover:bg-brand-dark">
-                    📄 บันทึก PDF
+                    📄 Save PDF
                   </button>
                 </div>
               </div>

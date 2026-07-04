@@ -3,7 +3,7 @@ import { getDbUser, setEmailNotifications } from "@/lib/data";
 export const dynamic = "force-dynamic";
 const NO_STORE = { "Cache-Control": "no-store" };
 
-// GET /api/preferences — ค่าตั้งค่าปัจจุบันของผู้ใช้
+// GET /api/preferences — ค่าSetปัจจุบันของผู้ใช้
 export async function GET() {
   const user = await getDbUser();
   if (!user) return Response.json({ error: "unauthorized" }, { status: 401, headers: NO_STORE });

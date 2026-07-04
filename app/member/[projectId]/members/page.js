@@ -3,9 +3,9 @@ import StatusControl from "@/components/StatusControl";
 import { getDbUser, getTeamRoster } from "@/lib/data";
 
 const ROLE_META = {
-  leader: { label: "หัวหน้า", cls: "text-brand-dark" },
-  deputy: { label: "รองหัวหน้า", cls: "text-[#6b3fa0]" },
-  member: { label: "สมาชิก", cls: "text-ink-3" },
+  leader: { label: "Leader", cls: "text-brand-dark" },
+  deputy: { label: "Deputy", cls: "text-[#6b3fa0]" },
+  member: { label: "Member", cls: "text-ink-3" },
 };
 const roleLabel = (m) => m.title || (ROLE_META[m.role] || ROLE_META.member).label;
 
@@ -18,15 +18,15 @@ export default async function MemberTeamPage({ params }) {
     <div className="h-full overflow-auto p-6">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-ink">สมาชิกในทีม</h1>
-          <p className="mt-0.5 text-sm text-ink-2">รายชื่อเพื่อนร่วมทีมและสถานะปัจจุบัน</p>
+          <h1 className="text-xl font-bold tracking-tight text-ink">Team members</h1>
+          <p className="mt-0.5 text-sm text-ink-2">Your teammates and their current status</p>
         </div>
         {me && <StatusControl projectId={projectId} current={me.status} />}
       </div>
 
       {roster.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-line bg-white/60 p-10 text-center text-ink-3">
-          ยังไม่มีสมาชิกในโปรเจกต์นี้
+          No members in this project yet
         </div>
       ) : (
         <div className="overflow-hidden rounded-2xl border border-line bg-white shadow-[0_2px_8px_rgba(0,0,0,.05)]">
@@ -41,7 +41,7 @@ export default async function MemberTeamPage({ params }) {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <span className="truncate text-sm font-semibold text-ink">{m.name}</span>
-                    {m.id === user?.id && <span className="text-[10px] font-semibold text-ink-3">(ฉัน)</span>}
+                    {m.id === user?.id && <span className="text-[10px] font-semibold text-ink-3">(me)</span>}
                   </div>
                   <div className={`text-xs font-medium ${meta.cls}`}>{roleLabel(m)}</div>
                 </div>

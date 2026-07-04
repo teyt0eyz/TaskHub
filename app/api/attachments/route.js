@@ -69,7 +69,7 @@ export async function POST(req) {
   return Response.json({ ok: true, url: pub.publicUrl });
 }
 
-// DELETE /api/attachments  { id }  — ลบได้โดยผู้อัปโหลดเอง หรือหัวหน้าโปรเจกต์
+// DELETE /api/attachments  { id }  — ลบได้โดยผู้อัปโหลดเอง หรือProject leader
 export async function DELETE(req) {
   const user = await getDbUser();
   if (!user) return Response.json({ error: "unauthorized" }, { status: 401 });
@@ -107,7 +107,7 @@ export async function DELETE(req) {
   }
   if (!allowed) return Response.json({ error: "forbidden" }, { status: 403 });
 
-  // ลบไฟล์จริงใน Storage (path = ส่วนหลัง /<bucket>/)
+  // Delete fileจริงใน Storage (path = ส่วนหลัง /<bucket>/)
   const marker = `/${BUCKET}/`;
   const idx = att.file_url.indexOf(marker);
   if (idx !== -1) {

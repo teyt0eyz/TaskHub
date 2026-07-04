@@ -9,7 +9,7 @@ export default function RemoveMemberButton({ projectId, userId, name }) {
   const [busy, setBusy] = useState(false);
 
   async function remove() {
-    if (!confirm(`ลบ ${name} ออกจากโปรเจกต์?`)) return;
+    if (!confirm(`Remove ${name} from this project?`)) return;
     setBusy(true);
     const res = await fetch("/api/members", {
       method: "DELETE",
@@ -20,7 +20,7 @@ export default function RemoveMemberButton({ projectId, userId, name }) {
     if (res.ok) router.refresh();
     else {
       const d = await res.json().catch(() => ({}));
-      alert(d.error || "ลบไม่สำเร็จ");
+      alert(d.error || "Delete failed");
     }
   }
 
@@ -28,7 +28,7 @@ export default function RemoveMemberButton({ projectId, userId, name }) {
     <button
       onClick={remove}
       disabled={busy}
-      title="ลบสมาชิกออก"
+      title="Remove member"
       className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-lg text-ink-3 hover:bg-[rgba(193,57,43,.08)] hover:text-[#c1392b] disabled:opacity-50"
     >
       <TrashIcon size={15} />

@@ -49,7 +49,7 @@ export async function POST(req) {
   const { memberName, projectId, userId, apiKey } = body || {};
   if (!memberName || !projectId) return Response.json({ error: "memberName and projectId required" }, { status: 400 });
 
-  // ต้องมีสิทธิ์ "สรุปด้วย AI" ในโปรเจกต์นี้
+  // ต้องมีสิทธิ์ "AI summary" ในโปรเจกต์นี้
   const membership = await getMembership(projectId, user.id);
   if (!can(membership, PERM.AI)) return Response.json({ error: "forbidden" }, { status: 403 });
 
@@ -57,7 +57,7 @@ export async function POST(req) {
   if (userId) {
     const target = await getMembership(projectId, userId);
     if (!canTargetRole(membership.role, target?.role, userId === user.id)) {
-      return Response.json({ error: "rank_forbidden", message: "สรุปงานของคนที่ตำแหน่งสูงกว่าไม่ได้" }, { status: 403 });
+      return Response.json({ error: "rank_forbidden", message: "You can’t summarize someone of a higher rank" }, { status: 403 });
     }
   }
 
@@ -77,9 +77,9 @@ export async function POST(req) {
   if (userId) {
     const [c, all] = await Promise.all([getRecentCheckins(projectId, userId), getProjectTasks(projectId, userId)]);
     checkins = c;
-    // รวมงานทั้งหมดของคนนี้ (รวมที่ยืนยันปิดแล้ว) เพื่อความคืบหน้าที่ถูกต้อง
+    // รวมAll tasksของคนนี้ (รวมที่ยืนยันปิดแล้ว) เพื่อความคืบหน้าที่ถูกต้อง
     const mine = all.filter((t) => (t.assignees || [t.assignee]).some((a) => a?.id === userId));
-    tasks = mine.map((t) => ({ title: t.title, status: t.approved ? "done (ยืนยันแล้ว)" : t.status }));
+    tasks = mine.map((t) => ({ title: t.title, status: t.approved ? "done (approved)" : t.status }));
     const done = mine.filter((t) => t.approved || t.status === "done").length;
     stats = { done, total: mine.length };
   }
@@ -92,7 +92,7 @@ export async function POST(req) {
     return Response.json({ error: "ai_summary_failed", detail: e?.message || String(e) }, { status: 500 });
   }
 
-  // เก็บผลสรุปไว้ในระบบ (หัวหน้า/รองหัวหน้าเห็นร่วมกัน)
+  // เก็บผลสรุปไว้ในระบบ (หัวหน้า/Deputyเห็นร่วมกัน)
   const saved = await saveAiSummary({ projectId, targetUserId: userId || null, scope: "member", summary, generatedBy: user.id });
   const entry = { id: saved?.id, summary, at: saved?.created_at || new Date().toISOString(), by: user.name || null };
 

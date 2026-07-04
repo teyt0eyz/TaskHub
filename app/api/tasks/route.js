@@ -2,7 +2,7 @@ import { getDbUser, getMembership, can, canTargetRole, getProjectRoleMap, PERM }
 import { getSupabaseAdmin } from "@/lib/supabase";
 import { createNotifications } from "@/lib/notify";
 
-// POST /api/tasks — สร้างงานใหม่
+// POST /api/tasks — New task
 export async function POST(req) {
   const user = await getDbUser();
   if (!user) return Response.json({ error: "unauthorized" }, { status: 401 });
@@ -18,13 +18,13 @@ export async function POST(req) {
     return Response.json({ error: "project_id and title are required" }, { status: 400 });
   }
 
-  // สร้างงานได้เฉพาะผู้มีสิทธิ์ "จัดการงาน"
+  // Create taskได้เฉพาะผู้มีสิทธิ์ "Manage tasks"
   const membership = await getMembership(project_id, user.id);
   if (!can(membership, PERM.TASKS)) {
     return Response.json({ error: "forbidden" }, { status: 403 });
   }
 
-  // assigned_to รับได้ทั้ง array (หลายคน) หรือค่าเดี่ยว; ว่าง = มอบให้ผู้สร้าง
+  // assigned_to รับได้ทั้ง array (หลายคน) หรือค่าเGood่ยว; Available = มอบให้ผู้สร้าง
   const raw = Array.isArray(body.assigned_to)
     ? body.assigned_to
     : body.assigned_to
@@ -36,7 +36,7 @@ export async function POST(req) {
   // มอบงานได้เฉพาะตัวเอง + คนตำแหน่งต่ำกว่า — ห้ามมอบให้คนที่ตำแหน่งสูงกว่า
   const roleMap = await getProjectRoleMap(project_id);
   if (effective.some((uid) => uid !== user.id && !canTargetRole(membership.role, roleMap[uid], false))) {
-    return Response.json({ error: "rank_forbidden", message: "มอบงานให้ตำแหน่งที่สูงกว่าไม่ได้" }, { status: 403 });
+    return Response.json({ error: "rank_forbidden", message: "You can’t assign work to a higher rank" }, { status: 403 });
   }
 
   const supabase = getSupabaseAdmin();
@@ -68,7 +68,7 @@ export async function POST(req) {
         project_id,
         task_id: data.id,
         type: "assigned",
-        message: `📋 คุณได้รับมอบหมายงาน: ${title}`,
+        message: `📋 You were assigned a task: ${title}`,
       }))
   );
 
@@ -88,7 +88,7 @@ export async function POST(req) {
   return Response.json({ task: data });
 }
 
-// PATCH /api/tasks — อัปเดตสถานะ / ตีกลับ (needs_revision) หรือ แก้ไขงาน (leader)
+// PATCH /api/tasks — อัปเดตสถานะ / ตีกลับ (needs_revision) หรือ Edit task (leader)
 export async function PATCH(req) {
   const user = await getDbUser();
   if (!user) return Response.json({ error: "unauthorized" }, { status: 401 });
@@ -104,7 +104,7 @@ export async function PATCH(req) {
 
   const supabase = getSupabaseAdmin();
 
-  // แก้เนื้อหางาน (title/priority/deadline/ผู้รับผิดชอบ/แท็ก) ต้องมีสิทธิ์ "จัดการงาน"
+  // แก้เนื้อหางาน (title/priority/deadline/ผู้รับผิดชอบ/แท็ก) ต้องมีสิทธิ์ "Manage tasks"
   const editsContent =
     title !== undefined ||
     description !== undefined ||
@@ -112,7 +112,7 @@ export async function PATCH(req) {
     deadline !== undefined ||
     body.assigned_to !== undefined ||
     body.tags !== undefined;
-  // ยืนยัน/ตีกลับงาน ต้องมีสิทธิ์ "ตรวจงาน"
+  // ยืนยัน/ตีกลับงาน ต้องมีสิทธิ์ "Review work"
   const needsReview = body.approve !== undefined || needs_revision === true;
 
   if (editsContent || needsReview) {
@@ -129,7 +129,7 @@ export async function PATCH(req) {
       const eff = target.length ? target : [user.id];
       const roleMap = await getProjectRoleMap(t.project_id);
       if (eff.some((uid) => uid !== user.id && !canTargetRole(m.role, roleMap[uid], false))) {
-        return Response.json({ error: "rank_forbidden", message: "มอบงานให้ตำแหน่งที่สูงกว่าไม่ได้" }, { status: 403 });
+        return Response.json({ error: "rank_forbidden", message: "You can’t assign work to a higher rank" }, { status: 403 });
       }
     }
   }
@@ -180,7 +180,7 @@ export async function PATCH(req) {
           project_id: data.project_id,
           task_id: id,
           type: "assigned",
-          message: `📋 คุณได้รับมอบหมายงาน: ${data.title}`,
+          message: `📋 You were assigned a task: ${data.title}`,
         }))
     );
   }
@@ -199,7 +199,7 @@ export async function PATCH(req) {
     }
   }
 
-  // หัวหน้ายืนยันงานผ่าน → แจ้งผู้รับผิดชอบทุกคน
+  // หัวหน้าApprove task → แจ้งผู้รับผิดชอบEveryone
   if (body.approve === true) {
     const { data: as } = await supabase.from("task_assignees").select("user_id").eq("task_id", id);
     await createNotifications(
@@ -210,12 +210,12 @@ export async function PATCH(req) {
           project_id: data.project_id,
           task_id: id,
           type: "approved",
-          message: `🎉 งาน "${data.title}" ผ่านการตรวจแล้ว เยี่ยมมาก!`,
+          message: `🎉 Task "${data.title}" is approved. Great work!!`,
         }))
     );
   }
 
-  // member ทำงานเสร็จ (done) → แจ้งหัวหน้าโปรเจกต์ให้มาตรวจ
+  // member ทำtasks done (done) → แจ้งProject leaderให้มาตรวจ
   if (status === "done") {
     const { data: leaders } = await supabase
       .from("project_members")
@@ -230,12 +230,12 @@ export async function PATCH(req) {
           project_id: data.project_id,
           task_id: id,
           type: "submitted",
-          message: `✅ ${user.name || "สมาชิก"} ทำงาน "${data.title}" เสร็จแล้ว รอตรวจ`,
+          message: `✅ ${user.name || "Member"} completed "${data.title}" — awaiting review`,
         }))
     );
   }
 
-  // ตีกลับงาน → แจ้งผู้รับผิดชอบทุกคน
+  // ตีกลับงาน → แจ้งผู้รับผิดชอบEveryone
   if (needs_revision === true) {
     const { data: as } = await supabase.from("task_assignees").select("user_id").eq("task_id", id);
     await createNotifications(
@@ -246,7 +246,7 @@ export async function PATCH(req) {
           project_id: data.project_id,
           task_id: id,
           type: "rejected",
-          message: `↩ งาน "${data.title}" ถูกตีกลับให้แก้ไข`,
+          message: `↩ Task "${data.title}" was sent back for changes`,
         }))
     );
   }

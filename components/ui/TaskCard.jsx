@@ -14,7 +14,7 @@ function Assignees({ list = [] }) {
         ))}
       </div>
       <span className="truncate text-xs text-ink-2">
-        {list.length === 1 ? list[0]?.name : `${list.length} คน`}
+        {list.length === 1 ? list[0]?.name : `${list.length} people`}
         {extra > 0 ? "" : ""}
       </span>
     </div>
@@ -53,7 +53,7 @@ export default function TaskCard({ task, selected = false, onClick, className = 
       {/* แจ้งเตือนคอมเมนต์ใหม่ — มุมขวาบน เด่นชัด */}
       {task.unreadComments > 0 && (
         <span className="absolute -right-2 -top-2 z-10 inline-flex animate-bounce items-center gap-1 rounded-full bg-[#2c5b9e] px-2.5 py-1 text-[11px] font-bold text-white shadow-[0_3px_10px_rgba(44,91,158,.5)] ring-2 ring-white">
-          💬 {task.unreadComments} ใหม่
+          💬 {task.unreadComments} new
         </span>
       )}
 
@@ -61,12 +61,12 @@ export default function TaskCard({ task, selected = false, onClick, className = 
         <div className="mb-1.5 flex flex-wrap gap-1.5">
           {awaiting && (
             <span className="inline-flex animate-pulse items-center gap-1 rounded-full bg-brand px-2 py-0.5 text-[10px] font-semibold text-white">
-              🔔 รอหัวหน้ายืนยัน
+              🔔 Awaiting leader approval
             </span>
           )}
           {task.needs_revision && (
             <span className="inline-flex items-center gap-1 rounded-full bg-[rgba(193,57,43,.12)] px-2 py-0.5 text-[10px] font-semibold text-[#c1392b]">
-              ↩ ตีกลับให้แก้ไข
+              ↩ Send back for changes
             </span>
           )}
         </div>

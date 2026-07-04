@@ -40,7 +40,7 @@ export default function ProjectPicker({ base, projects = [] }) {
   const [userMenu, setUserMenu] = useState(false);
   const userRef = useRef(null);
 
-  const userName = session?.user?.name || session?.user?.email || "ผู้ใช้";
+  const userName = session?.user?.name || session?.user?.email || "User";
   const initials = (session?.user?.name || session?.user?.email || "?").slice(0, 2).toUpperCase();
 
   useEffect(() => {
@@ -65,7 +65,7 @@ export default function ProjectPicker({ base, projects = [] }) {
       const { project } = await res.json();
       router.push(`/leader/${project.id}`); // ผู้สร้างเป็น leader เสมอ
     } else {
-      alert("สร้างโปรเจกต์ไม่สำเร็จ");
+      alert("Failed to create project");
     }
   }
 
@@ -93,7 +93,7 @@ export default function ProjectPicker({ base, projects = [] }) {
                     onClick={() => signOut({ callbackUrl: "/login" })}
                     className="flex w-full items-center gap-2 px-3 py-2 text-left text-[13px] font-medium text-ink-2 hover:bg-surface-2"
                   >
-                    ออกจากระบบ
+                    Log out
                   </button>
                 </div>
               )}
@@ -104,20 +104,20 @@ export default function ProjectPicker({ base, projects = [] }) {
 
       <main className="mx-auto max-w-5xl px-5 py-10">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold tracking-tight text-ink">เลือกโปรเจกต์</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-ink">Choose a project</h1>
           <p className="mt-1 text-ink-2">
             {isLeader
-              ? "เลือกโปรเจกต์ที่คุณเป็นหัวหน้า หรือสร้างใหม่"
-              : "เลือกโปรเจกต์ที่คุณเป็นสมาชิก"}
+              ? "Choose a project you lead, or create a new one"
+              : "Choose a project you’re a member of"}
           </p>
         </div>
 
         {projects.length === 0 && !isLeader && (
           <div className="flex flex-col items-center gap-4 rounded-2xl border border-dashed border-line bg-white/60 p-10 text-center">
             <div className="text-4xl">🙋</div>
-            <div className="text-ink-2">ยังไม่ได้เข้าร่วมโปรเจกต์ไหน — กรอกโค้ด/ลิงก์เชิญจากหัวหน้าเพื่อเข้าร่วม</div>
+            <div className="text-ink-2">You haven’t joined any project yet — enter a code or invite link from a leader to join</div>
             <JoinCodeButton className="rounded-[10px] bg-accent px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#f55e1d]">
-              🔑 กรอกโค้ดเข้าร่วม
+              🔑 Enter join code
             </JoinCodeButton>
           </div>
         )}
@@ -145,13 +145,13 @@ export default function ProjectPicker({ base, projects = [] }) {
               <div className="mt-4 flex items-center gap-4 text-xs text-ink-2">
                 {isLeader ? (
                   <>
-                    <span>👥 {p.memberCount} สมาชิก</span>
-                    <span>🗂 {p.taskCount} งาน</span>
+                    <span>👥 {p.memberCount} members</span>
+                    <span>🗂 {p.taskCount} tasks</span>
                   </>
                 ) : (
                   <>
                     <span>👑 {p.leaderName}</span>
-                    <span>🗂 {p.taskCount} งาน</span>
+                    <span>🗂 {p.taskCount} tasks</span>
                   </>
                 )}
               </div>
@@ -159,7 +159,7 @@ export default function ProjectPicker({ base, projects = [] }) {
                 className="mt-4 inline-flex items-center gap-1 text-sm font-semibold transition-transform group-hover:translate-x-1"
                 style={{ color: p.color }}
               >
-                เข้าโปรเจกต์ →
+                Open project →
               </span>
               </Link>
             </div>
@@ -173,7 +173,7 @@ export default function ProjectPicker({ base, projects = [] }) {
               <span className="flex h-12 w-12 items-center justify-center rounded-xl border border-dashed border-current text-2xl">
                 +
               </span>
-              <span className="text-sm font-semibold">สร้างโปรเจกต์ใหม่</span>
+              <span className="text-sm font-semibold">New project</span>
             </button>
           )}
 
@@ -182,7 +182,7 @@ export default function ProjectPicker({ base, projects = [] }) {
               <span className="flex h-12 w-12 items-center justify-center rounded-xl border border-dashed border-current text-2xl">
                 +
               </span>
-              <span className="text-sm font-semibold">เข้าร่วมด้วยโค้ด</span>
+              <span className="text-sm font-semibold">Join with a code</span>
             </JoinCodeButton>
           )}
         </div>
@@ -196,13 +196,13 @@ export default function ProjectPicker({ base, projects = [] }) {
             onSubmit={createProject}
             className="w-full max-w-sm rounded-2xl border border-line bg-white p-6 shadow-xl"
           >
-            <h2 className="text-lg font-bold text-ink">สร้างโปรเจกต์ใหม่</h2>
-            <p className="mt-1 text-sm text-ink-2">คุณจะเป็นหัวหน้า (Leader) ของโปรเจกต์นี้</p>
+            <h2 className="text-lg font-bold text-ink">New project</h2>
+            <p className="mt-1 text-sm text-ink-2">You’ll be the leader of this project</p>
             <input
               autoFocus
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="ชื่อโปรเจกต์"
+              placeholder="Project name"
               className="mt-4 w-full rounded-xl border border-line px-3.5 py-2.5 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand-soft"
             />
             <div className="mt-5 flex justify-end gap-2">
@@ -211,14 +211,14 @@ export default function ProjectPicker({ base, projects = [] }) {
                 onClick={() => setCreating(false)}
                 className="rounded-[10px] border border-line px-4 py-2 text-sm font-semibold text-ink-2 hover:bg-surface-2"
               >
-                ยกเลิก
+                Cancel
               </button>
               <button
                 type="submit"
                 disabled={busy}
                 className="rounded-[10px] bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-dark disabled:opacity-60"
               >
-                {busy ? "กำลังสร้าง..." : "สร้าง"}
+                {busy ? "Creating..." : "Create"}
               </button>
             </div>
           </form>

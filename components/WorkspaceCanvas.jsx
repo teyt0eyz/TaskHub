@@ -66,7 +66,7 @@ function computeTree(tasks, getH) {
   const memberTop = busY + 40;
   const firstCardTop = memberTop + MEMBER_H + ROW_GAP;
 
-  // group by assignee — งานที่มอบหลายคนจะโผล่ใต้กิ่งของทุกคน
+  // group by assignee — งานที่มอบหลายคนจะโผล่ใต้กิ่งของEveryone
   const map = new Map();
   for (const t of tasks) {
     const list = t.assignees?.length ? t.assignees : [t.assignee];
@@ -179,7 +179,7 @@ export default function WorkspaceCanvas({
     role === "leader"
       ? { color: "#2E9E5B", label: "Leader" }
       : role === "deputy"
-      ? { color: "#6b3fa0", label: "รองหัวหน้า" }
+      ? { color: "#6b3fa0", label: "Deputy" }
       : { color: "#FF6B2B", label: "Member" };
 
   // ความสูงจริงของการ์ด (วัดหลัง render) → ใช้จัดระยะไม่ให้การ์ดทับกัน
@@ -251,7 +251,7 @@ export default function WorkspaceCanvas({
       setForm({ title: "", description: "", priority: "medium", deadline: "", assigned_to: [], tags: "" });
       router.refresh();
     } else {
-      alert("สร้างงานไม่สำเร็จ");
+      alert("Failed to create task");
     }
   }
 
@@ -318,7 +318,7 @@ export default function WorkspaceCanvas({
       zoomBy(e.deltaY < 0 ? 0.1 : -0.1);
       return;
     }
-    // Shift + ล้อ = เลื่อนแนวนอน (สำหรับเมาส์ที่มีล้อแนวตั้งอย่างเดียว)
+    // Shift + ล้อ = เลื่อนแนวนอน (สำหรับเมาส์ที่มีล้อแนวตั้งอย่างเGoodยว)
     // ทัชแพด/ล้อแนวนอนยังเลื่อนได้ปกติผ่าน overflow-auto อยู่แล้ว
     if (e.shiftKey && e.deltaX === 0 && scrollRef.current) {
       e.preventDefault();
@@ -413,7 +413,7 @@ export default function WorkspaceCanvas({
                       </div>
                       <div className="flex flex-col gap-1">
                         <div className="text-base font-semibold leading-none text-ink">
-                          {h.assignee?.name || "ไม่ระบุผู้รับผิดชอบ"}
+                          {h.assignee?.name || "Unassigned"}
                         </div>
                         <span
                           className="self-start rounded-md px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white"
@@ -449,7 +449,7 @@ export default function WorkspaceCanvas({
                   {it.badge != null && (
                     <span
                       className="absolute -left-3 -top-3 z-10 flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-brand text-xs font-bold text-white shadow-sm"
-                      title={`ลำดับ deadline #${it.badge}`}
+                      title={`Deadline order #${it.badge}`}
                     >
                       {it.badge}
                     </span>
@@ -464,7 +464,7 @@ export default function WorkspaceCanvas({
                   style={{ position: "absolute", left: leader.x - 10, top: leader.y + LEADER_H + 50, width: 240 }}
                   className="rounded-xl border border-dashed border-line bg-white/70 py-10 text-center text-sm text-ink-3"
                 >
-                  ยังไม่มีงาน{isList ? "ที่ได้รับมอบหมาย" : " — กดปุ่ม + เพื่อเพิ่ม"}
+                  No tasks yet{isList ? " assigned to you" : " — click + to add"}
                 </div>
               )}
             </div>
@@ -474,7 +474,7 @@ export default function WorkspaceCanvas({
 
       {isList && tasks.length > 0 && (
         <div className="absolute left-5 top-5 flex items-center gap-2 rounded-full border border-line bg-white/85 px-3.5 py-1.5 text-xs font-medium text-ink-2 shadow-sm backdrop-blur">
-          ⬇ เรียงตาม deadline · ใกล้ที่สุดอยู่บนสุด
+          ⬇ Sorted by deadline · soonest first
         </div>
       )}
 
@@ -483,14 +483,14 @@ export default function WorkspaceCanvas({
         {!isList && projectId && canCreate && (
           <button
             onClick={() => setAdding(true)}
-            title="เพิ่มงาน"
+            title="Add task"
             className="flex h-12 w-12 items-center justify-center rounded-full bg-accent text-2xl font-light leading-none text-white shadow-[0_4px_14px_rgba(255,107,43,.35)] hover:bg-[#f55e1d]"
           >
             +
           </button>
         )}
         <button
-          title="พอดีหน้าจอ"
+          title="Fit to screen"
           onClick={fit}
           className="flex h-12 w-12 items-center justify-center rounded-full border-[1.5px] border-brand bg-white text-lg text-brand shadow-[0_2px_10px_rgba(0,0,0,.08)] hover:bg-brand-soft"
         >
@@ -499,9 +499,9 @@ export default function WorkspaceCanvas({
       </div>
 
       <div className="absolute bottom-5 right-5 flex items-center gap-1 rounded-full border border-line bg-white px-1.5 py-1 shadow-[0_2px_10px_rgba(0,0,0,.08)]">
-        <button onClick={() => zoomBy(-0.1)} className="flex h-8 w-8 items-center justify-center rounded-full text-lg text-ink-2 hover:bg-surface-2" title="ซูมออก">−</button>
+        <button onClick={() => zoomBy(-0.1)} className="flex h-8 w-8 items-center justify-center rounded-full text-lg text-ink-2 hover:bg-surface-2" title="Zoom out">−</button>
         <span className="w-12 text-center text-xs font-semibold tabular-nums text-ink-2">{Math.round(zoom * 100)}%</span>
-        <button onClick={() => zoomBy(0.1)} className="flex h-8 w-8 items-center justify-center rounded-full text-lg text-ink-2 hover:bg-surface-2" title="ซูมเข้า">+</button>
+        <button onClick={() => zoomBy(0.1)} className="flex h-8 w-8 items-center justify-center rounded-full text-lg text-ink-2 hover:bg-surface-2" title="Zoom in">+</button>
       </div>
 
       {detail && (
@@ -520,43 +520,43 @@ export default function WorkspaceCanvas({
       {adding && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4" onClick={() => setAdding(false)}>
           <form onClick={(e) => e.stopPropagation()} onSubmit={createTask} className="w-full max-w-md space-y-3 rounded-2xl border border-line bg-white p-6 shadow-xl">
-            <h2 className="text-lg font-bold text-ink">สร้างงานใหม่</h2>
+            <h2 className="text-lg font-bold text-ink">New task</h2>
             <div>
-              <label className="mb-1 block text-xs font-semibold text-ink-2">ชื่องาน</label>
+              <label className="mb-1 block text-xs font-semibold text-ink-2">Task name</label>
               <input
                 autoFocus
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
-                placeholder="เช่น ทำหน้า login"
+                placeholder="e.g. Build the login page"
                 className="w-full rounded-xl border border-line px-3.5 py-2.5 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand-soft"
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-semibold text-ink-2">รายละเอียด (ไม่บังคับ)</label>
+              <label className="mb-1 block text-xs font-semibold text-ink-2">Description (optional)</label>
               <textarea
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
                 rows={3}
-                placeholder="อธิบายรายละเอียดงาน สิ่งที่ต้องทำ ข้อกำหนด ฯลฯ"
+                placeholder="Describe the task, what to do, requirements, etc."
                 className="w-full resize-none rounded-xl border border-line px-3.5 py-2.5 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand-soft"
               />
             </div>
             <div className="flex gap-3">
               <div className="flex-1">
-                <label className="mb-1 block text-xs font-semibold text-ink-2">ความด่วน (Priority)</label>
+                <label className="mb-1 block text-xs font-semibold text-ink-2">Priority</label>
                 <select value={form.priority} onChange={(e) => setForm({ ...form, priority: e.target.value })} className="w-full rounded-xl border border-line px-3 py-2.5 text-sm outline-none focus:border-brand">
-                  <option value="low">ต่ำ (Low)</option>
-                  <option value="medium">ปานกลาง (Medium)</option>
-                  <option value="high">สูง (High)</option>
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
                 </select>
               </div>
               <div className="flex-1">
-                <label className="mb-1 block text-xs font-semibold text-ink-2">กำหนดส่ง (Deadline)</label>
+                <label className="mb-1 block text-xs font-semibold text-ink-2">Deadline</label>
                 <input type="date" value={form.deadline} onChange={(e) => setForm({ ...form, deadline: e.target.value })} className="w-full rounded-xl border border-line px-3 py-2.5 text-sm outline-none focus:border-brand" />
               </div>
             </div>
             <div>
-              <label className="mb-1 block text-xs font-semibold text-ink-2">มอบหมายให้ (เลือกได้หลายคน)</label>
+              <label className="mb-1 block text-xs font-semibold text-ink-2">Assign to (multiple allowed)</label>
               <AssigneeSelect
                 members={members}
                 currentUserId={currentUserId}
@@ -565,18 +565,18 @@ export default function WorkspaceCanvas({
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-semibold text-ink-2">แท็ก (ไม่บังคับ)</label>
+              <label className="mb-1 block text-xs font-semibold text-ink-2">Tags (optional)</label>
               <input
                 value={form.tags}
                 onChange={(e) => setForm({ ...form, tags: e.target.value })}
-                placeholder="คั่นด้วย , เช่น Design, Frontend"
+                placeholder="Separate with commas, e.g. Design, Frontend"
                 className="w-full rounded-xl border border-line px-3.5 py-2.5 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand-soft"
               />
             </div>
             <div className="flex justify-end gap-2 pt-1">
-              <button type="button" onClick={() => setAdding(false)} className="rounded-[10px] border border-line px-4 py-2 text-sm font-semibold text-ink-2 hover:bg-surface-2">ยกเลิก</button>
+              <button type="button" onClick={() => setAdding(false)} className="rounded-[10px] border border-line px-4 py-2 text-sm font-semibold text-ink-2 hover:bg-surface-2">Cancel</button>
               <button type="submit" disabled={creBusy} className="rounded-[10px] bg-accent px-4 py-2 text-sm font-semibold text-white hover:bg-[#f55e1d] disabled:opacity-60">
-                {creBusy ? "กำลังสร้าง..." : "สร้างงาน"}
+                {creBusy ? "Creating..." : "Create task"}
               </button>
             </div>
           </form>

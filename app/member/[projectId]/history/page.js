@@ -13,8 +13,8 @@ export default async function MemberHistoryPage({ params }) {
   return (
     <div className="h-full overflow-auto p-6">
       <div className="mb-5">
-        <h1 className="text-xl font-bold tracking-tight text-ink">งานที่เสร็จของฉัน</h1>
-        <p className="mt-0.5 text-sm text-ink-2">งานที่หัวหน้ายืนยันผ่านแล้ว ({total} งาน)</p>
+        <h1 className="text-xl font-bold tracking-tight text-ink">My completed work</h1>
+        <p className="mt-0.5 text-sm text-ink-2">Work approved by the leader ({total} tasks)</p>
       </div>
       <CompletedHistory groups={groups} showMemberHeader={false} />
     </div>

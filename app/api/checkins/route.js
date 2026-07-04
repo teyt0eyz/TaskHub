@@ -1,7 +1,7 @@
 import { getDbUser } from "@/lib/data";
 import { getSupabaseAdmin } from "@/lib/supabase";
 
-// POST /api/checkins — บันทึก/อัปเดตเช็คอินของวันนี้ (1 ครั้งต่อ user ต่อ project ต่อวัน)
+// POST /api/checkins — Save/อัปเดตเช็คอินของวันนี้ (1 ครั้งต่อ user ต่อ project ต่อวัน)
 export async function POST(req) {
   const user = await getDbUser();
   if (!user) return Response.json({ error: "unauthorized" }, { status: 401 });

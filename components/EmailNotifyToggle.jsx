@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 
-// สวิตช์เปิด/ปิด "รับอีเมลแจ้งเตือน" (ระดับบัญชี) — วางในเมนูผู้ใช้
+// สวิตช์เปิด/ปิด "Email notifications" (ระดับบัญชี) — วางในเมนูผู้ใช้
 export default function EmailNotifyToggle() {
-  const [on, setOn] = useState(null); // null = กำลังโหลด
+  const [on, setOn] = useState(null); // null = Loading
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -38,9 +38,9 @@ export default function EmailNotifyToggle() {
       onClick={toggle}
       disabled={on === null || busy}
       className="flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-[13px] font-medium text-ink-2 hover:bg-surface-2 disabled:opacity-60"
-      title="เปิด/ปิดการรับอีเมลแจ้งเตือน"
+      title="Toggle email notifications"
     >
-      <span>รับอีเมลแจ้งเตือน</span>
+      <span>Email notifications</span>
       <span className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors ${on ? "bg-brand" : "bg-line"}`}>
         <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${on ? "translate-x-[18px]" : "translate-x-0.5"}`} />
       </span>

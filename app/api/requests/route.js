@@ -16,7 +16,7 @@ export async function POST(req) {
   const { id, action, projectId } = body || {};
   const supabase = getSupabaseAdmin();
 
-  // ---- อนุมัติ/ปฏิเสธทั้งหมดของโปรเจกต์ ----
+  // ---- Approve/Reject allของโปรเจกต์ ----
   if (["approve_all", "reject_all"].includes(action)) {
     if (!projectId) return Response.json({ error: "projectId is required" }, { status: 400 });
 
@@ -44,7 +44,7 @@ export async function POST(req) {
             user_id: r.user_id,
             project_id: projectId,
             type: "approved",
-            message: `✅ คำขอเข้าร่วม "${proj?.name || "โปรเจกต์"}" ได้รับอนุมัติแล้ว`,
+            message: `✅ Your request to join "${proj?.name || "Project"}" was approved`,
           }))
         );
       }
@@ -65,7 +65,7 @@ export async function POST(req) {
     .maybeSingle();
   if (!reqRow) return Response.json({ error: "not found" }, { status: 404 });
 
-  // ผู้อนุมัติต้องมีสิทธิ์จัดการสมาชิก
+  // ผู้Approveต้องมีสิทธิ์Manage members
   const m = await getMembership(reqRow.project_id, user.id);
   if (!can(m, PERM.MEMBERS)) {
     return Response.json({ error: "forbidden" }, { status: 403 });
@@ -86,7 +86,7 @@ export async function POST(req) {
         user_id: reqRow.user_id,
         project_id: reqRow.project_id,
         type: "approved",
-        message: `✅ คำขอเข้าร่วม "${proj?.name || "โปรเจกต์"}" ได้รับอนุมัติแล้ว`,
+        message: `✅ Your request to join "${proj?.name || "Project"}" was approved`,
       },
     ]);
   } else {

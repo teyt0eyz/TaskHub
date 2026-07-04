@@ -200,9 +200,9 @@ function WindowFrame({ children }) {
 }
 
 const features = [
-  { emoji: "🌳", title: "Workspace ผังต้นไม้", desc: "เห็นงานทั้งทีมเป็นแผนผัง มอบหมายให้ใคร ใครทำอะไรอยู่ ครบในภาพเดียว" },
-  { emoji: "😄", title: "Mood check-in รายวัน", desc: "บันทึกอารมณ์รายวัน หัวหน้าเห็นใครติดปัญหาทันที ช่วยเหลือได้ทันเวลา" },
-  { emoji: "🤖", title: "AI สรุปผลงาน", desc: "ให้ Gemini สรุปงานและ mood ของทั้งทีมเป็นภาษาไทย ดาวน์โหลด/พิมพ์ได้" },
+  { emoji: "🌳", title: "Workspace tree view", desc: "See the whole team's work as a map — who's assigned what and what everyone is doing, all in one view." },
+  { emoji: "😄", title: "Daily mood check-in", desc: "Members log their mood daily so leaders instantly spot who's stuck and can step in on time." },
+  { emoji: "🤖", title: "AI work summaries", desc: "Let Gemini summarize your team's work and mood — download or print the report." },
 ];
 
 export default function HomePage() {
@@ -216,10 +216,10 @@ export default function HomePage() {
           </div>
           <div className="flex items-center gap-1.5">
             <a href="#features" className="hidden rounded-lg px-3.5 py-2 text-sm font-semibold text-ink-2 hover:bg-surface-2 hover:text-ink sm:block">
-              ฟีเจอร์
+              Features
             </a>
             <Link href="/login" className="rounded-lg bg-ink px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-black">
-              เข้าสู่ระบบ
+              Log in
             </Link>
           </div>
         </div>
@@ -229,24 +229,24 @@ export default function HomePage() {
       <section className="flex-1 px-5 pb-4 pt-16 sm:pt-24">
         <div className="mx-auto max-w-3xl text-center">
           <span className="inline-flex items-center gap-2 rounded-full border border-line bg-white px-3.5 py-1.5 text-xs font-semibold text-ink-2 shadow-sm">
-            ✨ ติดตามงาน + mood ของทีม ในที่เดียว
+            ✨ Track your team's tasks + mood in one place
           </span>
           <h1 className="mt-6 font-heading text-4xl font-bold leading-[1.1] tracking-tight text-ink sm:text-6xl">
-            จัดการงานทีม<br />ให้ <span className="hl-brush text-brand">productive</span> ขึ้น
+            Manage team work<br />and stay <span className="hl-brush text-brand">productive</span>
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-ink-2">
-            มอบหมายงาน ติดตามความคืบหน้า และดูแล mood ของทีมในที่เดียว —
-            เหมาะกับทีมงาน อาจารย์–นักศึกษา หรือกลุ่มเพื่อน
+            Assign tasks, track progress, and look after your team's mood — all in one place.
+            Perfect for work teams, teachers &amp; students, or a group of friends.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/login"
               className="rounded-xl bg-brand px-7 py-3 text-sm font-bold text-white shadow-[0_10px_24px_rgba(46,158,91,.28)] transition-transform hover:-translate-y-0.5 hover:bg-brand-dark"
             >
-              เริ่มใช้งานฟรี →
+              Get started free →
             </Link>
             <a href="#features" className="rounded-xl border border-line bg-white px-7 py-3 text-sm font-semibold text-ink transition-colors hover:bg-surface-2">
-              ดูฟีเจอร์
+              See features
             </a>
           </div>
         </div>
@@ -265,8 +265,8 @@ export default function HomePage() {
       <section id="features" className="border-t border-line bg-surface-2/30">
         <div className="mx-auto max-w-5xl px-5 py-20">
           <Reveal className="mx-auto mb-12 max-w-lg text-center">
-            <h2 className="font-heading text-2xl font-bold tracking-tight text-ink sm:text-3xl">ทุกอย่างที่ทีมต้องใช้</h2>
-            <p className="mt-2 text-ink-2">ออกแบบมาให้เห็นภาพรวมของทีมได้ในที่เดียว</p>
+            <h2 className="font-heading text-2xl font-bold tracking-tight text-ink sm:text-3xl">Everything your team needs</h2>
+            <p className="mt-2 text-ink-2">Designed to give you your whole team at a glance.</p>
           </Reveal>
           <div className="grid gap-8 sm:grid-cols-3">
             {features.map((f, i) => (
@@ -285,13 +285,13 @@ export default function HomePage() {
       {/* CTA */}
       <section className="border-t border-line bg-white">
         <Reveal className="mx-auto max-w-3xl px-5 py-20 text-center">
-          <h2 className="font-heading text-2xl font-bold tracking-tight text-ink sm:text-3xl">พร้อมทำให้ทีม productive ขึ้นแล้วหรือยัง?</h2>
-          <p className="mx-auto mt-3 max-w-md text-ink-2">เริ่มใช้งานฟรีวันนี้ ล็อกอินด้วย Google ได้เลย</p>
+          <h2 className="font-heading text-2xl font-bold tracking-tight text-ink sm:text-3xl">Ready to make your team more productive?</h2>
+          <p className="mx-auto mt-3 max-w-md text-ink-2">Start free today — just log in with Google.</p>
           <Link
             href="/login"
             className="mt-7 inline-block rounded-xl bg-brand px-7 py-3 text-sm font-bold text-white shadow-[0_10px_24px_rgba(46,158,91,.28)] transition-transform hover:-translate-y-0.5 hover:bg-brand-dark"
           >
-            เริ่มใช้งานฟรี →
+            Get started free →
           </Link>
         </Reveal>
       </section>

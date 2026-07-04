@@ -67,7 +67,7 @@ export default function RealtimeRefresher({ projectId }) {
   if (!pulse) return null;
   return (
     <div className="fixed bottom-5 left-1/2 z-[60] -translate-x-1/2 animate-fade-up rounded-full bg-ink px-4 py-2 text-sm font-semibold text-white shadow-[0_6px_20px_rgba(0,0,0,.25)]">
-      🔄 อัปเดตล่าสุดแล้ว
+      🔄 Up to date
     </div>
   );
 }

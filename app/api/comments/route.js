@@ -22,7 +22,7 @@ export async function GET(req) {
     id: c.id,
     body: c.body,
     created_at: c.created_at,
-    author: c.users?.name || c.users?.email || "ผู้ใช้",
+    author: c.users?.name || c.users?.email || "User",
   }));
   return Response.json({ comments });
 }
@@ -49,7 +49,7 @@ export async function POST(req) {
     .insert({ task_id: taskId, user_id: user.id, body: text.trim() });
   if (error) return Response.json({ error: error.message }, { status: 500 });
 
-  // แจ้งทั้งผู้รับผิดชอบงาน "และหัวหน้าโปรเจกต์" (ยกเว้นคนที่คอมเมนต์เอง)
+  // แจ้งทั้งผู้รับผิดชอบTask "และProject leader" (ยกเว้นคนที่คอมเมนต์เอง)
   const { data: task } = await supabase.from("tasks").select("title, project_id").eq("id", taskId).maybeSingle();
   if (task) {
     const [{ data: as }, { data: leaders }] = await Promise.all([
@@ -67,7 +67,7 @@ export async function POST(req) {
         project_id: task.project_id,
         task_id: taskId,
         type: "comment",
-        message: `💬 ${user.name || "สมาชิก"} อัปเดตงาน "${task.title}"`,
+        message: `💬 ${user.name || "Member"} commented on "${task.title}"`,
       }))
     );
   }

@@ -2,7 +2,7 @@ import { getDbUser, getMembership, setMemberStatus } from "@/lib/data";
 
 export const dynamic = "force-dynamic";
 
-// POST /api/status  { projectId, status } — สมาชิกตั้งสถานะของตัวเอง (status ว่าง = ล้าง)
+// POST /api/status  { projectId, status } — สมาชิกตั้งสถานะของตัวเอง (status Available = ล้าง)
 export async function POST(req) {
   const user = await getDbUser();
   if (!user) return Response.json({ error: "unauthorized" }, { status: 401 });

@@ -9,7 +9,7 @@ export default async function MemberWorkspacePage({ params }) {
 
   const project = await getProjectById(projectId);
 
-  // โหมด "เห็นงานทุกคน" — แสดงผังทั้งทีม งานคนอื่นจางลง (หัวหน้าเป็นคนเปิด)
+  // โหมด "Everyone’s tasks" — แสดงผังทั้งทีม งานคนอื่นจางลง (หัวหน้าเป็นคนเปิด)
   if (project?.member_visibility === "all") {
     const [tasks, members] = await Promise.all([
       getActiveTasks(projectId, user.id),

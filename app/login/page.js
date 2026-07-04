@@ -19,13 +19,13 @@ export default function LoginPage() {
           <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand text-2xl font-bold text-white shadow-[0_8px_20px_rgba(46,158,91,.35)]">
             T
           </div>
-          <h1 className="mt-4 text-2xl font-bold tracking-tight text-ink">ยินดีต้อนรับสู่ TaskHub</h1>
+          <h1 className="mt-4 text-2xl font-bold tracking-tight text-ink">Welcome to TaskHub</h1>
           <p className="mt-1.5 text-sm leading-relaxed text-ink-2">
-            จัดการงานและ mood ของทีม ในที่เดียว
+            Manage your team's work and mood in one place
           </p>
         </div>
 
-        {/* Google sign-in (การกระทำจริงเพียงอย่างเดียว) */}
+        {/* Google sign-in (การกระทำจริงเพียงอย่างเGoodยว) */}
         <button
           onClick={loginWithGoogle}
           className="mt-8 flex w-full items-center justify-center gap-3 rounded-xl border border-line bg-white px-4 py-3.5 text-sm font-semibold text-ink shadow-sm transition-all hover:-translate-y-0.5 hover:border-brand hover:shadow-md"
@@ -36,17 +36,17 @@ export default function LoginPage() {
             <path fill="#4CAF50" d="M24 44c5.2 0 10-2 13.6-5.2l-6.3-5.3C29.2 35 26.7 36 24 36c-5.3 0-9.7-3.1-11.3-7.6l-6.5 5C9.5 39.6 16.2 44 24 44z" />
             <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.1-4 5.5l6.3 5.3C41.4 36.5 44 30.8 44 24c0-1.3-.1-2.3-.4-3.5z" />
           </svg>
-          เข้าสู่ระบบด้วย Google
+          Sign in with Google
         </button>
 
         <p className="mt-4 text-center text-xs leading-relaxed text-ink-3">
-          ปลอดภัย ไม่ต้องตั้งรหัสผ่านใหม่ · เข้าครั้งแรกจะสร้างบัญชีให้อัตโนมัติ
+          Secure — no new password needed · your account is created automatically on first sign-in
         </p>
       </div>
 
       {/* back to home */}
       <Link href="/" className="absolute left-5 top-5 z-10 flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium text-ink-2 transition-colors hover:bg-white/70 hover:text-ink">
-        ← กลับหน้าแรก
+        ← Back to home
       </Link>
     </div>
   );

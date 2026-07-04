@@ -66,7 +66,7 @@ export default function TasksBoard({ projectId, tasks = [], members = [], curren
       setForm({ title: "", description: "", priority: "medium", deadline: "", assigned_to: [], tags: "" });
       router.refresh();
     } else {
-      alert("สร้างงานไม่สำเร็จ");
+      alert("Failed to create task");
     }
   }
 
@@ -74,14 +74,14 @@ export default function TasksBoard({ projectId, tasks = [], members = [], curren
     <div className="h-full overflow-auto p-6">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-ink">งานทั้งหมด</h1>
-          <p className="mt-0.5 text-sm text-ink-2">มอบหมายและติดตามสถานะงานของทีม</p>
+          <h1 className="text-xl font-bold tracking-tight text-ink">All tasks</h1>
+          <p className="mt-0.5 text-sm text-ink-2">Assign and track your team’s tasks</p>
         </div>
         <div className="flex items-center gap-2">
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="🔍 ค้นหางาน / แท็ก / ชื่อคน"
+            placeholder="🔍 Search tasks / tags / people"
             className="w-52 rounded-[10px] border border-line px-3 py-2.5 text-sm outline-none focus:border-brand"
           />
           {canEdit && (
@@ -89,7 +89,7 @@ export default function TasksBoard({ projectId, tasks = [], members = [], curren
               onClick={() => setOpen(true)}
               className="flex items-center gap-2 rounded-[10px] bg-accent px-4 py-2.5 text-sm font-semibold text-white shadow-[0_4px_14px_rgba(255,107,43,.3)] hover:bg-[#f55e1d]"
             >
-              <span className="text-base leading-none">+</span> สร้างงานใหม่
+              <span className="text-base leading-none">+</span> New task
             </button>
           )}
         </div>
@@ -113,7 +113,7 @@ export default function TasksBoard({ projectId, tasks = [], members = [], curren
                 ))}
                 {items.length === 0 && (
                   <div className="rounded-xl border border-dashed border-line py-8 text-center text-xs text-ink-3">
-                    ยังไม่มีงาน
+                    No tasks yet
                   </div>
                 )}
               </div>
@@ -129,42 +129,42 @@ export default function TasksBoard({ projectId, tasks = [], members = [], curren
             onSubmit={createTask}
             className="w-full max-w-md space-y-3 rounded-2xl border border-line bg-white p-6 shadow-xl"
           >
-            <h2 className="text-lg font-bold text-ink">สร้างงานใหม่</h2>
+            <h2 className="text-lg font-bold text-ink">New task</h2>
             <div>
-              <label className="mb-1 block text-xs font-semibold text-ink-2">ชื่องาน</label>
+              <label className="mb-1 block text-xs font-semibold text-ink-2">Task name</label>
               <input
                 autoFocus
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
-                placeholder="เช่น ทำหน้า login"
+                placeholder="e.g. Build the login page"
                 className="w-full rounded-xl border border-line px-3.5 py-2.5 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand-soft"
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-semibold text-ink-2">รายละเอียด (ไม่บังคับ)</label>
+              <label className="mb-1 block text-xs font-semibold text-ink-2">Description (optional)</label>
               <textarea
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
                 rows={3}
-                placeholder="อธิบายรายละเอียดงาน สิ่งที่ต้องทำ ข้อกำหนด ฯลฯ"
+                placeholder="Describe the task, what to do, requirements, etc."
                 className="w-full resize-none rounded-xl border border-line px-3.5 py-2.5 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand-soft"
               />
             </div>
             <div className="flex gap-3">
               <div className="flex-1">
-                <label className="mb-1 block text-xs font-semibold text-ink-2">ความด่วน (Priority)</label>
+                <label className="mb-1 block text-xs font-semibold text-ink-2">Priority</label>
                 <select
                   value={form.priority}
                   onChange={(e) => setForm({ ...form, priority: e.target.value })}
                   className="w-full rounded-xl border border-line px-3 py-2.5 text-sm outline-none focus:border-brand"
                 >
-                  <option value="low">ต่ำ (Low)</option>
-                  <option value="medium">ปานกลาง (Medium)</option>
-                  <option value="high">สูง (High)</option>
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
                 </select>
               </div>
               <div className="flex-1">
-                <label className="mb-1 block text-xs font-semibold text-ink-2">กำหนดส่ง (Deadline)</label>
+                <label className="mb-1 block text-xs font-semibold text-ink-2">Deadline</label>
                 <input
                   type="date"
                   value={form.deadline}
@@ -174,7 +174,7 @@ export default function TasksBoard({ projectId, tasks = [], members = [], curren
               </div>
             </div>
             <div>
-              <label className="mb-1 block text-xs font-semibold text-ink-2">มอบหมายให้ (เลือกได้หลายคน)</label>
+              <label className="mb-1 block text-xs font-semibold text-ink-2">Assign to (multiple allowed)</label>
               <AssigneeSelect
                 members={members}
                 currentUserId={currentUserId}
@@ -183,11 +183,11 @@ export default function TasksBoard({ projectId, tasks = [], members = [], curren
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-semibold text-ink-2">แท็ก (ไม่บังคับ)</label>
+              <label className="mb-1 block text-xs font-semibold text-ink-2">Tags (optional)</label>
               <input
                 value={form.tags}
                 onChange={(e) => setForm({ ...form, tags: e.target.value })}
-                placeholder="คั่นด้วย , เช่น Design, Frontend"
+                placeholder="Separate with commas, e.g. Design, Frontend"
                 className="w-full rounded-xl border border-line px-3.5 py-2.5 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand-soft"
               />
             </div>
@@ -197,14 +197,14 @@ export default function TasksBoard({ projectId, tasks = [], members = [], curren
                 onClick={() => setOpen(false)}
                 className="rounded-[10px] border border-line px-4 py-2 text-sm font-semibold text-ink-2 hover:bg-surface-2"
               >
-                ยกเลิก
+                Cancel
               </button>
               <button
                 type="submit"
                 disabled={busy}
                 className="rounded-[10px] bg-accent px-4 py-2 text-sm font-semibold text-white hover:bg-[#f55e1d] disabled:opacity-60"
               >
-                {busy ? "กำลังสร้าง..." : "สร้างงาน"}
+                {busy ? "Creating..." : "Create task"}
               </button>
             </div>
           </form>
