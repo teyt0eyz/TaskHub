@@ -212,7 +212,7 @@ export default function HomePage() {
       <header className="sticky top-0 z-30 border-b border-line bg-white/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5">
           <div className="flex items-center gap-2.5">
-            <span className="font-heading text-lg font-bold text-ink">TaskHub</span>
+            <span className="font-heading text-lg font-bold text-ink">Task<span style={{ color: "#6fcf97" }}>Hub</span></span>
           </div>
           <div className="flex items-center gap-1.5">
             <a href="#features" className="hidden rounded-lg px-3.5 py-2 text-sm font-semibold text-ink-2 hover:bg-surface-2 hover:text-ink sm:block">
@@ -299,7 +299,7 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="border-t border-line bg-white">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-5 py-6 text-sm text-ink-3 sm:flex-row">
-          <span className="font-semibold text-ink-2">TaskHub</span>
+          <span className="font-semibold text-ink-2">Task<span style={{ color: "#6fcf97" }}>Hub</span></span>
           <span>© 2026 TaskHub · Capstone Project</span>
         </div>
       </footer>

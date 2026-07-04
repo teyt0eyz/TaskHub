@@ -124,7 +124,7 @@ export default function AppShell({ nav = [], title = "Project Alpha", roleLabel,
               title="View all projects"
               className="flex items-center gap-2.5 overflow-hidden rounded-lg px-1 py-0.5 transition-colors hover:bg-surface-2"
             >
-              <span className="font-heading whitespace-nowrap text-[15px] font-bold text-ink">TaskHub</span>
+              <span className="font-heading whitespace-nowrap text-[15px] font-bold text-ink">Task<span style={{ color: "#6fcf97" }}>Hub</span></span>
             </Link>
           )}
           <button

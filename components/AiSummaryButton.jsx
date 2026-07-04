@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Markdown from "@/components/Markdown";
 import GeminiKeyField, { readGeminiKey } from "@/components/GeminiKeyField";
+import SummaryLangToggle from "@/components/SummaryLangToggle";
 import TrashIcon from "@/components/icons/TrashIcon";
 
 const MAX_HISTORY = 12;
@@ -16,8 +17,16 @@ export default function AiSummaryButton({ projectId, memberId, memberName }) {
   const [remaining, setRemaining] = useState(null);
   const [limit, setLimit] = useState(4);
   const [hasKey, setHasKey] = useState(false);
+  const [lang, setLang] = useState("en"); // ภาษาผลลัพธ์ AI (จำค่าล่าสุดใน localStorage)
 
   const current = useMemo(() => history.find((h) => h.id === selectedId) || history[0] || null, [history, selectedId]);
+
+  function changeLang(l) {
+    setLang(l);
+    try {
+      localStorage.setItem("taskhub:ai-lang", l);
+    } catch {}
+  }
 
   useEffect(() => {
     // โหลดประวัติ + โควตาจากเซิร์ฟเวอร์ (no-store: กันเบราว์เซอร์ cache ค่าโควตาเก่าตอนกลับเข้าหน้าใหม่)
@@ -34,6 +43,10 @@ export default function AiSummaryButton({ projectId, memberId, memberName }) {
       })
       .catch(() => {});
     setHasKey(!!readGeminiKey());
+    try {
+      const saved = localStorage.getItem("taskhub:ai-lang");
+      if (saved === "th" || saved === "en") setLang(saved);
+    } catch {}
 
     const onQuota = (e) => {
       if (typeof e.detail?.remaining === "number") setRemaining(e.detail.remaining);
@@ -55,7 +68,7 @@ export default function AiSummaryButton({ projectId, memberId, memberName }) {
       const res = await fetch("/api/ai/summary", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ projectId, userId: memberId, memberName, apiKey: readGeminiKey() || undefined }),
+        body: JSON.stringify({ projectId, userId: memberId, memberName, lang, apiKey: readGeminiKey() || undefined }),
       });
       const data = await res.json();
       if (res.status === 429) {
@@ -167,8 +180,9 @@ export default function AiSummaryButton({ projectId, memberId, memberName }) {
               <button onClick={() => setOpen(false)} className="text-ink-3 hover:text-ink">✕</button>
             </div>
 
-            <div className="border-b border-line bg-brand-soft/40 px-5 py-1.5 text-[11px] text-ink-3">
-              💾 Stored in the system (latest {MAX_HISTORY}  entries) · leaders and deputies share this history
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line bg-brand-soft/40 px-5 py-1.5 text-[11px] text-ink-3">
+              <span>💾 Stored in the system · shared by leaders and deputies</span>
+              <SummaryLangToggle value={lang} onChange={changeLang} />
             </div>
 
             {history.length > 0 && (

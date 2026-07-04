@@ -16,10 +16,9 @@ export default function LoginPage() {
       <div className="relative z-10 w-full max-w-[380px] animate-pop rounded-3xl border border-line bg-white p-8 shadow-[0_20px_60px_rgba(0,0,0,.1)]">
         {/* brand */}
         <div className="flex flex-col items-center text-center">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand text-2xl font-bold text-white shadow-[0_8px_20px_rgba(46,158,91,.35)]">
-            T
-          </div>
-          <h1 className="mt-4 text-2xl font-bold tracking-tight text-ink">Welcome to TaskHub</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-ink">
+            Welcome to Task<span style={{ color: "#6fcf97" }}>Hub</span>
+          </h1>
           <p className="mt-1.5 text-sm leading-relaxed text-ink-2">
             Manage your team's work and mood in one place
           </p>

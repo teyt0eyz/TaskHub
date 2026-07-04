@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Markdown from "@/components/Markdown";
 import GeminiKeyField, { readGeminiKey } from "@/components/GeminiKeyField";
+import SummaryLangToggle from "@/components/SummaryLangToggle";
 import TrashIcon from "@/components/icons/TrashIcon";
 
 const MAX_HISTORY = 12;
@@ -16,6 +17,14 @@ export default function TeamSummaryButton({ projectId }) {
   const [remaining, setRemaining] = useState(null);
   const [limit, setLimit] = useState(4);
   const [hasKey, setHasKey] = useState(false);
+  const [lang, setLang] = useState("en");
+
+  function changeLang(l) {
+    setLang(l);
+    try {
+      localStorage.setItem("taskhub:ai-lang", l);
+    } catch {}
+  }
 
   const current = useMemo(
     () => history.find((h) => h.id === selectedId) || history[0] || null,
@@ -42,6 +51,10 @@ export default function TeamSummaryButton({ projectId }) {
       })
       .catch(() => {});
     setHasKey(!!readGeminiKey());
+    try {
+      const saved = localStorage.getItem("taskhub:ai-lang");
+      if (saved === "th" || saved === "en") setLang(saved);
+    } catch {}
 
     const onQuota = (e) => {
       if (typeof e.detail?.remaining === "number") setRemaining(e.detail.remaining);
@@ -68,7 +81,7 @@ export default function TeamSummaryButton({ projectId }) {
       const res = await fetch("/api/ai/team-summary", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ projectId, apiKey: readGeminiKey() || undefined }),
+        body: JSON.stringify({ projectId, lang, apiKey: readGeminiKey() || undefined }),
       });
       const data = await res.json();
       if (res.status === 429) {
@@ -201,8 +214,9 @@ export default function TeamSummaryButton({ projectId }) {
             </div>
 
             {/* แจ้งนโยบายการเก็บ */}
-            <div className="border-b border-line bg-brand-soft/40 px-5 py-1.5 text-[11px] text-ink-3">
-              💾 Stored in the system (latest {MAX_HISTORY}  entries) · leaders and deputies share this history
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line bg-brand-soft/40 px-5 py-1.5 text-[11px] text-ink-3">
+              <span>💾 Stored in the system · shared by leaders and deputies</span>
+              <SummaryLangToggle value={lang} onChange={changeLang} />
             </div>
 
             {/* แถบประวัติ — เลือกดูย้อนหลังได้ (ไม่ทับกันเมื่อNew summary) */}

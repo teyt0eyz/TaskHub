@@ -74,7 +74,7 @@ export default function ProjectPicker({ base, projects = [] }) {
       <header className="border-b border-line bg-white/90 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-4">
           <div className="flex items-center gap-2.5 select-none">
-            <span className="font-heading text-xl font-bold tracking-tight text-ink">TaskHub</span>
+            <span className="font-heading text-xl font-bold tracking-tight text-ink">Task<span style={{ color: "#6fcf97" }}>Hub</span></span>
           </div>
           <div className="flex items-center gap-4">
             <ViewToggle base={base} />

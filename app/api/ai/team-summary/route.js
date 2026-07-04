@@ -41,6 +41,7 @@ export async function POST(req) {
     return Response.json({ error: "invalid json" }, { status: 400 });
   }
   const { projectId, apiKey } = body || {};
+  const lang = body?.lang === "th" ? "th" : "en";
   if (!projectId) return Response.json({ error: "projectId is required" }, { status: 400 });
 
   // ต้องมีสิทธิ์ "AI summary"
@@ -79,7 +80,7 @@ export async function POST(req) {
 
   let summary;
   try {
-    summary = await generateTeamSummary(project?.name || "Team", payload, ownKey);
+    summary = await generateTeamSummary(project?.name || "Team", payload, ownKey, lang);
   } catch (e) {
     console.error("team summary failed:", e?.message);
     return Response.json({ error: "ai_summary_failed", detail: e?.message || String(e) }, { status: 500 });

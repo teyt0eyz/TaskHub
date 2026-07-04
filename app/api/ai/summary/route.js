@@ -47,6 +47,7 @@ export async function POST(req) {
   }
 
   const { memberName, projectId, userId, apiKey } = body || {};
+  const lang = body?.lang === "th" ? "th" : "en";
   if (!memberName || !projectId) return Response.json({ error: "memberName and projectId required" }, { status: 400 });
 
   // ต้องมีสิทธิ์ "AI summary" ในโปรเจกต์นี้
@@ -86,7 +87,7 @@ export async function POST(req) {
 
   let summary;
   try {
-    summary = await generateWeeklySummary(memberName, checkins, tasks, ownKey, stats);
+    summary = await generateWeeklySummary(memberName, checkins, tasks, ownKey, stats, lang);
   } catch (e) {
     console.error("ai summary failed:", e?.message);
     return Response.json({ error: "ai_summary_failed", detail: e?.message || String(e) }, { status: 500 });
