@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 // สวิตช์เปิด/ปิด "Email notifications" (ระดับบัญชี) — วางในเมนูผู้ใช้
 export default function EmailNotifyToggle() {
-  const [on, setOn] = useState(null); // null = Loading
+  const [on, setOn] = useState(true); // ค่าเริ่มต้น = เปิด (default on)
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -17,7 +17,7 @@ export default function EmailNotifyToggle() {
   }, []);
 
   async function toggle() {
-    if (on === null || busy) return;
+    if (busy) return;
     const next = !on;
     setOn(next);
     setBusy(true);
@@ -36,7 +36,7 @@ export default function EmailNotifyToggle() {
   return (
     <button
       onClick={toggle}
-      disabled={on === null || busy}
+      disabled={busy}
       className="flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-[13px] font-medium text-ink-2 hover:bg-surface-2 disabled:opacity-60"
       title="Toggle email notifications"
     >
