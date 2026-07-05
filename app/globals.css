@@ -61,12 +61,6 @@ h3 {
   background-size: 24px 24px;
 }
 
-/* จุดลายสีขาวจาง ๆ บนพื้นหลังเขียว (หน้า auth) */
-.dot-grid-green {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.18) 1.5px, transparent 1.5px);
-  background-size: 22px 22px;
-}
-
 /* Thin, unobtrusive scrollbars for the canvas */
 .scroll-soft::-webkit-scrollbar {
   width: 10px;
@@ -151,15 +145,6 @@ h3 {
 /* ไฮไลต์แบบปากกาเน้นข้อความ (ลายมือ) ใต้คำสำคัญ */
 .hl-brush {
   background-image: linear-gradient(120deg, rgba(46, 158, 91, 0.28), rgba(46, 158, 91, 0.28));
-  background-repeat: no-repeat;
-  background-size: 100% 38%;
-  background-position: 0 82%;
-  padding: 0 0.1em;
-}
-
-/* ไฮไลต์คำสำคัญบนพื้นเขียว (หน้า homepage) — ใช้โทนสว่างแทนสีเขียว */
-.hl-brush-light {
-  background-image: linear-gradient(120deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.28));
   background-repeat: no-repeat;
   background-size: 100% 38%;
   background-position: 0 82%;

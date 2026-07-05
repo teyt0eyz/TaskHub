@@ -207,69 +207,51 @@ const features = [
 
 export default function HomePage() {
   return (
-    <div className="relative flex min-h-screen flex-col overflow-hidden bg-[#0b3a21] text-white">
-      {/* ---------- background layers (เขียวเป็นหลัก) ---------- */}
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        {/* ไล่เฉดเขียวเข้ม → เขียวสด */}
-        <div className="absolute inset-0 bg-linear-to-b from-[#082d18] via-[#0e4629] to-[#0a3a21]" />
-        {/* แสงเรืองกลางบน */}
-        <div className="absolute -top-48 left-1/2 h-[620px] w-[980px] -translate-x-1/2 rounded-full bg-brand/35 blur-[130px]" />
-        {/* แสงมินต์ซ้าย + แสงส้มขวา (accent) */}
-        <div className="absolute top-1/4 -left-24 h-96 w-96 rounded-full bg-[#34d399]/20 blur-[120px]" />
-        <div className="absolute top-1/3 -right-24 h-80 w-80 rounded-full bg-accent/15 blur-[110px]" />
-        {/* จุดลายขาวจาง ๆ */}
-        <div className="dot-grid-green absolute inset-0 opacity-40" />
-        {/* วงกลมลอยตกแต่ง */}
-        <div className="animate-floaty-slow absolute left-[8%] top-40 h-3 w-3 rounded-full bg-white/40" />
-        <div className="animate-floaty absolute right-[12%] top-28 h-2.5 w-2.5 rounded-full bg-[#8ff0b4]/70" />
-        <div className="animate-floaty-slow absolute right-[22%] top-64 h-2 w-2 rounded-full bg-accent/60" />
-      </div>
-
-      {/* ---------- Nav (glass) ---------- */}
-      <header className="sticky top-0 z-30 border-b border-white/10 bg-[#0b3a21]/60 backdrop-blur-md">
+    <div className="flex min-h-screen flex-col bg-white">
+      {/* Nav */}
+      <header className="sticky top-0 z-30 border-b border-line bg-white/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5">
           <div className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-white/10 text-lg ring-1 ring-white/15">🌳</span>
-            <span className="font-heading text-lg font-bold text-white">Task<span style={{ color: "#8ff0b4" }}>Hub</span></span>
+            <span className="font-heading text-lg font-bold text-ink">Task<span style={{ color: "#6fcf97" }}>Hub</span></span>
           </div>
           <div className="flex items-center gap-1.5">
-            <a href="#features" className="hidden rounded-lg px-3.5 py-2 text-sm font-semibold text-white/70 transition-colors hover:bg-white/10 hover:text-white sm:block">
+            <a href="#features" className="hidden rounded-lg px-3.5 py-2 text-sm font-semibold text-ink-2 hover:bg-surface-2 hover:text-ink sm:block">
               Features
             </a>
-            <Link href="/login" className="rounded-lg bg-white px-4 py-2 text-sm font-bold text-brand-dark shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
+            <Link href="/login" className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-dark">
               Log in
             </Link>
           </div>
         </div>
       </header>
 
-      {/* ---------- Hero ---------- */}
-      <section className="relative flex-1 px-5 pb-8 pt-16 sm:pt-24">
+      {/* Hero — centered, ollama-style */}
+      <section className="flex-1 bg-linear-to-b from-brand-soft/60 via-white to-white px-5 pb-4 pt-16 sm:pt-24">
         <div className="mx-auto max-w-3xl text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-white/90 shadow-sm backdrop-blur">
+          <span className="inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand-soft px-3.5 py-1.5 text-xs font-semibold text-brand-dark shadow-sm">
             ✨ Track your team's tasks + mood in one place
           </span>
-          <h1 className="mt-6 font-heading text-4xl font-bold leading-[1.1] tracking-tight text-white drop-shadow-sm sm:text-6xl">
-            Manage team work<br />and stay <span className="hl-brush-light" style={{ color: "#8ff0b4" }}>productive</span>
+          <h1 className="mt-6 font-heading text-4xl font-bold leading-[1.1] tracking-tight text-ink sm:text-6xl">
+            Manage team work<br />and stay <span className="hl-brush text-brand">productive</span>
           </h1>
-          <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-white/75">
+          <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-ink-2">
             Assign tasks, track progress, and look after your team's mood — all in one place.
             Perfect for work teams, teachers &amp; students, or a group of friends.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/login"
-              className="rounded-xl bg-white px-7 py-3 text-sm font-bold text-brand-dark shadow-[0_12px_28px_rgba(0,0,0,.3)] transition-transform hover:-translate-y-0.5"
+              className="rounded-xl bg-brand px-7 py-3 text-sm font-bold text-white shadow-[0_10px_24px_rgba(46,158,91,.28)] transition-transform hover:-translate-y-0.5 hover:bg-brand-dark"
             >
               Get started free →
             </Link>
-            <a href="#features" className="rounded-xl border border-white/25 bg-white/5 px-7 py-3 text-sm font-semibold text-white backdrop-blur transition-colors hover:bg-white/10">
+            <a href="#features" className="rounded-xl border border-line bg-white px-7 py-3 text-sm font-semibold text-ink transition-colors hover:bg-surface-2">
               See features
             </a>
           </div>
         </div>
 
-        {/* product shot — การ์ดขาวเด้งบนพื้นเขียว */}
+        {/* product shot */}
         <div className="mx-auto mt-14 max-w-3xl px-1">
           <Reveal>
             <WindowFrame>
@@ -279,20 +261,20 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ---------- Features (glass cards) ---------- */}
-      <section id="features" className="relative border-t border-white/10 px-5 py-20">
-        <div className="mx-auto max-w-5xl">
+      {/* Features — clean */}
+      <section id="features" className="border-t border-line bg-brand-soft/40">
+        <div className="mx-auto max-w-5xl px-5 py-20">
           <Reveal className="mx-auto mb-12 max-w-lg text-center">
-            <h2 className="font-heading text-2xl font-bold tracking-tight text-white sm:text-3xl">Everything your team needs</h2>
-            <p className="mt-2 text-white/65">Designed to give you your whole team at a glance.</p>
+            <h2 className="font-heading text-2xl font-bold tracking-tight text-ink sm:text-3xl">Everything your team needs</h2>
+            <p className="mt-2 text-ink-2">Designed to give you your whole team at a glance.</p>
           </Reveal>
-          <div className="grid gap-6 sm:grid-cols-3">
+          <div className="grid gap-8 sm:grid-cols-3">
             {features.map((f, i) => (
               <Reveal key={f.title} delay={i * 120}>
-                <div className="group flex h-full flex-col items-center rounded-2xl border border-white/10 bg-white/[0.06] p-7 text-center shadow-[0_8px_30px_rgba(0,0,0,.18)] backdrop-blur transition-all hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.1]">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 text-2xl ring-1 ring-white/15 transition-transform group-hover:scale-110">{f.emoji}</div>
-                  <h3 className="mt-4 text-base font-semibold text-white">{f.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-white/65">{f.desc}</p>
+                <div className="flex h-full flex-col items-center rounded-2xl border border-line bg-white p-7 text-center shadow-[0_2px_10px_rgba(0,0,0,.03)]">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-soft text-2xl ring-1 ring-brand/15">{f.emoji}</div>
+                  <h3 className="mt-4 text-base font-semibold text-ink">{f.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-ink-2">{f.desc}</p>
                 </div>
               </Reveal>
             ))}
@@ -300,31 +282,24 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ---------- CTA — การ์ดขาวลอย ---------- */}
-      <section className="relative px-5 pb-20">
-        <Reveal className="mx-auto max-w-3xl">
-          <div className="relative overflow-hidden rounded-3xl border border-white/50 bg-white px-6 py-14 text-center shadow-[0_24px_70px_rgba(0,0,0,.3)]">
-            {/* แสงตกแต่งในการ์ด */}
-            <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-brand-soft blur-2xl" />
-            <div className="pointer-events-none absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-accent-soft blur-2xl" />
-            <div className="relative">
-              <h2 className="font-heading text-2xl font-bold tracking-tight text-ink sm:text-3xl">Ready to make your team more productive?</h2>
-              <p className="mx-auto mt-3 max-w-md text-ink-2">Start free today — sign up with email or log in with Google.</p>
-              <Link
-                href="/login"
-                className="mt-7 inline-block rounded-xl bg-brand px-7 py-3 text-sm font-bold text-white shadow-[0_12px_28px_rgba(46,158,91,.35)] transition-transform hover:-translate-y-0.5 hover:bg-brand-dark"
-              >
-                Get started free →
-              </Link>
-            </div>
-          </div>
+      {/* CTA — green band */}
+      <section className="bg-brand">
+        <Reveal className="mx-auto max-w-3xl px-5 py-20 text-center">
+          <h2 className="font-heading text-2xl font-bold tracking-tight text-white sm:text-3xl">Ready to make your team more productive?</h2>
+          <p className="mx-auto mt-3 max-w-md text-white/85">Start free today — just log in with Google.</p>
+          <Link
+            href="/login"
+            className="mt-7 inline-block rounded-xl bg-white px-7 py-3 text-sm font-bold text-brand-dark shadow-[0_10px_24px_rgba(0,0,0,.18)] transition-transform hover:-translate-y-0.5 hover:bg-brand-soft"
+          >
+            Get started free →
+          </Link>
         </Reveal>
       </section>
 
-      {/* ---------- Footer ---------- */}
-      <footer className="relative border-t border-white/10">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-5 py-6 text-sm text-white/50 sm:flex-row">
-          <span className="font-semibold text-white/70">Task<span style={{ color: "#8ff0b4" }}>Hub</span></span>
+      {/* Footer */}
+      <footer className="border-t border-line bg-white">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-5 py-6 text-sm text-ink-3 sm:flex-row">
+          <span className="font-semibold text-ink-2">Task<span style={{ color: "#6fcf97" }}>Hub</span></span>
           <span>© 2026 TaskHub · Capstone Project</span>
         </div>
       </footer>
