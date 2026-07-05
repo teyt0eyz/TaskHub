@@ -17,19 +17,34 @@ export default function NotificationBell() {
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([]);
   const [unread, setUnread] = useState(0);
-  const [toast, setToast] = useState("");
+  const [toast, setToast] = useState(null); // { message } — push toast บนสุด
+  const [show, setShow] = useState(false);
   const ref = useRef(null);
   const userIdRef = useRef(null);
+  const itemsRef = useRef([]);
+  const toastTimers = useRef([]);
 
   const load = useCallback(async () => {
     const res = await fetch("/api/notifications");
     if (!res.ok) return;
     const data = await res.json();
     setItems(data.items || []);
+    itemsRef.current = data.items || [];
     setUnread(data.unread || 0);
     userIdRef.current = data.userId;
     return data.userId;
   }, []);
+
+  // เด้ง toast แจ้งเตือนด้านบน (สไลด์ลงมา อยู่แป๊บนึง แล้วหายเองแบบ push บนมือถือ)
+  const popToast = useCallback((message) => {
+    toastTimers.current.forEach(clearTimeout);
+    toastTimers.current = [];
+    setToast({ message });
+    requestAnimationFrame(() => setShow(true));
+    toastTimers.current.push(setTimeout(() => setShow(false), 4000));
+    toastTimers.current.push(setTimeout(() => setToast(null), 4350));
+  }, []);
+  useEffect(() => () => toastTimers.current.forEach(clearTimeout), []);
 
   // โหลดครั้งแรก + subscribe realtime เฉพาะแจ้งเตือนของเรา
   useEffect(() => {
@@ -50,8 +65,7 @@ export default function NotificationBell() {
           "postgres_changes",
           { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${uid}` },
           (payload) => {
-            setToast(payload.new.message);
-            setTimeout(() => setToast(""), 4000);
+            popToast(payload.new.message);
             load(); // ดึงใหม่เพื่อให้ได้ href สำหรับกดเปิดงาน
           }
         )
@@ -60,7 +74,7 @@ export default function NotificationBell() {
     return () => {
       if (supabase && channel) supabase.removeChannel(channel);
     };
-  }, [load]);
+  }, [load, popToast]);
 
   // polling fallback — เผื่อ realtime ไม่ติด ก็ยังเห็นแจ้งเตือนใหม่ภายใน ~10 วิ
   useEffect(() => {
@@ -133,8 +147,26 @@ export default function NotificationBell() {
       </div>
 
       {toast && (
-        <div className="fixed bottom-5 right-5 z-[60] max-w-xs animate-fade-up rounded-xl bg-ink px-4 py-3 text-sm font-medium text-white shadow-[0_6px_20px_rgba(0,0,0,.25)]">
-          🔔 {toast}
+        <div
+          role="button"
+          onClick={() => {
+            const href = itemsRef.current[0]?.href;
+            setShow(false);
+            setTimeout(() => setToast(null), 300);
+            if (href) router.push(href);
+          }}
+          style={{ zIndex: 70 }}
+          className={`fixed left-1/2 top-4 w-[min(92vw,26rem)] -translate-x-1/2 cursor-pointer rounded-2xl border border-line bg-white px-4 py-3 shadow-[0_12px_36px_rgba(0,0,0,.20)] transition-all duration-300 ease-out ${
+            show ? "translate-y-0 opacity-100" : "-translate-y-6 opacity-0"
+          }`}
+        >
+          <div className="flex items-start gap-3">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-soft text-base">🔔</div>
+            <div className="min-w-0">
+              <div className="text-[11px] font-semibold uppercase tracking-wide text-brand-dark">TaskHub</div>
+              <div className="line-clamp-2 text-sm font-medium text-ink">{toast.message}</div>
+            </div>
+          </div>
         </div>
       )}
     </>
