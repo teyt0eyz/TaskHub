@@ -199,6 +199,21 @@ begin
   begin alter publication supabase_realtime add table notifications; exception when others then null; end;
 end $$;
 
+-- 12. Email/password auth (สมัครด้วยอีเมล — เก็บ hash เท่านั้น ไม่เก็บรหัสจริง)
+-- google user จะไม่มี password_hash (null) ยังคง login ด้วย Google ได้ตามเดิม
+alter table users add column if not exists password_hash text;
+
+-- token รีเซ็ตรหัสผ่าน (ลืมรหัสผ่าน → ส่งลิงก์ทางอีเมล) หมดอายุใน 1 ชม.
+create table if not exists password_resets (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references users(id) on delete cascade,
+  token text unique not null,
+  expires_at timestamptz not null,
+  used boolean default false,
+  created_at timestamptz default now()
+);
+create index if not exists idx_password_resets_token on password_resets(token);
+
 -- index ที่ใช้บ่อย
 create index if not exists idx_tasks_project on tasks(project_id);
 create index if not exists idx_tasks_assignee on tasks(assigned_to);
