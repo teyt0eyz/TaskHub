@@ -12,7 +12,10 @@ const STATUSES = [
   { key: "done", label: "Done", bg: "#2E9E5B", color: "#fff" },
 ];
 
-export default function TaskDetail({ task, projectId, onClose, canComment = true, canEdit = false, canReview = false, members = [], currentUserId = null }) {
+export default function TaskDetail({ task, projectId, onClose, canComment = true, canEdit = false, canReview = false, isLeaderRole = false, members = [], currentUserId = null }) {
+  // ตรวจงานของตัวเองไม่ได้ (ยกเว้นหัวหน้าจริง)
+  const viewerIsAssignee = (task.assignees?.length ? task.assignees : [task.assignee]).some((a) => a?.id === currentUserId);
+  const canReviewThis = canReview && (isLeaderRole || !viewerIsAssignee);
   const router = useRouter();
   const fileRef = useRef(null);
   const [status, setStatus] = useState(task.status);
@@ -359,7 +362,7 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
             )}
 
             {/* ผู้มีสิทธิ์Review work: ยืนยันผ่าน / ตีกลับ Completedแล้ว */}
-            {canReview && status === "done" && !task.approved && (
+            {canReviewThis && status === "done" && !task.approved && (
               <div className="mt-3">
                 {!rejecting ? (
                   <div className="flex flex-wrap gap-2">

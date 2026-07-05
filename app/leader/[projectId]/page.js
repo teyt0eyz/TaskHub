@@ -34,6 +34,7 @@ export default async function LeaderWorkspacePage({ params }) {
       canEdit={can(membership, PERM.TASKS)}
       canReview={can(membership, PERM.REVIEW)}
       canCreate={can(membership, PERM.TASKS)}
+      isLeaderRole={membership?.role === "leader"}
     />
   );
 }

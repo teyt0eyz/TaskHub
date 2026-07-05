@@ -164,6 +164,7 @@ export default function WorkspaceCanvas({
   canCreate = true,
   canEdit = false,
   canReview = false,
+  isLeaderRole = false,
 }) {
   const isList = variant === "list";
   const router = useRouter();
@@ -512,6 +513,7 @@ export default function WorkspaceCanvas({
           canComment={(detail.assignees || [detail.assignee]).some((a) => a?.id === currentUserId)}
           canEdit={canEdit}
           canReview={canReview}
+          isLeaderRole={isLeaderRole}
           members={members}
           currentUserId={currentUserId}
         />

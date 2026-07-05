@@ -18,6 +18,7 @@ export default async function LeaderTasksPage({ params }) {
       currentUserId={user?.id}
       canEdit={can(membership, PERM.TASKS)}
       canReview={can(membership, PERM.REVIEW)}
+      isLeaderRole={membership?.role === "leader"}
     />
   );
 }

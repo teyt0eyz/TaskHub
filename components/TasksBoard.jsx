@@ -12,7 +12,7 @@ const columns = [
   { key: "done", title: "Done", bar: "#2E9E5B" },
 ];
 
-export default function TasksBoard({ projectId, tasks = [], members = [], currentUserId, canEdit = false, canReview = false }) {
+export default function TasksBoard({ projectId, tasks = [], members = [], currentUserId, canEdit = false, canReview = false, isLeaderRole = false }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -219,6 +219,7 @@ export default function TasksBoard({ projectId, tasks = [], members = [], curren
           canComment={(detail.assignees || [detail.assignee]).some((a) => a?.id === currentUserId)}
           canEdit={canEdit}
           canReview={canReview}
+          isLeaderRole={isLeaderRole}
           members={members}
           currentUserId={currentUserId}
         />

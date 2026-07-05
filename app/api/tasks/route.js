@@ -122,6 +122,14 @@ export async function PATCH(req) {
     if (editsContent && !can(m, PERM.TASKS)) return Response.json({ error: "forbidden" }, { status: 403 });
     if (needsReview && !can(m, PERM.REVIEW)) return Response.json({ error: "forbidden" }, { status: 403 });
 
+    // ตรวจงาน "ของตัวเอง" ไม่ได้ (ผลประโยชน์ทับซ้อน) — ยกเว้นหัวหน้าจริงซึ่งเป็นผู้มีอำนาจสูงสุด
+    if (needsReview && m?.role !== "leader") {
+      const { data: as } = await supabase.from("task_assignees").select("user_id").eq("task_id", id);
+      if ((as || []).some((r) => r.user_id === user.id)) {
+        return Response.json({ error: "cannot_review_own", message: "You can’t review your own task" }, { status: 403 });
+      }
+    }
+
     // เปลี่ยนผู้รับผิดชอบ: ห้ามมอบให้คนที่ตำแหน่งสูงกว่าตัวเอง
     if (editsContent && body.assigned_to !== undefined) {
       const rawA = Array.isArray(body.assigned_to) ? body.assigned_to : body.assigned_to ? [body.assigned_to] : [];
