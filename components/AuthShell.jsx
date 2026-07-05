@@ -6,16 +6,12 @@ import Link from "next/link";
 // เปลือกหน้าตาเดียวกันของทุกหน้า auth (login / signup / forgot / reset) — พื้นหลังเขียวเป็นหลัก
 export default function AuthShell({ title, subtitle, children, footer }) {
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-brand p-6">
-      {/* พื้นหลังไล่เฉดเขียว */}
-      <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-brand via-brand to-brand-dark" />
-      {/* จุดลายจาง ๆ ให้พื้นหลังไม่เรียบเกินไป */}
-      <div className="dot-grid-green pointer-events-none absolute inset-0 opacity-60" />
-      {/* แสงนวล ๆ มุมจอ */}
-      <div className="pointer-events-none absolute -left-24 top-0 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
-      <div className="pointer-events-none absolute -right-20 bottom-0 h-80 w-80 rounded-full bg-brand-dark/50 blur-3xl" />
+    <div className="dot-grid relative flex min-h-screen items-center justify-center overflow-hidden p-6">
+      {/* soft brand glows */}
+      <div className="pointer-events-none absolute -left-24 top-0 h-72 w-72 rounded-full bg-brand/10 blur-3xl" />
+      <div className="pointer-events-none absolute -right-20 bottom-0 h-80 w-80 rounded-full bg-accent/10 blur-3xl" />
 
-      <div className="relative z-10 w-full max-w-[380px] animate-pop rounded-3xl border border-line bg-white p-8 shadow-[0_24px_70px_rgba(0,0,0,.28)]">
+      <div className="relative z-10 w-full max-w-[380px] animate-pop rounded-3xl border border-line bg-white p-8 shadow-[0_20px_60px_rgba(0,0,0,.1)]">
         <div className="flex flex-col items-center text-center">
           <h1 className="text-2xl font-bold tracking-tight text-ink">{title}</h1>
           {subtitle && <p className="mt-1.5 text-sm leading-relaxed text-ink-2">{subtitle}</p>}
@@ -27,7 +23,7 @@ export default function AuthShell({ title, subtitle, children, footer }) {
       {/* back to home */}
       <Link
         href="/"
-        className="absolute left-5 top-5 z-10 flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium text-white/90 transition-colors hover:bg-white/15 hover:text-white"
+        className="absolute left-5 top-5 z-10 flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium text-ink-2 transition-colors hover:bg-white/70 hover:text-ink"
       >
         ← Back to home
       </Link>

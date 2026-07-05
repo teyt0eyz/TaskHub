@@ -157,6 +157,15 @@ h3 {
   padding: 0 0.1em;
 }
 
+/* ไฮไลต์คำสำคัญบนพื้นเขียว (หน้า homepage) — ใช้โทนสว่างแทนสีเขียว */
+.hl-brush-light {
+  background-image: linear-gradient(120deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.28));
+  background-repeat: no-repeat;
+  background-size: 100% 38%;
+  background-position: 0 82%;
+  padding: 0 0.1em;
+}
+
 /* มินิเดโมในผังต้นไม้ — สลับ Todo ↔ Done ให้ดูเหมือนงานกำลังเสร็จ */
 @keyframes demo-todo {
   0%, 42% { opacity: 1; }
