@@ -61,6 +61,12 @@ h3 {
   background-size: 24px 24px;
 }
 
+/* จุดลายสีขาวจาง ๆ บนพื้นหลังเขียว (หน้า auth) */
+.dot-grid-green {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.18) 1.5px, transparent 1.5px);
+  background-size: 22px 22px;
+}
+
 /* Thin, unobtrusive scrollbars for the canvas */
 .scroll-soft::-webkit-scrollbar {
   width: 10px;
