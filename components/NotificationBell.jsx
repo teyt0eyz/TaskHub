@@ -23,17 +23,8 @@ export default function NotificationBell() {
   const userIdRef = useRef(null);
   const itemsRef = useRef([]);
   const toastTimers = useRef([]);
-
-  const load = useCallback(async () => {
-    const res = await fetch("/api/notifications");
-    if (!res.ok) return;
-    const data = await res.json();
-    setItems(data.items || []);
-    itemsRef.current = data.items || [];
-    setUnread(data.unread || 0);
-    userIdRef.current = data.userId;
-    return data.userId;
-  }, []);
+  const lastToastIdRef = useRef(null);
+  const seededRef = useRef(false);
 
   // เด้ง toast แจ้งเตือนด้านบน (สไลด์ลงมา อยู่แป๊บนึง แล้วหายเองแบบ push บนมือถือ)
   const popToast = useCallback((message) => {
@@ -45,6 +36,26 @@ export default function NotificationBell() {
     toastTimers.current.push(setTimeout(() => setToast(null), 4350));
   }, []);
   useEffect(() => () => toastTimers.current.forEach(clearTimeout), []);
+
+  const load = useCallback(async () => {
+    const res = await fetch("/api/notifications", { cache: "no-store" });
+    if (!res.ok) return;
+    const data = await res.json();
+    const list = data.items || [];
+    setItems(list);
+    itemsRef.current = list;
+    setUnread(data.unread || 0);
+    userIdRef.current = data.userId;
+
+    // เด้ง toast เมื่อมีแจ้งเตือน "ใหม่" (ทำงานทั้งจาก realtime และ polling — ไม่พึ่ง realtime อย่างเดียว)
+    const newest = list[0];
+    if (newest && seededRef.current && newest.id !== lastToastIdRef.current && !newest.read) {
+      popToast(newest.message);
+    }
+    if (newest) lastToastIdRef.current = newest.id;
+    seededRef.current = true;
+    return data.userId;
+  }, [popToast]);
 
   // โหลดครั้งแรก + subscribe realtime เฉพาะแจ้งเตือนของเรา
   useEffect(() => {
@@ -64,17 +75,14 @@ export default function NotificationBell() {
         .on(
           "postgres_changes",
           { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${uid}` },
-          (payload) => {
-            popToast(payload.new.message);
-            load(); // ดึงใหม่เพื่อให้ได้ href สำหรับกดเปิดงาน
-          }
+          () => load() // load() จะ toast แจ้งเตือนใหม่ให้เอง (ทางเดียว กัน toast ซ้ำ)
         )
         .subscribe();
     })();
     return () => {
       if (supabase && channel) supabase.removeChannel(channel);
     };
-  }, [load, popToast]);
+  }, [load]);
 
   // polling fallback — เผื่อ realtime ไม่ติด ก็ยังเห็นแจ้งเตือนใหม่ภายใน ~10 วิ
   useEffect(() => {
