@@ -226,24 +226,34 @@ export default function HomePage() {
       </header>
 
       {/* Hero — centered, ollama-style */}
-      <section className="flex-1 bg-linear-to-b from-brand-soft/60 via-white to-white px-5 pb-4 pt-16 sm:pt-24">
-        <div className="mx-auto max-w-3xl text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand-soft px-3.5 py-1.5 text-xs font-semibold text-brand-dark shadow-sm">
+      <section className="relative flex-1 overflow-hidden bg-linear-to-b from-brand-soft/60 via-white to-white px-5 pb-4 pt-16 sm:pt-24">
+        {/* รูปทรงลอยเบลอ ๆ ให้พื้นหลังมีชีวิต (โทนสีเดิม) */}
+        <div className="pointer-events-none absolute inset-0">
+          <div className="animate-floaty-slow absolute left-[6%] top-24 h-24 w-24 rounded-full bg-brand-soft blur-2xl" />
+          <div className="animate-floaty absolute right-[8%] top-16 h-28 w-28 rounded-full bg-accent-soft blur-2xl" />
+          <div className="animate-floaty absolute bottom-24 left-[14%] h-16 w-16 rounded-full bg-warn-soft blur-2xl" />
+          <div className="animate-floaty-slow absolute bottom-32 right-[16%] h-20 w-20 rounded-full bg-brand-soft blur-2xl" />
+          <div className="animate-floaty absolute left-[11%] top-1/2 h-2 w-2 rounded-full bg-brand/40" />
+          <div className="animate-floaty-slow absolute right-[13%] top-1/3 h-2.5 w-2.5 rounded-full bg-accent/40" />
+        </div>
+
+        <div className="relative z-10 mx-auto max-w-3xl text-center">
+          <span className="animate-fade-up inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand-soft px-3.5 py-1.5 text-xs font-semibold text-brand-dark shadow-sm">
             ✨ Track your team's tasks + mood in one place
           </span>
-          <h1 className="mt-6 font-heading text-4xl font-bold leading-[1.1] tracking-tight text-ink sm:text-6xl">
+          <h1 className="animate-fade-up mt-6 font-heading text-4xl font-bold leading-[1.1] tracking-tight text-ink sm:text-6xl" style={{ animationDelay: "80ms" }}>
             Manage team work<br />and stay <span className="hl-brush text-brand">productive</span>
           </h1>
-          <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-ink-2">
+          <p className="animate-fade-up mx-auto mt-6 max-w-xl text-lg leading-relaxed text-ink-2" style={{ animationDelay: "160ms" }}>
             Assign tasks, track progress, and look after your team's mood — all in one place.
             Perfect for work teams, teachers &amp; students, or a group of friends.
           </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <div className="animate-fade-up mt-8 flex flex-wrap items-center justify-center gap-3" style={{ animationDelay: "240ms" }}>
             <Link
               href="/login"
-              className="rounded-xl bg-brand px-7 py-3 text-sm font-bold text-white shadow-[0_10px_24px_rgba(46,158,91,.28)] transition-transform hover:-translate-y-0.5 hover:bg-brand-dark"
+              className="group rounded-xl bg-brand px-7 py-3 text-sm font-bold text-white shadow-[0_10px_24px_rgba(46,158,91,.28)] transition-transform hover:-translate-y-0.5 hover:bg-brand-dark"
             >
-              Get started free →
+              Get started free <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
             </Link>
             <a href="#features" className="rounded-xl border border-line bg-white px-7 py-3 text-sm font-semibold text-ink transition-colors hover:bg-surface-2">
               See features
@@ -252,7 +262,7 @@ export default function HomePage() {
         </div>
 
         {/* product shot */}
-        <div className="mx-auto mt-14 max-w-3xl px-1">
+        <div className="relative z-10 mx-auto mt-14 max-w-3xl px-1">
           <Reveal>
             <WindowFrame>
               <TreePreview />
@@ -271,8 +281,8 @@ export default function HomePage() {
           <div className="grid gap-8 sm:grid-cols-3">
             {features.map((f, i) => (
               <Reveal key={f.title} delay={i * 120}>
-                <div className="flex h-full flex-col items-center rounded-2xl border border-line bg-white p-7 text-center shadow-[0_2px_10px_rgba(0,0,0,.03)]">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-soft text-2xl ring-1 ring-brand/15">{f.emoji}</div>
+                <div className="group flex h-full flex-col items-center rounded-2xl border border-line bg-white p-7 text-center shadow-[0_2px_10px_rgba(0,0,0,.03)] transition-all duration-300 hover:-translate-y-1.5 hover:border-brand/30 hover:shadow-[0_16px_40px_rgba(46,158,91,.15)]">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-soft text-2xl ring-1 ring-brand/15 transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">{f.emoji}</div>
                   <h3 className="mt-4 text-base font-semibold text-ink">{f.title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-ink-2">{f.desc}</p>
                 </div>
@@ -289,9 +299,9 @@ export default function HomePage() {
           <p className="mx-auto mt-3 max-w-md text-white/85">Start free today — just log in with Google.</p>
           <Link
             href="/login"
-            className="mt-7 inline-block rounded-xl bg-white px-7 py-3 text-sm font-bold text-brand-dark shadow-[0_10px_24px_rgba(0,0,0,.18)] transition-transform hover:-translate-y-0.5 hover:bg-brand-soft"
+            className="group mt-7 inline-block rounded-xl bg-white px-7 py-3 text-sm font-bold text-brand-dark shadow-[0_10px_24px_rgba(0,0,0,.18)] transition-transform hover:-translate-y-0.5 hover:bg-brand-soft"
           >
-            Get started free →
+            Get started free <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
           </Link>
         </Reveal>
       </section>
