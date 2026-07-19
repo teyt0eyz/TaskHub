@@ -187,7 +187,7 @@ function TreePreview() {
 
 function WindowFrame({ children }) {
   return (
-    <div className="mx-auto max-w-3xl overflow-hidden rounded-2xl border border-line bg-white shadow-[0_40px_90px_-30px_rgba(0,0,0,.28)]">
+    <div className="mx-auto max-w-3xl overflow-hidden rounded-2xl border border-white/15 bg-white shadow-[0_50px_120px_-30px_rgba(56,189,248,.45),0_0_0_1px_rgba(255,255,255,.06)]">
       <div className="flex items-center gap-2 border-b border-line bg-surface-2/50 px-4 py-3">
         <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
         <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
@@ -205,57 +205,74 @@ const features = [
   { emoji: "🤖", title: "AI work summaries", desc: "Let Gemini summarize your team's work and mood — download or print the report." },
 ];
 
+/* ---------- aurora background (dark landing theme) ---------- */
+
+// ก้อนไล่สีเบลอซ้อนกันหลายชั้น → ได้ mesh gradient แบบ modern โดยไม่ต้องใช้รูป
+function AuroraBackdrop() {
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+      {/* ฐานไล่สีน้ำเงินเข้ม */}
+      <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_0%,#16203c_0%,#0b1020_45%,#070a14_100%)]" />
+
+      {/* ก้อนสีหลัก */}
+      <div className="animate-aurora absolute -left-[10%] top-[6%] h-[38rem] w-[38rem] rounded-full bg-[#1d4ed8] opacity-40 blur-[110px]" />
+      <div className="animate-aurora absolute -right-[8%] top-[-6%] h-[34rem] w-[34rem] rounded-full bg-[#10b981] opacity-35 blur-[120px]" style={{ animationDelay: "-6s" }} />
+      <div className="animate-aurora absolute right-[6%] top-[34%] h-[30rem] w-[30rem] rounded-full bg-[#7c3aed] opacity-40 blur-[120px]" style={{ animationDelay: "-11s" }} />
+      <div className="animate-aurora absolute bottom-[4%] left-[18%] h-[32rem] w-[32rem] rounded-full bg-[#db2777] opacity-30 blur-[130px]" style={{ animationDelay: "-16s" }} />
+      <div className="animate-aurora absolute bottom-[18%] right-[24%] h-[24rem] w-[24rem] rounded-full bg-[#06b6d4] opacity-25 blur-[110px]" style={{ animationDelay: "-3s" }} />
+
+      {/* ฟิล์มมืดด้านล่าง ให้ข้อความอ่านง่ายและกลืนกับ section ถัดไป */}
+      <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-b from-transparent to-[#070a14]" />
+    </div>
+  );
+}
+
 export default function HomePage() {
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="flex min-h-screen flex-col bg-[#070a14] text-white">
       {/* Nav */}
-      <header className="sticky top-0 z-30 border-b border-line bg-white/80 backdrop-blur">
+      <header className="sticky top-0 z-30 border-b border-white/10 bg-[#070a14]/70 backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5">
           <div className="flex items-center gap-2.5">
-            <span className="font-heading text-lg font-bold text-ink">Task<span style={{ color: "#6fcf97" }}>Hub</span></span>
+            <span className="font-heading text-lg font-bold text-white">Task<span style={{ color: "#6fcf97" }}>Hub</span></span>
           </div>
           <div className="flex items-center gap-1.5">
-            <a href="#features" className="hidden rounded-lg px-3.5 py-2 text-sm font-semibold text-ink-2 hover:bg-surface-2 hover:text-ink sm:block">
+            <a href="#features" className="hidden rounded-lg px-3.5 py-2 text-sm font-semibold text-white/70 transition-colors hover:bg-white/10 hover:text-white sm:block">
               Features
             </a>
-            <Link href="/login" className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-dark">
+            <Link
+              href="/login"
+              className="rounded-lg bg-gradient-to-r from-[#2e9e5b] to-[#38bdf8] px-4 py-2 text-sm font-semibold text-white shadow-[0_6px_20px_-6px_rgba(56,189,248,.7)] transition-opacity hover:opacity-90"
+            >
               Log in
             </Link>
           </div>
         </div>
       </header>
 
-      {/* Hero — centered, ollama-style */}
-      <section className="relative flex-1 overflow-hidden bg-linear-to-b from-brand-soft/60 via-white to-white px-5 pb-4 pt-16 sm:pt-24">
-        {/* รูปทรงลอยเบลอ ๆ ให้พื้นหลังมีชีวิต (โทนสีเดิม) */}
-        <div className="pointer-events-none absolute inset-0">
-          <div className="animate-floaty-slow absolute left-[6%] top-24 h-24 w-24 rounded-full bg-brand-soft blur-2xl" />
-          <div className="animate-floaty absolute right-[8%] top-16 h-28 w-28 rounded-full bg-accent-soft blur-2xl" />
-          <div className="animate-floaty absolute bottom-24 left-[14%] h-16 w-16 rounded-full bg-warn-soft blur-2xl" />
-          <div className="animate-floaty-slow absolute bottom-32 right-[16%] h-20 w-20 rounded-full bg-brand-soft blur-2xl" />
-          <div className="animate-floaty absolute left-[11%] top-1/2 h-2 w-2 rounded-full bg-brand/40" />
-          <div className="animate-floaty-slow absolute right-[13%] top-1/3 h-2.5 w-2.5 rounded-full bg-accent/40" />
-        </div>
+      {/* Hero — dark aurora gradient */}
+      <section className="relative flex-1 overflow-hidden px-5 pb-4 pt-16 sm:pt-24">
+        <AuroraBackdrop />
 
         <div className="relative z-10 mx-auto max-w-3xl text-center">
-          <span className="animate-fade-up inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand-soft px-3.5 py-1.5 text-xs font-semibold text-brand-dark shadow-sm">
+          <span className="animate-fade-up inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-white/85 shadow-sm backdrop-blur">
             ✨ Track your team's tasks + mood in one place
           </span>
-          <h1 className="animate-fade-up mt-6 font-heading text-4xl font-bold leading-[1.1] tracking-tight text-ink sm:text-6xl" style={{ animationDelay: "80ms" }}>
-            Manage team work<br />and stay <span className="hl-brush text-brand">productive</span>
+          <h1 className="animate-fade-up mt-6 font-heading text-4xl font-bold leading-[1.1] tracking-tight text-white sm:text-6xl" style={{ animationDelay: "80ms" }}>
+            Manage team work<br />and stay <span className="text-aurora">productive</span>
           </h1>
-          <p className="animate-fade-up mx-auto mt-6 max-w-xl text-lg leading-relaxed text-ink-2" style={{ animationDelay: "160ms" }}>
+          <p className="animate-fade-up mx-auto mt-6 max-w-xl text-lg leading-relaxed text-white/65" style={{ animationDelay: "160ms" }}>
             Assign tasks, track progress, and look after your team's mood — all in one place.
             Perfect for work teams, teachers &amp; students, or a group of friends.
           </p>
           <div className="animate-fade-up mt-8 flex flex-wrap items-center justify-center gap-3" style={{ animationDelay: "240ms" }}>
             <Link
               href="/login"
-              className="group rounded-xl bg-brand px-7 py-3 text-sm font-bold text-white shadow-[0_10px_24px_rgba(46,158,91,.28)] transition-transform hover:-translate-y-0.5 hover:bg-brand-dark"
+              className="group rounded-xl bg-gradient-to-r from-[#2e9e5b] via-[#22b8a6] to-[#38bdf8] px-7 py-3 text-sm font-bold text-white shadow-[0_14px_38px_-10px_rgba(56,189,248,.8)] transition-transform hover:-translate-y-0.5"
             >
               Get started free <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
             </Link>
-            <a href="#features" className="rounded-xl border border-line bg-white px-7 py-3 text-sm font-semibold text-ink transition-colors hover:bg-surface-2">
+            <a href="#features" className="rounded-xl border border-white/20 bg-white/5 px-7 py-3 text-sm font-semibold text-white backdrop-blur transition-colors hover:bg-white/10">
               See features
             </a>
           </div>
@@ -271,20 +288,24 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Features — clean */}
-      <section id="features" className="border-t border-line bg-brand-soft/40">
-        <div className="mx-auto max-w-5xl px-5 py-20">
+      {/* Features — glass cards */}
+      <section id="features" className="relative overflow-hidden border-t border-white/10 bg-[#070a14]">
+        <div className="pointer-events-none absolute inset-0" aria-hidden>
+          <div className="absolute left-1/2 top-0 h-72 w-[46rem] -translate-x-1/2 rounded-full bg-[#7c3aed] opacity-20 blur-[120px]" />
+          <div className="absolute bottom-0 right-[10%] h-56 w-[28rem] rounded-full bg-[#10b981] opacity-15 blur-[110px]" />
+        </div>
+        <div className="relative mx-auto max-w-5xl px-5 py-20">
           <Reveal className="mx-auto mb-12 max-w-lg text-center">
-            <h2 className="font-heading text-2xl font-bold tracking-tight text-ink sm:text-3xl">Everything your team needs</h2>
-            <p className="mt-2 text-ink-2">Designed to give you your whole team at a glance.</p>
+            <h2 className="font-heading text-2xl font-bold tracking-tight text-white sm:text-3xl">Everything your team needs</h2>
+            <p className="mt-2 text-white/60">Designed to give you your whole team at a glance.</p>
           </Reveal>
           <div className="grid gap-8 sm:grid-cols-3">
             {features.map((f, i) => (
               <Reveal key={f.title} delay={i * 120}>
-                <div className="group flex h-full flex-col items-center rounded-2xl border border-line bg-white p-7 text-center shadow-[0_2px_10px_rgba(0,0,0,.03)] transition-all duration-300 hover:-translate-y-1.5 hover:border-brand/30 hover:shadow-[0_16px_40px_rgba(46,158,91,.15)]">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-soft text-2xl ring-1 ring-brand/15 transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">{f.emoji}</div>
-                  <h3 className="mt-4 text-base font-semibold text-ink">{f.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-ink-2">{f.desc}</p>
+                <div className="ring-gradient group flex h-full flex-col items-center rounded-2xl border border-white/10 bg-white/[0.04] p-7 text-center backdrop-blur transition-all duration-300 hover:-translate-y-1.5 hover:bg-white/[0.07] hover:shadow-[0_20px_50px_-20px_rgba(56,189,248,.45)]">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-white/15 to-white/5 text-2xl ring-1 ring-white/15 transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">{f.emoji}</div>
+                  <h3 className="mt-4 text-base font-semibold text-white">{f.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-white/60">{f.desc}</p>
                 </div>
               </Reveal>
             ))}
@@ -292,14 +313,16 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA — green band */}
-      <section className="bg-brand">
-        <Reveal className="mx-auto max-w-3xl px-5 py-20 text-center">
+      {/* CTA — gradient band */}
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0f5132] via-[#1d4ed8] to-[#7c3aed]" aria-hidden />
+        <div className="absolute inset-0 bg-[radial-gradient(80%_120%_at_50%_0%,rgba(255,255,255,.18),transparent_60%)]" aria-hidden />
+        <Reveal className="relative mx-auto max-w-3xl px-5 py-20 text-center">
           <h2 className="font-heading text-2xl font-bold tracking-tight text-white sm:text-3xl">Ready to make your team more productive?</h2>
-          <p className="mx-auto mt-3 max-w-md text-white/85">Start free today — just log in with Google.</p>
+          <p className="mx-auto mt-3 max-w-md text-white/80">Start free today — just log in with Google.</p>
           <Link
             href="/login"
-            className="group mt-7 inline-block rounded-xl bg-white px-7 py-3 text-sm font-bold text-brand-dark shadow-[0_10px_24px_rgba(0,0,0,.18)] transition-transform hover:-translate-y-0.5 hover:bg-brand-soft"
+            className="group mt-7 inline-block rounded-xl bg-white px-7 py-3 text-sm font-bold text-[#0b1020] shadow-[0_14px_34px_-10px_rgba(0,0,0,.6)] transition-transform hover:-translate-y-0.5"
           >
             Get started free <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
           </Link>
@@ -307,9 +330,9 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-line bg-white">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-5 py-6 text-sm text-ink-3 sm:flex-row">
-          <span className="font-semibold text-ink-2">Task<span style={{ color: "#6fcf97" }}>Hub</span></span>
+      <footer className="border-t border-white/10 bg-[#070a14]">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-5 py-6 text-sm text-white/45 sm:flex-row">
+          <span className="font-semibold text-white/70">Task<span style={{ color: "#6fcf97" }}>Hub</span></span>
           <span>© 2026 TaskHub · Capstone Project</span>
         </div>
       </footer>

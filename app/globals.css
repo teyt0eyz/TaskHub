@@ -30,6 +30,43 @@
   --foreground: #1c1c1c;
 }
 
+/*
+ * Dark theme — override the @theme tokens ที่ Tailwind สร้างเป็น CSS var ไว้แล้ว
+ * ทำให้ utility เดิม (bg-surface / text-ink / border-line) พลิกเป็นโหมดมืดทั้งแอป
+ * โดยไม่ต้องไล่แก้ทีละ component
+ */
+html.dark {
+  --background: #0e1117;
+  --foreground: #e9edf3;
+
+  --color-ink: #e9edf3;
+  --color-ink-2: #a3adbb;
+  --color-ink-3: #6f7b8a;
+  --color-line: #262d38;
+  --color-line-soft: #1c222b;
+  --color-surface: #151a22;
+  --color-surface-2: #1c222b;
+
+  --color-brand-soft: rgba(46, 158, 91, 0.16);
+  --color-accent-soft: rgba(255, 107, 43, 0.16);
+  --color-warn-soft: rgba(245, 196, 0, 0.16);
+  --color-warn-text: #f0cf4a;
+
+  color-scheme: dark;
+}
+
+/*
+ * `bg-white` ถูกใช้ ~90 จุดเป็นสีพื้นการ์ด/แผง — remap เฉพาะ background
+ * (ไม่แตะ text-white เพราะตัวอักษรบนปุ่มสีแบรนด์ต้องขาวเหมือนเดิม)
+ */
+html.dark .bg-white {
+  background-color: var(--color-surface);
+}
+html.dark .bg-white\/80,
+html.dark .bg-white\/85 {
+  background-color: color-mix(in srgb, var(--color-surface) 85%, transparent);
+}
+
 html,
 body {
   height: 100%;
@@ -59,6 +96,74 @@ h3 {
   background-color: #ffffff;
   background-image: radial-gradient(#e0e0e0 1.5px, transparent 1.5px);
   background-size: 24px 24px;
+}
+html.dark .dot-grid {
+  background-color: #10151d;
+  background-image: radial-gradient(#2c3542 1.5px, transparent 1.5px);
+}
+
+/* ---------- landing page: aurora mesh gradient ---------- */
+
+/* ก้อนสีเบลอที่ค่อย ๆ ลอยและบิดตัว ให้พื้นหลังดูมีชีวิตแบบ gradient สมัยใหม่ */
+@keyframes aurora-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(6%, -8%, 0) scale(1.18);
+  }
+  66% {
+    transform: translate3d(-7%, 6%, 0) scale(0.92);
+  }
+}
+.animate-aurora {
+  animation: aurora-drift 22s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* ไล่สีวิ่งในตัวอักษรหัวข้อ */
+@keyframes gradient-pan {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+.text-aurora {
+  background-image: linear-gradient(
+    100deg,
+    #6fcf97 0%,
+    #34d399 18%,
+    #38bdf8 40%,
+    #818cf8 62%,
+    #c084fc 80%,
+    #f472b6 100%
+  );
+  background-size: 220% auto;
+  animation: gradient-pan 8s ease-in-out infinite;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* เส้นขอบไล่สีบางๆ สำหรับการ์ดกระจก */
+.ring-gradient {
+  position: relative;
+}
+.ring-gradient::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(140deg, rgba(111, 207, 151, 0.55), rgba(129, 140, 248, 0.35), transparent 65%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
 
 /* Thin, unobtrusive scrollbars for the canvas */
@@ -172,6 +277,8 @@ h3 {
   .animate-floaty,
   .animate-floaty-slow,
   .animate-wiggle,
+  .animate-aurora,
+  .text-aurora,
   .demo-todo,
   .demo-done,
   .demo-bar {

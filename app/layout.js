@@ -1,6 +1,7 @@
 import { Noto_Sans_Thai, Prompt } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
+import ThemeScript from "@/components/ThemeScript";
 
 const notoSansThai = Noto_Sans_Thai({
   variable: "--font-noto-sans-thai",
@@ -22,7 +23,10 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="th" className={`${notoSansThai.variable} ${prompt.variable} h-full`}>
+    <html lang="th" className={`${notoSansThai.variable} ${prompt.variable} h-full`} suppressHydrationWarning>
+      <head>
+        <ThemeScript />
+      </head>
       <body className="min-h-full bg-surface text-ink antialiased">
         <Providers>{children}</Providers>
       </body>

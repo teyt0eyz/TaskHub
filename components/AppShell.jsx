@@ -13,6 +13,7 @@ import NotificationBell from "@/components/NotificationBell";
 import VisibilityToggle from "@/components/VisibilityToggle";
 import JoinModeToggle from "@/components/JoinModeToggle";
 import DeleteProjectButton from "@/components/DeleteProjectButton";
+import ThemeToggle from "@/components/ThemeToggle";
 
 function initialsOf(nameOrEmail = "") {
   const s = String(nameOrEmail).trim();
@@ -346,6 +347,7 @@ export default function AppShell({ nav = [], title = "Project Alpha", roleLabel,
                     {userName}
                   </div>
                   <EmailNotifyToggle />
+                  <ThemeToggle />
                   <div className="my-1 border-t border-line" />
                   <button
                     onClick={() => signOut({ callbackUrl: "/login" })}
