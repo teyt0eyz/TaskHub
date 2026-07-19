@@ -16,7 +16,7 @@ function MemberCard({ m, projectId, canManage, canPromote, canAI }) {
   const mood = m.mood ? moods[m.mood] : null;
   const pct = m.tasksTotal ? Math.round((m.tasksDone / m.tasksTotal) * 100) : 0;
   return (
-    <div className="relative rounded-2xl border border-line bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,.05)]">
+    <div className="relative rounded-2xl border border-line bg-surface p-5 shadow-[0_2px_8px_rgba(0,0,0,.05)]">
       {canManage && m.role !== "leader" && <RemoveMemberButton projectId={projectId} userId={m.id} name={m.name} />}
 
       <div className="flex items-center gap-3 pr-8">
@@ -121,7 +121,7 @@ export default async function LeaderMembersPage({ params }) {
       )}
 
       {members.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-line bg-white/60 p-10 text-center text-ink-3">
+        <div className="rounded-2xl border border-dashed border-line bg-surface/60 p-10 text-center text-ink-3">
           No members in this project yet
         </div>
       ) : (

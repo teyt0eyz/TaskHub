@@ -68,7 +68,7 @@ export default function AssigneeSelect({ members = [], value = [], onChange, cur
         <span className="text-ink-3">▾</span>
       </button>
       {open && (
-        <div className="absolute left-0 right-0 z-50 mt-1 overflow-hidden rounded-xl border border-line bg-white shadow-[0_8px_24px_rgba(0,0,0,.12)]">
+        <div className="absolute left-0 right-0 z-50 mt-1 overflow-hidden rounded-xl border border-line bg-surface shadow-[0_8px_24px_rgba(0,0,0,.12)]">
           <div className="border-b border-line p-2">
             <input
               autoFocus

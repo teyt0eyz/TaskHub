@@ -8,7 +8,7 @@ function fmt(iso) {
 function TaskRow({ t }) {
   const pri = priorityStyle[t.priority] || priorityStyle.medium;
   return (
-    <div className="flex items-center gap-3 rounded-xl border border-line bg-white px-4 py-3">
+    <div className="flex items-center gap-3 rounded-xl border border-line bg-surface px-4 py-3">
       <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-soft text-sm">✓</span>
       <div className="min-w-0 flex-1">
         <div className="truncate text-sm font-semibold text-ink">{t.title}</div>
@@ -32,7 +32,7 @@ export default function CompletedHistory({ groups = [], showMemberHeader = true 
 
   if (totalTasks === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-line bg-white/60 p-10 text-center text-ink-3">
+      <div className="rounded-2xl border-2 border-dashed border-line bg-surface-2 p-10 text-center text-ink-2">
         No approved work yet — tasks appear here once a leader clicks “Approve task”
       </div>
     );

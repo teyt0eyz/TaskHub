@@ -103,7 +103,7 @@ export default function TasksBoard({ projectId, tasks = [], members = [], curren
               <div className="mb-3 flex items-center gap-2 px-1">
                 <span className="h-2.5 w-2.5 rounded-full" style={{ background: col.bar }} />
                 <span className="text-sm font-semibold text-ink">{col.title}</span>
-                <span className="rounded-full bg-white px-2 py-0.5 text-xs font-semibold text-ink-2">
+                <span className="rounded-full bg-surface px-2 py-0.5 text-xs font-semibold text-ink-2">
                   {items.length}
                 </span>
               </div>
@@ -127,7 +127,7 @@ export default function TasksBoard({ projectId, tasks = [], members = [], curren
           <form
             onClick={(e) => e.stopPropagation()}
             onSubmit={createTask}
-            className="w-full max-w-md space-y-3 rounded-2xl border border-line bg-white p-6 shadow-xl"
+            className="w-full max-w-md space-y-3 rounded-2xl border border-line bg-surface p-6 shadow-xl"
           >
             <h2 className="text-lg font-bold text-ink">New task</h2>
             <div>

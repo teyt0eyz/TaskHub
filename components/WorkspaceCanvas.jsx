@@ -360,7 +360,7 @@ export default function WorkspaceCanvas({
               {/* root node */}
               <div style={{ position: "absolute", left: leader.x, top: leader.y, width: leader.w }}>
                 <div
-                  className="flex h-[92px] items-center rounded-[14px] border-2 bg-white px-4"
+                  className="flex h-[92px] items-center rounded-[14px] border-2 bg-surface px-4"
                   style={{ borderColor: rootColor, boxShadow: `0 3px 12px ${rootColor}22` }}
                 >
                   <div className="flex items-center gap-3">
@@ -398,7 +398,7 @@ export default function WorkspaceCanvas({
                   }}
                 >
                   <div
-                    className="flex items-center rounded-[14px] border-2 bg-white px-4"
+                    className="flex items-center rounded-[14px] border-2 bg-surface px-4"
                     style={{ height: h.h, borderColor: rs.color, boxShadow: `0 3px 12px ${rs.color}26` }}
                   >
                     <div className="flex items-center gap-3">
@@ -463,7 +463,7 @@ export default function WorkspaceCanvas({
               {tasks.length === 0 && (
                 <div
                   style={{ position: "absolute", left: leader.x - 10, top: leader.y + LEADER_H + 50, width: 240 }}
-                  className="rounded-xl border border-dashed border-line bg-white/70 py-10 text-center text-sm text-ink-3"
+                  className="rounded-xl border border-dashed border-line bg-surface/70 py-10 text-center text-sm text-ink-3"
                 >
                   No tasks yet{isList ? " assigned to you" : " — click + to add"}
                 </div>
@@ -474,7 +474,7 @@ export default function WorkspaceCanvas({
       </div>
 
       {isList && tasks.length > 0 && (
-        <div className="absolute left-5 top-5 flex items-center gap-2 rounded-full border border-line bg-white/85 px-3.5 py-1.5 text-xs font-medium text-ink-2 shadow-sm backdrop-blur">
+        <div className="absolute left-5 top-5 flex items-center gap-2 rounded-full border border-line bg-surface/85 px-3.5 py-1.5 text-xs font-medium text-ink-2 shadow-sm backdrop-blur">
           ⬇ Sorted by deadline · soonest first
         </div>
       )}
@@ -493,13 +493,13 @@ export default function WorkspaceCanvas({
         <button
           title="Fit to screen"
           onClick={fit}
-          className="flex h-12 w-12 items-center justify-center rounded-full border-[1.5px] border-brand bg-white text-lg text-brand shadow-[0_2px_10px_rgba(0,0,0,.08)] hover:bg-brand-soft"
+          className="flex h-12 w-12 items-center justify-center rounded-full border-[1.5px] border-brand bg-surface text-lg text-brand shadow-[0_2px_10px_rgba(0,0,0,.08)] hover:bg-brand-soft"
         >
           ⤢
         </button>
       </div>
 
-      <div className="absolute bottom-5 right-5 flex items-center gap-1 rounded-full border border-line bg-white px-1.5 py-1 shadow-[0_2px_10px_rgba(0,0,0,.08)]">
+      <div className="absolute bottom-5 right-5 flex items-center gap-1 rounded-full border border-line bg-surface px-1.5 py-1 shadow-[0_2px_10px_rgba(0,0,0,.08)]">
         <button onClick={() => zoomBy(-0.1)} className="flex h-8 w-8 items-center justify-center rounded-full text-lg text-ink-2 hover:bg-surface-2" title="Zoom out">−</button>
         <span className="w-12 text-center text-xs font-semibold tabular-nums text-ink-2">{Math.round(zoom * 100)}%</span>
         <button onClick={() => zoomBy(0.1)} className="flex h-8 w-8 items-center justify-center rounded-full text-lg text-ink-2 hover:bg-surface-2" title="Zoom in">+</button>
@@ -521,7 +521,7 @@ export default function WorkspaceCanvas({
 
       {adding && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4" onClick={() => setAdding(false)}>
-          <form onClick={(e) => e.stopPropagation()} onSubmit={createTask} className="w-full max-w-md space-y-3 rounded-2xl border border-line bg-white p-6 shadow-xl">
+          <form onClick={(e) => e.stopPropagation()} onSubmit={createTask} className="w-full max-w-md space-y-3 rounded-2xl border border-line bg-surface p-6 shadow-xl">
             <h2 className="text-lg font-bold text-ink">New task</h2>
             <div>
               <label className="mb-1 block text-xs font-semibold text-ink-2">Task name</label>

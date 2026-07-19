@@ -57,7 +57,7 @@ export default function PromoteMemberButton({ projectId, userId, name, currentRo
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4" onClick={() => setOpen(false)}>
-          <div onClick={(e) => e.stopPropagation()} className="max-h-[88vh] w-full max-w-md overflow-y-auto rounded-2xl border border-line bg-white p-6 shadow-xl">
+          <div onClick={(e) => e.stopPropagation()} className="max-h-[88vh] w-full max-w-md overflow-y-auto rounded-2xl border border-line bg-surface p-6 shadow-xl">
             <h2 className="text-lg font-bold text-ink">Role for {name}</h2>
             <p className="mt-0.5 text-sm text-ink-2">Set the display title and grant permissions</p>
 
@@ -85,13 +85,13 @@ export default function PromoteMemberButton({ projectId, userId, name, currentRo
                 <div className="flex rounded-xl bg-surface-2 p-1">
                   <button
                     onClick={() => setIsDeputy(false)}
-                    className={`flex-1 rounded-lg py-2 text-[13px] font-semibold transition-all ${!isDeputy ? "bg-white text-ink shadow-sm" : "text-ink-2 hover:text-ink"}`}
+                    className={`flex-1 rounded-lg py-2 text-[13px] font-semibold transition-all ${!isDeputy ? "bg-surface text-ink shadow-sm" : "text-ink-2 hover:text-ink"}`}
                   >
                     Regular member
                   </button>
                   <button
                     onClick={() => setIsDeputy(true)}
-                    className={`flex-1 rounded-lg py-2 text-[13px] font-semibold transition-all ${isDeputy ? "bg-white text-brand-dark shadow-sm" : "text-ink-2 hover:text-ink"}`}
+                    className={`flex-1 rounded-lg py-2 text-[13px] font-semibold transition-all ${isDeputy ? "bg-surface text-brand-dark shadow-sm" : "text-ink-2 hover:text-ink"}`}
                   >
                     ⭐ Deputy (grant access)
                   </button>

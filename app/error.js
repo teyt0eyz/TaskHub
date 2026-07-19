@@ -9,7 +9,7 @@ export default function Error({ error, reset }) {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-surface p-6">
-      <div className="w-full max-w-md rounded-2xl border border-line bg-white p-8 text-center shadow-[0_8px_30px_rgba(0,0,0,.06)]">
+      <div className="w-full max-w-md rounded-2xl border border-line bg-surface p-8 text-center shadow-[0_8px_30px_rgba(0,0,0,.06)]">
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-danger-soft text-3xl">
           😵
         </div>
@@ -26,7 +26,7 @@ export default function Error({ error, reset }) {
           </button>
           <a
             href="/"
-            className="rounded-[10px] border border-line bg-white px-4 py-2.5 text-sm font-semibold text-ink-2 hover:bg-surface-2"
+            className="rounded-[10px] border border-line bg-surface px-4 py-2.5 text-sm font-semibold text-ink-2 hover:bg-surface-2"
           >
             Back to home
           </a>

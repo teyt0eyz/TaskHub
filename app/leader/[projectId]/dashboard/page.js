@@ -9,7 +9,7 @@ const STATUS = {
 
 function StatCard({ label, value, sub, accent }) {
   return (
-    <div className="rounded-2xl border border-line bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,.04)]">
+    <div className="rounded-2xl border border-line bg-surface p-5 shadow-[0_2px_8px_rgba(0,0,0,.04)]">
       <div className="text-3xl font-bold" style={{ color: accent }}>
         {value}
       </div>
@@ -113,7 +113,7 @@ export default async function DashboardPage({ params }) {
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {/* status donut */}
-        <div className="rounded-2xl border border-line bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,.04)]">
+        <div className="rounded-2xl border border-line bg-surface p-5 shadow-[0_2px_8px_rgba(0,0,0,.04)]">
           <h2 className="mb-4 text-sm font-semibold text-ink">Task status breakdown</h2>
           <div className="flex items-center gap-6">
             <Donut segments={segments} total={total} centerLabel={`${donePct}%`} centerSub="Done" />
@@ -130,7 +130,7 @@ export default async function DashboardPage({ params }) {
         </div>
 
         {/* mood today */}
-        <div className="rounded-2xl border border-line bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,.04)]">
+        <div className="rounded-2xl border border-line bg-surface p-5 shadow-[0_2px_8px_rgba(0,0,0,.04)]">
           <h2 className="mb-4 text-sm font-semibold text-ink">Team mood</h2>
           {moodKeys.length === 0 ? (
             <div className="py-8 text-center text-sm text-ink-3">No mood data yet</div>
@@ -156,7 +156,7 @@ export default async function DashboardPage({ params }) {
         </div>
 
         {/* tasks per member */}
-        <div className="rounded-2xl border border-line bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,.04)] lg:col-span-2">
+        <div className="rounded-2xl border border-line bg-surface p-5 shadow-[0_2px_8px_rgba(0,0,0,.04)] lg:col-span-2">
           <h2 className="mb-4 text-sm font-semibold text-ink">Tasks per member (done / total)</h2>
           {members.length === 0 ? (
             <div className="py-8 text-center text-sm text-ink-3">No members yet</div>

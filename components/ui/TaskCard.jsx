@@ -41,7 +41,7 @@ export default function TaskCard({ task, selected = false, onClick, className = 
         boxShadow,
         border: selected ? "2px solid #FF6B2B" : awaiting ? "1px solid rgba(46,158,91,.5)" : "1px solid var(--color-line)",
       }}
-      className={`relative rounded-[10px] bg-white p-[14px] transition-shadow ${
+      className={`relative rounded-[10px] bg-surface p-[14px] transition-shadow ${
         onClick ? "cursor-pointer" : ""
       } ${className}`}
     >

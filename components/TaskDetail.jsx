@@ -213,7 +213,7 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4" onClick={onClose}>
       <div
         onClick={(e) => e.stopPropagation()}
-        className="flex max-h-[88vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-line bg-white shadow-xl"
+        className="flex max-h-[88vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-line bg-surface shadow-xl"
       >
         {/* header */}
         <div className="flex items-start justify-between gap-3 border-b border-line p-5">

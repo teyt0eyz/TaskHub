@@ -50,7 +50,7 @@ export default function ThemeToggle() {
         className={`relative h-5 w-9 shrink-0 rounded-full transition-colors ${isDark ? "bg-brand" : "bg-line"}`}
       >
         <span
-          className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform ${
+          className={`absolute top-0.5 h-4 w-4 rounded-full bg-surface shadow transition-transform ${
             isDark ? "translate-x-[18px]" : "translate-x-0.5"
           }`}
         />

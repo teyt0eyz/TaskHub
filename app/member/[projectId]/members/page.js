@@ -25,11 +25,11 @@ export default async function MemberTeamPage({ params }) {
       </div>
 
       {roster.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-line bg-white/60 p-10 text-center text-ink-3">
+        <div className="rounded-2xl border border-dashed border-line bg-surface/60 p-10 text-center text-ink-3">
           No members in this project yet
         </div>
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-line bg-white shadow-[0_2px_8px_rgba(0,0,0,.05)]">
+        <div className="overflow-hidden rounded-2xl border border-line bg-surface shadow-[0_2px_8px_rgba(0,0,0,.05)]">
           {roster.map((m, i) => {
             const meta = ROLE_META[m.role] || ROLE_META.member;
             return (

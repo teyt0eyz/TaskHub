@@ -7,7 +7,7 @@ import { getSupabaseAdmin } from "@/lib/supabase";
 function Card({ children }) {
   return (
     <div className="dot-grid flex min-h-screen items-center justify-center p-6">
-      <div className="w-full max-w-sm rounded-2xl border border-line bg-white p-8 text-center shadow-[0_8px_30px_rgba(0,0,0,.06)]">
+      <div className="w-full max-w-sm rounded-2xl border border-line bg-surface p-8 text-center shadow-[0_8px_30px_rgba(0,0,0,.06)]">
         {children}
       </div>
     </div>

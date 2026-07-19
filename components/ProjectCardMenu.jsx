@@ -54,7 +54,7 @@ export default function ProjectCardMenu({ projectId, projectName }) {
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-1 w-40 overflow-hidden rounded-xl border border-line bg-white py-1 shadow-[0_8px_24px_rgba(0,0,0,.12)]">
+        <div className="absolute right-0 mt-1 w-40 overflow-hidden rounded-xl border border-line bg-surface py-1 shadow-[0_8px_24px_rgba(0,0,0,.12)]">
           <button
             onClick={() => {
               setOpen(false);
@@ -71,7 +71,7 @@ export default function ProjectCardMenu({ projectId, projectName }) {
         mounted &&
         createPortal(
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4" onClick={() => !busy && setConfirming(false)}>
-            <div onClick={(e) => e.stopPropagation()} className="w-full max-w-sm rounded-2xl border border-line bg-white p-6 shadow-xl">
+            <div onClick={(e) => e.stopPropagation()} className="w-full max-w-sm rounded-2xl border border-line bg-surface p-6 shadow-xl">
               <h2 className="text-lg font-bold text-ink">Delete project?</h2>
               <p className="mt-1.5 text-sm text-ink-2">
                 Delete <b className="text-ink">{projectName}</b> permanently, along with all tasks, members, comments and data — this cannot be undone

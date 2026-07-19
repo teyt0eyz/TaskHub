@@ -57,7 +57,7 @@ export default function InviteButton({
 
       {open && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4" onClick={() => setOpen(false)}>
-          <div onClick={(e) => e.stopPropagation()} className="w-full max-w-md rounded-2xl border border-line bg-white p-6 shadow-xl">
+          <div onClick={(e) => e.stopPropagation()} className="w-full max-w-md rounded-2xl border border-line bg-surface p-6 shadow-xl">
             <div className="mb-3 flex items-center justify-between">
               <h2 className="text-lg font-bold text-ink">Invite to project</h2>
               <button onClick={() => setOpen(false)} className="text-ink-3 hover:text-ink">✕</button>

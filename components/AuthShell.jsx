@@ -11,7 +11,7 @@ export default function AuthShell({ title, subtitle, children, footer }) {
       <div className="pointer-events-none absolute -left-24 top-0 h-72 w-72 rounded-full bg-brand/10 blur-3xl" />
       <div className="pointer-events-none absolute -right-20 bottom-0 h-80 w-80 rounded-full bg-accent/10 blur-3xl" />
 
-      <div className="relative z-10 w-full max-w-[380px] animate-pop rounded-3xl border border-line bg-white p-8 shadow-[0_20px_60px_rgba(0,0,0,.1)]">
+      <div className="relative z-10 w-full max-w-[380px] animate-pop rounded-3xl border border-line bg-surface p-8 shadow-[0_20px_60px_rgba(0,0,0,.1)]">
         <div className="flex flex-col items-center text-center">
           <h1 className="text-2xl font-bold tracking-tight text-ink">{title}</h1>
           {subtitle && <p className="mt-1.5 text-sm leading-relaxed text-ink-2">{subtitle}</p>}
@@ -23,7 +23,7 @@ export default function AuthShell({ title, subtitle, children, footer }) {
       {/* back to home */}
       <Link
         href="/"
-        className="absolute left-5 top-5 z-10 flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium text-ink-2 transition-colors hover:bg-white/70 hover:text-ink"
+        className="absolute left-5 top-5 z-10 flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium text-ink-2 transition-colors hover:bg-surface/70 hover:text-ink"
       >
         ← Back to home
       </Link>
@@ -44,7 +44,7 @@ export function Field({ label, type = "text", ...props }) {
         <input
           {...props}
           type={inputType}
-          className={`w-full rounded-xl border border-line bg-white px-3.5 py-3 text-sm text-ink outline-none transition-colors placeholder:text-ink-3 focus:border-brand focus:ring-2 focus:ring-brand/20 ${
+          className={`w-full rounded-xl border border-line bg-surface px-3.5 py-3 text-sm text-ink outline-none transition-colors placeholder:text-ink-3 focus:border-brand focus:ring-2 focus:ring-brand/20 ${
             isPassword ? "pr-11" : ""
           }`}
         />

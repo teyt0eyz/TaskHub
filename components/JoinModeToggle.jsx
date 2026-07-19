@@ -26,7 +26,7 @@ export default function JoinModeToggle({ projectId, value = false }) {
   }
 
   return (
-    <div className="mb-5 rounded-2xl border border-line bg-white p-4">
+    <div className="mb-5 rounded-2xl border border-line bg-surface p-4">
       <div className="text-sm font-semibold text-ink">Join mode</div>
       <p className="mt-0.5 text-xs text-ink-2">
         Choose whether people who use an invite link or code need leader approval or can join instantly — leaders only
@@ -38,7 +38,7 @@ export default function JoinModeToggle({ projectId, value = false }) {
             onClick={() => set(o.val)}
             disabled={busy}
             className={`flex-1 rounded-xl border px-3 py-2.5 text-left transition-all ${
-              value === o.val ? "border-brand bg-brand-soft" : "border-line bg-white hover:bg-surface-2"
+              value === o.val ? "border-brand bg-brand-soft" : "border-line bg-surface hover:bg-surface-2"
             }`}
           >
             <div className={`text-[13px] font-semibold ${value === o.val ? "text-brand-dark" : "text-ink"}`}>

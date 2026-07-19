@@ -26,7 +26,7 @@ export default function VisibilityToggle({ projectId, value = "own" }) {
   }
 
   return (
-    <div className="mb-5 rounded-2xl border border-line bg-white p-4">
+    <div className="mb-5 rounded-2xl border border-line bg-surface p-4">
       <div className="text-sm font-semibold text-ink">Member visibility</div>
       <p className="mt-0.5 text-xs text-ink-2">
         Choose whether members see only their own tasks or everyone’s branches (others’ tasks dim so yours stand out) — leaders only
@@ -38,7 +38,7 @@ export default function VisibilityToggle({ projectId, value = "own" }) {
             onClick={() => set(o.key)}
             disabled={busy}
             className={`flex-1 rounded-lg py-2 text-[13px] font-semibold transition-all ${
-              value === o.key ? "bg-white text-ink shadow-sm" : "text-ink-2 hover:text-ink"
+              value === o.key ? "bg-surface text-ink shadow-sm" : "text-ink-2 hover:text-ink"
             }`}
           >
             {o.label}

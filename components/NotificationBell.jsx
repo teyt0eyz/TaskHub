@@ -129,7 +129,7 @@ export default function NotificationBell() {
         </button>
 
         {open && (
-          <div className="fixed left-2 right-2 top-[62px] z-50 w-auto overflow-hidden rounded-xl border border-line bg-white shadow-[0_8px_24px_rgba(0,0,0,.12)] sm:absolute sm:left-auto sm:right-0 sm:top-full sm:mt-2 sm:w-80">
+          <div className="fixed left-2 right-2 top-[62px] z-50 w-auto overflow-hidden rounded-xl border border-line bg-surface shadow-[0_8px_24px_rgba(0,0,0,.12)] sm:absolute sm:left-auto sm:right-0 sm:top-full sm:mt-2 sm:w-80">
             <div className="border-b border-line px-3 py-2 text-sm font-semibold text-ink">Notifications</div>
             <div className="scroll-soft max-h-96 overflow-y-auto">
               {items.length === 0 ? (
@@ -164,7 +164,7 @@ export default function NotificationBell() {
             if (href) router.push(href);
           }}
           style={{ zIndex: 70 }}
-          className={`fixed left-1/2 top-4 w-[min(92vw,26rem)] -translate-x-1/2 cursor-pointer rounded-2xl border border-line bg-white px-4 py-3 shadow-[0_12px_36px_rgba(0,0,0,.20)] transition-all duration-300 ease-out ${
+          className={`fixed left-1/2 top-4 w-[min(92vw,26rem)] -translate-x-1/2 cursor-pointer rounded-2xl border border-line bg-surface px-4 py-3 shadow-[0_12px_36px_rgba(0,0,0,.20)] transition-all duration-300 ease-out ${
             show ? "translate-y-0 opacity-100" : "-translate-y-6 opacity-0"
           }`}
         >

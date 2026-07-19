@@ -5,7 +5,7 @@ import { signIn } from "next-auth/react";
 export default function InviteJoin({ token, projectName }) {
   return (
     <div className="dot-grid flex min-h-screen items-center justify-center p-6">
-      <div className="w-full max-w-sm rounded-2xl border border-line bg-white p-8 text-center shadow-[0_8px_30px_rgba(0,0,0,.06)]">
+      <div className="w-full max-w-sm rounded-2xl border border-line bg-surface p-8 text-center shadow-[0_8px_30px_rgba(0,0,0,.06)]">
         <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand text-2xl font-bold text-white">
           T
         </div>

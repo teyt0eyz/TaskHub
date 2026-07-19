@@ -9,7 +9,7 @@ export default function SummaryLangToggle({ value, onChange }) {
   return (
     <div className="inline-flex items-center gap-1.5">
       <span className="text-[11px] font-medium text-ink-3">Language</span>
-      <div className="inline-flex rounded-lg border border-line bg-white p-0.5">
+      <div className="inline-flex rounded-lg border border-line bg-surface p-0.5">
         {opts.map((o) => (
           <button
             key={o.key}

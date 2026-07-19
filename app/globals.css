@@ -51,16 +51,16 @@
  * โดยไม่ต้องไล่แก้ทีละ component
  */
 html.dark {
-  --background: #0e1117;
-  --foreground: #e9edf3;
+  --background: #070a10;
+  --foreground: #eef2f7;
 
-  --color-ink: #e9edf3;
-  --color-ink-2: #a3adbb;
-  --color-ink-3: #858f9d;
-  --color-line: #262d38;
-  --color-line-soft: #1c222b;
-  --color-surface: #151a22;
-  --color-surface-2: #1c222b;
+  --color-ink: #eef2f7;
+  --color-ink-2: #a9b3c1;
+  --color-ink-3: #7f8a99;
+  --color-line: #222936;
+  --color-line-soft: #171d27;
+  --color-surface: #0d1119;
+  --color-surface-2: #151a24;
 
   --color-brand-soft: rgba(46, 158, 91, 0.16);
   --color-accent-soft: rgba(255, 107, 43, 0.16);
@@ -86,21 +86,9 @@ html.dark {
   color-scheme: dark;
 }
 
-/*
- * `bg-white` ถูกใช้ ~90 จุดเป็นสีพื้นการ์ด/แผง — remap เฉพาะ background
- * (ไม่แตะ text-white เพราะตัวอักษรบนปุ่มสีแบรนด์ต้องขาวเหมือนเดิม)
- */
-html.dark .bg-white {
-  background-color: var(--color-surface);
-}
-
 /* text-brand-dark ใช้เป็นสีตัวอักษรล้วน — พลิกเฉพาะ color ไม่แตะ hover:bg-brand-dark */
 html.dark .text-brand-dark {
   color: var(--color-brand-text);
-}
-html.dark .bg-white\/80,
-html.dark .bg-white\/85 {
-  background-color: color-mix(in srgb, var(--color-surface) 85%, transparent);
 }
 
 html,
@@ -168,17 +156,10 @@ html.dark .dot-grid {
     background-position: 100% 50%;
   }
 }
+/* ไล่สีแค่เขียว→ฟ้าอ่อน ไม่เอาสายรุ้งทั้งแถบแบบเดิม */
 .text-aurora {
-  background-image: linear-gradient(
-    100deg,
-    #6fcf97 0%,
-    #34d399 18%,
-    #38bdf8 40%,
-    #818cf8 62%,
-    #c084fc 80%,
-    #f472b6 100%
-  );
-  background-size: 220% auto;
+  background-image: linear-gradient(100deg, #6fcf97 0%, #5ed3b0 45%, #7fb3f0 100%);
+  background-size: 200% auto;
   animation: gradient-pan 8s ease-in-out infinite;
   -webkit-background-clip: text;
   background-clip: text;
@@ -195,7 +176,7 @@ html.dark .dot-grid {
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(140deg, rgba(111, 207, 151, 0.55), rgba(129, 140, 248, 0.35), transparent 65%);
+  background: linear-gradient(140deg, rgba(255, 255, 255, 0.22), rgba(111, 207, 151, 0.14), transparent 60%);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;

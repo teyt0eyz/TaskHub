@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
+import LiveDemo from "@/components/landing/LiveDemo";
 
 /* ---------- workspace tree preview (hero visual) ---------- */
 
@@ -187,7 +188,7 @@ function TreePreview() {
 
 function WindowFrame({ children }) {
   return (
-    <div className="mx-auto max-w-3xl overflow-hidden rounded-2xl border border-white/15 bg-white shadow-[0_50px_120px_-30px_rgba(56,189,248,.45),0_0_0_1px_rgba(255,255,255,.06)]">
+    <div className="mx-auto max-w-3xl overflow-hidden rounded-2xl border border-white/15 bg-white shadow-[0_40px_100px_-35px_rgba(0,0,0,.85),0_0_0_1px_rgba(255,255,255,.06)]">
       <div className="flex items-center gap-2 border-b border-line bg-surface-2/50 px-4 py-3">
         <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
         <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
@@ -207,42 +208,46 @@ const features = [
 
 /* ---------- aurora background (dark landing theme) ---------- */
 
-// ก้อนไล่สีเบลอซ้อนกันหลายชั้น → ได้ mesh gradient แบบ modern โดยไม่ต้องใช้รูป
+// ก้อนไล่สีเบลอบาง ๆ — คุมให้เหลือ 3 ก้อน โทนน้ำเงิน/คราม ตัดด้วยเขียวแบรนด์นิดเดียว
+// (เวอร์ชันก่อนใช้ 5 ก้อน 5 สีจนดูฉูดฉาด — ลด opacity ลงราวครึ่งหนึ่งและเบลอหนักขึ้น)
 function AuroraBackdrop() {
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
-      {/* ฐานไล่สีน้ำเงินเข้ม */}
-      <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_0%,#16203c_0%,#0b1020_45%,#070a14_100%)]" />
+      {/* ฐานไล่สีเกือบดำ ให้ความรู้สึกลึกแทนความจัด */}
+      <div className="absolute inset-0 bg-[radial-gradient(115%_75%_at_50%_-10%,#131a2e_0%,#0a0e1a_50%,#070a12_100%)]" />
 
-      {/* ก้อนสีหลัก */}
-      <div className="animate-aurora absolute -left-[10%] top-[6%] h-[38rem] w-[38rem] rounded-full bg-[#1d4ed8] opacity-40 blur-[110px]" />
-      <div className="animate-aurora absolute -right-[8%] top-[-6%] h-[34rem] w-[34rem] rounded-full bg-[#10b981] opacity-35 blur-[120px]" style={{ animationDelay: "-6s" }} />
-      <div className="animate-aurora absolute right-[6%] top-[34%] h-[30rem] w-[30rem] rounded-full bg-[#7c3aed] opacity-40 blur-[120px]" style={{ animationDelay: "-11s" }} />
-      <div className="animate-aurora absolute bottom-[4%] left-[18%] h-[32rem] w-[32rem] rounded-full bg-[#db2777] opacity-30 blur-[130px]" style={{ animationDelay: "-16s" }} />
-      <div className="animate-aurora absolute bottom-[18%] right-[24%] h-[24rem] w-[24rem] rounded-full bg-[#06b6d4] opacity-25 blur-[110px]" style={{ animationDelay: "-3s" }} />
+      <div className="animate-aurora absolute -left-[12%] top-[2%] h-[36rem] w-[36rem] rounded-full bg-[#2f4fa8] opacity-[0.18] blur-[150px]" />
+      <div className="animate-aurora absolute -right-[10%] top-[10%] h-[32rem] w-[32rem] rounded-full bg-[#2e9e5b] opacity-[0.13] blur-[160px]" style={{ animationDelay: "-9s" }} />
+      <div className="animate-aurora absolute bottom-[6%] left-[26%] h-[30rem] w-[30rem] rounded-full bg-[#5b4bc4] opacity-[0.15] blur-[160px]" style={{ animationDelay: "-17s" }} />
 
-      {/* ฟิล์มมืดด้านล่าง ให้ข้อความอ่านง่ายและกลืนกับ section ถัดไป */}
-      <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-b from-transparent to-[#070a14]" />
+      {/* เส้นตารางจาง ๆ ให้พื้นหลังมีเท็กซ์เจอร์แทนการเพิ่มสี */}
+      <div className="absolute inset-0 opacity-[0.35] bg-[linear-gradient(rgba(255,255,255,.028)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.028)_1px,transparent_1px)] bg-[size:56px_56px]" />
+
+      {/* ฟิล์มมืดด้านล่าง ให้กลืนกับ section ถัดไป */}
+      <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-b from-transparent to-[#070a12]" />
     </div>
   );
 }
 
 export default function HomePage() {
   return (
-    <div className="flex min-h-screen flex-col bg-[#070a14] text-white">
+    <div className="flex min-h-screen flex-col bg-[#070a12] text-white">
       {/* Nav */}
-      <header className="sticky top-0 z-30 border-b border-white/10 bg-[#070a14]/70 backdrop-blur-xl">
+      <header className="sticky top-0 z-30 border-b border-white/10 bg-[#070a12]/70 backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5">
           <div className="flex items-center gap-2.5">
             <span className="font-heading text-lg font-bold text-white">Task<span style={{ color: "#6fcf97" }}>Hub</span></span>
           </div>
           <div className="flex items-center gap-1.5">
+            <a href="#demo" className="hidden rounded-lg px-3.5 py-2 text-sm font-semibold text-white/70 transition-colors hover:bg-white/10 hover:text-white sm:block">
+              Try it
+            </a>
             <a href="#features" className="hidden rounded-lg px-3.5 py-2 text-sm font-semibold text-white/70 transition-colors hover:bg-white/10 hover:text-white sm:block">
               Features
             </a>
             <Link
               href="/login"
-              className="rounded-lg bg-gradient-to-r from-[#2e9e5b] to-[#38bdf8] px-4 py-2 text-sm font-semibold text-white shadow-[0_6px_20px_-6px_rgba(56,189,248,.7)] transition-opacity hover:opacity-90"
+              className="rounded-lg border border-white/15 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur transition-colors hover:bg-white/20"
             >
               Log in
             </Link>
@@ -268,12 +273,12 @@ export default function HomePage() {
           <div className="animate-fade-up mt-8 flex flex-wrap items-center justify-center gap-3" style={{ animationDelay: "240ms" }}>
             <Link
               href="/login"
-              className="group rounded-xl bg-gradient-to-r from-[#2e9e5b] via-[#22b8a6] to-[#38bdf8] px-7 py-3 text-sm font-bold text-white shadow-[0_14px_38px_-10px_rgba(56,189,248,.8)] transition-transform hover:-translate-y-0.5"
+              className="group rounded-xl bg-brand px-7 py-3 text-sm font-bold text-white shadow-[0_12px_30px_-12px_rgba(46,158,91,.9)] transition-transform hover:-translate-y-0.5 hover:bg-[#35b268]"
             >
               Get started free <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
             </Link>
-            <a href="#features" className="rounded-xl border border-white/20 bg-white/5 px-7 py-3 text-sm font-semibold text-white backdrop-blur transition-colors hover:bg-white/10">
-              See features
+            <a href="#demo" className="rounded-xl border border-white/20 bg-white/5 px-7 py-3 text-sm font-semibold text-white backdrop-blur transition-colors hover:bg-white/10">
+              Try the demo
             </a>
           </div>
         </div>
@@ -288,11 +293,33 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Features — glass cards */}
-      <section id="features" className="relative overflow-hidden border-t border-white/10 bg-[#070a14]">
+      {/* Try it — สาธิตฟีเจอร์จริง กดเล่นได้ ไม่แตะฐานข้อมูล */}
+      <section id="demo" className="relative overflow-hidden border-t border-white/10 bg-[#070a12]">
         <div className="pointer-events-none absolute inset-0" aria-hidden>
-          <div className="absolute left-1/2 top-0 h-72 w-[46rem] -translate-x-1/2 rounded-full bg-[#7c3aed] opacity-20 blur-[120px]" />
-          <div className="absolute bottom-0 right-[10%] h-56 w-[28rem] rounded-full bg-[#10b981] opacity-15 blur-[110px]" />
+          <div className="absolute left-1/2 top-[10%] h-72 w-[42rem] -translate-x-1/2 rounded-full bg-[#5b4bc4] opacity-[0.12] blur-[140px]" />
+        </div>
+        <div className="relative mx-auto max-w-5xl px-5 py-20">
+          <Reveal className="mx-auto mb-10 max-w-lg text-center">
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.06] px-3 py-1 text-[11px] font-semibold text-white/60">
+              Try it right here
+            </span>
+            <h2 className="mt-4 font-heading text-2xl font-bold tracking-tight text-white sm:text-3xl">
+              Have a play before you sign up
+            </h2>
+            <p className="mt-2 text-white/55">
+              Move tasks, check in your mood, generate a summary — all live, no account needed.
+            </p>
+          </Reveal>
+          <Reveal delay={100}>
+            <LiveDemo />
+          </Reveal>
+        </div>
+      </section>
+
+      {/* Features — glass cards */}
+      <section id="features" className="relative overflow-hidden border-t border-white/10 bg-[#070a12]">
+        <div className="pointer-events-none absolute inset-0" aria-hidden>
+          <div className="absolute bottom-0 right-[10%] h-56 w-[28rem] rounded-full bg-[#2e9e5b] opacity-[0.1] blur-[130px]" />
         </div>
         <div className="relative mx-auto max-w-5xl px-5 py-20">
           <Reveal className="mx-auto mb-12 max-w-lg text-center">
@@ -313,16 +340,17 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA — gradient band */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0f5132] via-[#1d4ed8] to-[#7c3aed]" aria-hidden />
-        <div className="absolute inset-0 bg-[radial-gradient(80%_120%_at_50%_0%,rgba(255,255,255,.18),transparent_60%)]" aria-hidden />
-        <Reveal className="relative mx-auto max-w-3xl px-5 py-20 text-center">
+      {/* CTA — แผงกระจกบนพื้นเข้ม แทนแถบไล่สีจัด ๆ แบบเดิม */}
+      <section className="relative overflow-hidden border-t border-white/10 bg-[#070a12] px-5 py-20">
+        <div className="pointer-events-none absolute inset-0" aria-hidden>
+          <div className="absolute left-1/2 top-1/2 h-64 w-[38rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#2f4fa8] opacity-[0.16] blur-[130px]" />
+        </div>
+        <Reveal className="ring-gradient relative mx-auto max-w-2xl rounded-3xl border border-white/10 bg-white/[0.04] px-6 py-14 text-center backdrop-blur-xl">
           <h2 className="font-heading text-2xl font-bold tracking-tight text-white sm:text-3xl">Ready to make your team more productive?</h2>
-          <p className="mx-auto mt-3 max-w-md text-white/80">Start free today — just log in with Google.</p>
+          <p className="mx-auto mt-3 max-w-md text-white/60">Start free today — just log in with Google.</p>
           <Link
             href="/login"
-            className="group mt-7 inline-block rounded-xl bg-white px-7 py-3 text-sm font-bold text-[#0b1020] shadow-[0_14px_34px_-10px_rgba(0,0,0,.6)] transition-transform hover:-translate-y-0.5"
+            className="group mt-7 inline-block rounded-xl border border-white/15 bg-white/10 px-7 py-3 text-sm font-bold text-white backdrop-blur transition-colors hover:bg-white/20"
           >
             Get started free <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
           </Link>
@@ -330,8 +358,8 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 bg-[#070a14]">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-5 py-6 text-sm text-white/45 sm:flex-row">
+      <footer className="border-t border-white/10 bg-[#070a12]">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-5 py-6 text-sm text-white/55 sm:flex-row">
           <span className="font-semibold text-white/70">Task<span style={{ color: "#6fcf97" }}>Hub</span></span>
           <span>© 2026 TaskHub · Capstone Project</span>
         </div>

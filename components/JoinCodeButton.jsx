@@ -37,7 +37,7 @@ export default function JoinCodeButton({ className, children }) {
         // portal ไป body — กัน modal ติดใน sidebar ที่มี transform (position:fixed จะได้อิง viewport จริง)
         createPortal(
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4" onClick={() => setOpen(false)}>
-            <form onClick={(e) => e.stopPropagation()} onSubmit={submit} className="w-full max-w-sm rounded-2xl border border-line bg-white p-6 shadow-xl">
+            <form onClick={(e) => e.stopPropagation()} onSubmit={submit} className="w-full max-w-sm rounded-2xl border border-line bg-surface p-6 shadow-xl">
               <h2 className="text-lg font-bold text-ink">Join project</h2>
               <p className="mt-1 text-sm text-ink-2">Paste an invite link or enter the code from a leader</p>
               <input

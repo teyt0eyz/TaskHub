@@ -47,7 +47,7 @@ export default function StatusControl({ projectId, current = null }) {
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 rounded-[10px] border border-line bg-white px-3 py-2 text-sm font-medium text-ink-2 hover:border-brand"
+        className="flex items-center gap-2 rounded-[10px] border border-line bg-surface px-3 py-2 text-sm font-medium text-ink-2 hover:border-brand"
       >
         <span className="text-ink-3">My status:</span>
         <span className="font-semibold text-ink">{current || "— Not set"}</span>
@@ -55,7 +55,7 @@ export default function StatusControl({ projectId, current = null }) {
       </button>
 
       {open && (
-        <div className="absolute right-0 z-50 mt-1 w-64 overflow-hidden rounded-xl border border-line bg-white p-2 shadow-[0_8px_24px_rgba(0,0,0,.12)]">
+        <div className="absolute right-0 z-50 mt-1 w-64 overflow-hidden rounded-xl border border-line bg-surface p-2 shadow-[0_8px_24px_rgba(0,0,0,.12)]">
           <div className="px-1 pb-1.5 text-[11px] font-semibold text-ink-3">Choose status</div>
           <div className="flex flex-col gap-0.5">
             {PRESETS.map((p) => (

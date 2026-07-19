@@ -113,7 +113,7 @@ export default function AppShell({ nav = [], title = "Project Alpha", roleLabel,
 
       {/* Sidebar — desktop: อยู่ในแถว, มือถือ: เป็น drawer เลื่อนจากซ้าย */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex flex-col border-r border-line bg-white transition-[transform,width] duration-200 md:static md:z-30 md:shrink-0 md:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex flex-col border-r border-line bg-surface transition-[transform,width] duration-200 md:static md:z-30 md:shrink-0 md:translate-x-0 ${
           mobileOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full md:shadow-none"
         }`}
         style={{ width: open ? 232 : 68, padding: open ? "16px 12px" : "16px 8px" }}
@@ -192,7 +192,7 @@ export default function AppShell({ nav = [], title = "Project Alpha", roleLabel,
               </button>
 
               {projOpen && (
-                <div className="absolute left-0 right-0 top-full z-40 mt-1 overflow-hidden rounded-xl border border-line bg-white py-1 shadow-[0_8px_24px_rgba(0,0,0,.1)]">
+                <div className="absolute left-0 right-0 top-full z-40 mt-1 overflow-hidden rounded-xl border border-line bg-surface py-1 shadow-[0_8px_24px_rgba(0,0,0,.1)]">
                   {projects.map((p) => (
                     <Link
                       key={p.id}
@@ -231,7 +231,7 @@ export default function AppShell({ nav = [], title = "Project Alpha", roleLabel,
                   key={v.key}
                   href={v.href}
                   className={`flex flex-1 items-center justify-center rounded-lg py-1.5 text-[13px] font-semibold transition-all ${
-                    view === v.key ? "bg-white text-ink shadow-sm" : "text-ink-2 hover:text-ink"
+                    view === v.key ? "bg-surface text-ink shadow-sm" : "text-ink-2 hover:text-ink"
                   }`}
                 >
                   {v.label}
@@ -246,7 +246,7 @@ export default function AppShell({ nav = [], title = "Project Alpha", roleLabel,
                   href={v.href}
                   title={`${v.label} view`}
                   className={`flex items-center justify-center rounded-lg py-2 text-sm font-bold transition-all ${
-                    view === v.key ? "bg-white text-ink shadow-sm ring-1 ring-line" : "text-ink-3 hover:text-ink"
+                    view === v.key ? "bg-surface text-ink shadow-sm ring-1 ring-line" : "text-ink-3 hover:text-ink"
                   }`}
                 >
                   {v.label[0]}
@@ -278,7 +278,7 @@ export default function AppShell({ nav = [], title = "Project Alpha", roleLabel,
       {/* Right column */}
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Topbar */}
-        <header className="z-20 flex h-[60px] shrink-0 items-center gap-4 border-b border-line bg-white/85 px-4 backdrop-blur sm:px-5">
+        <header className="z-20 flex h-[60px] shrink-0 items-center gap-4 border-b border-line bg-surface/85 px-4 backdrop-blur sm:px-5">
           <button
             onClick={() => setMobileOpen(true)}
             title="Menu"
@@ -328,7 +328,7 @@ export default function AppShell({ nav = [], title = "Project Alpha", roleLabel,
               <InviteButton
                 projectId={projectId}
                 triggerLabel="Share"
-                triggerClassName="rounded-[9px] border-[1.5px] border-brand bg-white px-4 py-[7px] text-[13px] font-semibold text-brand hover:bg-brand-soft"
+                triggerClassName="rounded-[9px] border-[1.5px] border-brand bg-surface px-4 py-[7px] text-[13px] font-semibold text-brand hover:bg-brand-soft"
               />
             )}
 
@@ -342,7 +342,7 @@ export default function AppShell({ nav = [], title = "Project Alpha", roleLabel,
                 {userInitials}
               </button>
               {userMenu && (
-                <div className="absolute right-0 top-full z-40 mt-2 w-48 overflow-hidden rounded-xl border border-line bg-white py-1 shadow-[0_8px_24px_rgba(0,0,0,.1)]">
+                <div className="absolute right-0 top-full z-40 mt-2 w-48 overflow-hidden rounded-xl border border-line bg-surface py-1 shadow-[0_8px_24px_rgba(0,0,0,.1)]">
                   <div className="truncate border-b border-line px-3 py-2 text-[13px] font-semibold text-ink">
                     {userName}
                   </div>
@@ -372,7 +372,7 @@ export default function AppShell({ nav = [], title = "Project Alpha", roleLabel,
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4" onClick={() => setSettingsOpen(false)}>
           <div
             onClick={(e) => e.stopPropagation()}
-            className="scroll-soft max-h-[88vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-line bg-white p-6 shadow-xl"
+            className="scroll-soft max-h-[88vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-line bg-surface p-6 shadow-xl"
           >
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-lg font-bold text-ink">⚙️ Project settings</h2>
@@ -388,7 +388,7 @@ export default function AppShell({ nav = [], title = "Project Alpha", roleLabel,
       {/* rename project modal */}
       {renaming && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4" onClick={() => setRenaming(false)}>
-          <form onClick={(e) => e.stopPropagation()} onSubmit={saveRename} className="w-full max-w-sm rounded-2xl border border-line bg-white p-6 shadow-xl">
+          <form onClick={(e) => e.stopPropagation()} onSubmit={saveRename} className="w-full max-w-sm rounded-2xl border border-line bg-surface p-6 shadow-xl">
             <h2 className="text-lg font-bold text-ink">Rename project</h2>
             <input
               autoFocus

@@ -17,7 +17,7 @@ function Field({ label, hint, value, onChange, placeholder }) {
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         rows={3}
-        className="w-full resize-none rounded-xl border border-line bg-white px-3.5 py-2.5 text-sm text-ink outline-none transition-colors placeholder:text-ink-3 focus:border-brand focus:ring-2 focus:ring-brand-soft"
+        className="w-full resize-none rounded-xl border border-line bg-surface px-3.5 py-2.5 text-sm text-ink outline-none transition-colors placeholder:text-ink-3 focus:border-brand focus:ring-2 focus:ring-brand-soft"
       />
     </div>
   );
@@ -64,7 +64,7 @@ export default function CheckinPage() {
   if (submitted) {
     return (
       <div className="flex h-full items-center justify-center p-6">
-        <div className="w-full max-w-md animate-fade-up rounded-2xl border border-line bg-white p-8 text-center shadow-[0_8px_30px_rgba(0,0,0,.06)]">
+        <div className="w-full max-w-md animate-fade-up rounded-2xl border border-line bg-surface p-8 text-center shadow-[0_8px_30px_rgba(0,0,0,.06)]">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-brand-soft text-3xl">
             🎉
           </div>
@@ -75,7 +75,7 @@ export default function CheckinPage() {
           <div className="mt-6 flex justify-center gap-3">
             <button
               onClick={() => setSubmitted(false)}
-              className="rounded-[10px] border border-line bg-white px-4 py-2.5 text-sm font-semibold text-ink-2 hover:bg-surface-2"
+              className="rounded-[10px] border border-line bg-surface px-4 py-2.5 text-sm font-semibold text-ink-2 hover:bg-surface-2"
             >
               Edit
             </button>
@@ -99,7 +99,7 @@ export default function CheckinPage() {
           <p className="mt-0.5 text-sm text-ink-2">Log your progress and mood for today</p>
         </div>
 
-        <div className="space-y-6 rounded-2xl border border-line bg-white p-6 shadow-[0_2px_8px_rgba(0,0,0,.05)]">
+        <div className="space-y-6 rounded-2xl border border-line bg-surface p-6 shadow-[0_2px_8px_rgba(0,0,0,.05)]">
           {/* Mood selector */}
           <div>
             <label className="mb-2.5 block text-sm font-semibold text-ink">How are you feeling today?</label>
@@ -160,7 +160,7 @@ export default function CheckinPage() {
           <div className="flex items-center justify-end gap-3 pt-1">
             <Link
               href={backHref}
-              className="rounded-[10px] border border-line bg-white px-4 py-2.5 text-sm font-semibold text-ink-2 hover:bg-surface-2"
+              className="rounded-[10px] border border-line bg-surface px-4 py-2.5 text-sm font-semibold text-ink-2 hover:bg-surface-2"
             >
               Cancel
             </Link>

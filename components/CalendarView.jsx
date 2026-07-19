@@ -86,7 +86,7 @@ export default function CalendarView({ projectId, tasks = [], members = [], curr
         </div>
       </div>
 
-      <div className="scroll-soft overflow-x-auto rounded-2xl border border-line bg-white">
+      <div className="scroll-soft overflow-x-auto rounded-2xl border border-line bg-surface">
         <div className="min-w-[700px]">
         {/* หัวตารางวัน */}
         <div className="grid grid-cols-7 border-b border-line bg-surface-2/50">
@@ -140,7 +140,7 @@ export default function CalendarView({ projectId, tasks = [], members = [], curr
               <button
                 key={t.id}
                 onClick={() => openDetail(t)}
-                className="flex items-center gap-1.5 rounded-lg border border-line bg-white px-2.5 py-1.5 text-xs text-ink hover:bg-surface-2"
+                className="flex items-center gap-1.5 rounded-lg border border-line bg-surface px-2.5 py-1.5 text-xs text-ink hover:bg-surface-2"
               >
                 <span className="h-1.5 w-1.5 rounded-full" style={{ background: (statusStyle[t.status] || statusStyle.todo).bar }} />
                 {t.title}

@@ -197,7 +197,7 @@ export default function TeamSummaryButton({ projectId }) {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4" onClick={() => setOpen(false)}>
           <div
             onClick={(e) => e.stopPropagation()}
-            className="flex max-h-[88vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-line bg-white shadow-xl"
+            className="flex max-h-[88vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-line bg-surface shadow-xl"
           >
             <div className="flex items-center justify-between border-b border-line px-5 py-4">
               <div>
@@ -228,7 +228,7 @@ export default function TeamSummaryButton({ projectId }) {
                     key={h.id}
                     onClick={() => setSelectedId(h.id)}
                     className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors ${
-                      current?.id === h.id ? "bg-[#6b3fa0] text-white" : "bg-white text-ink-2 ring-1 ring-line hover:bg-surface-2"
+                      current?.id === h.id ? "bg-[#6b3fa0] text-white" : "bg-surface text-ink-2 ring-1 ring-line hover:bg-surface-2"
                     }`}
                   >
                     {fmtShort(h.at)}

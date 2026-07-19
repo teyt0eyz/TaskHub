@@ -171,7 +171,7 @@ export default function AiSummaryButton({ projectId, memberId, memberName }) {
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4" onClick={() => setOpen(false)}>
-          <div onClick={(e) => e.stopPropagation()} className="flex max-h-[88vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-line bg-white shadow-xl">
+          <div onClick={(e) => e.stopPropagation()} className="flex max-h-[88vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-line bg-surface shadow-xl">
             <div className="flex items-center justify-between border-b border-line px-5 py-4">
               <div>
                 <h2 className="text-lg font-bold text-ink">Weekly summary — {memberName}</h2>
@@ -193,7 +193,7 @@ export default function AiSummaryButton({ projectId, memberId, memberName }) {
                     key={h.id}
                     onClick={() => setSelectedId(h.id)}
                     className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors ${
-                      current?.id === h.id ? "bg-brand text-white" : "bg-white text-ink-2 ring-1 ring-line hover:bg-surface-2"
+                      current?.id === h.id ? "bg-brand text-white" : "bg-surface text-ink-2 ring-1 ring-line hover:bg-surface-2"
                     }`}
                   >
                     {fmtShort(h.at)}
