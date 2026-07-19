@@ -9,25 +9,42 @@ const CARD_H = 120;
 const HEAD_H = 60;
 const GREEN = "#2E9E5B";
 
+/*
+ * ภาพตัวอย่างหน้า Workspace บน landing — ใช้สีตายตัวโทนมืดทั้งหมด
+ * ห้ามใช้ token ธีม (text-ink / border-line ฯลฯ) เด็ดขาด เพราะ landing
+ * เปิดได้ทั้งตอนยังไม่ล็อกอินและตอนผู้ใช้ตั้งธีมมืด — ถ้าใช้ token
+ * ตัวอักษรจะพลิกเป็นสีอ่อนทับการ์ดจนอ่านไม่ออก
+ */
+const SHOT = {
+  card: "#151a24",
+  cardLine: "rgba(255,255,255,.10)",
+  divider: "rgba(255,255,255,.08)",
+  title: "rgba(255,255,255,.92)",
+  muted: "rgba(255,255,255,.55)",
+};
+
 const PRI = {
-  high: { label: "High", color: "#FF6B2B", bg: "rgba(255,107,43,.12)" },
-  medium: { label: "Medium", color: "#a07a00", bg: "rgba(245,196,0,.18)" },
-  low: { label: "Low", color: "#5A5A5A", bg: "#F0F0F0" },
+  high: { label: "High", color: "#ff9d6b", bg: "rgba(255,107,43,.16)" },
+  medium: { label: "Medium", color: "#f0cf4a", bg: "rgba(245,196,0,.15)" },
+  low: { label: "Low", color: "rgba(255,255,255,.6)", bg: "rgba(255,255,255,.08)" },
 };
 const ST = {
-  inprog: { label: "In Progress", color: "#FF6B2B", bg: "rgba(255,107,43,.12)" },
-  todo: { label: "Todo", color: "#5A5A5A", bg: "#F0F0F0" },
+  inprog: { label: "In Progress", color: "#ff9d6b", bg: "rgba(255,107,43,.16)" },
+  todo: { label: "Todo", color: "rgba(255,255,255,.6)", bg: "rgba(255,255,255,.08)" },
   done: { label: "Done ✓", color: "#fff", bg: "#2E9E5B" },
 };
 
-function TaskMini({ x, y, badge, title, tag, tagColor, bar, deadline, deadlineColor = "#5A5A5A", priority, initials, avBg, avColor, status, demo }) {
+function TaskMini({ x, y, badge, title, tag, tagColor, bar, deadline, deadlineColor = SHOT.muted, priority, initials, avBg, avColor, status, demo }) {
   return (
     <div
-      className="absolute rounded-[10px] border border-line bg-white p-3 shadow-[0_4px_14px_rgba(0,0,0,.07)]"
-      style={{ left: x, top: y, width: CARD_W, height: CARD_H }}
+      className="absolute rounded-[10px] p-3 shadow-[0_6px_18px_rgba(0,0,0,.4)]"
+      style={{ left: x, top: y, width: CARD_W, height: CARD_H, background: SHOT.card, border: `1px solid ${SHOT.cardLine}` }}
     >
       {badge != null && (
-        <span className="absolute -left-2 -top-2 z-10 flex h-5 w-5 items-center justify-center rounded-full border-2 border-white bg-brand text-[9px] font-bold text-white shadow-sm">
+        <span
+          className="absolute -left-2 -top-2 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-brand text-[9px] font-bold text-white shadow-sm"
+          style={{ border: `2px solid ${SHOT.card}` }}
+        >
           {badge}
         </span>
       )}
@@ -36,9 +53,10 @@ function TaskMini({ x, y, badge, title, tag, tagColor, bar, deadline, deadlineCo
       ) : (
         <div className="absolute inset-x-0 top-0 h-[3px] rounded-t-[10px]" style={{ background: bar }} />
       )}
-      <div className="pt-0.5 text-[12px] font-medium leading-snug text-ink">{title}</div>
+      <div className="pt-0.5 text-[12px] font-medium leading-snug" style={{ color: SHOT.title }}>{title}</div>
       <div className="mt-2">
-        <span className="rounded-full px-2 py-0.5 text-[9px] font-medium" style={{ background: `${tagColor}1f`, color: tagColor }}>
+        {/* color-mix รองรับทั้ง hex และ rgba — ต่อสตริง `${tagColor}1f` แบบเดิมพังเมื่อสีเป็น rgba() */}
+        <span className="rounded-full px-2 py-0.5 text-[9px] font-medium" style={{ background: `color-mix(in srgb, ${tagColor} 15%, transparent)`, color: tagColor }}>
           {tag}
         </span>
       </div>
@@ -48,7 +66,7 @@ function TaskMini({ x, y, badge, title, tag, tagColor, bar, deadline, deadlineCo
           {priority.label}
         </span>
       </div>
-      <div className="my-2 h-px bg-line-soft" />
+      <div className="my-2 h-px" style={{ background: SHOT.divider }} />
       <div className="flex items-center justify-between">
         <div className="flex h-5 w-5 items-center justify-center rounded-full text-[8px] font-semibold" style={{ background: avBg, color: avColor }}>
           {initials}
@@ -71,15 +89,15 @@ function TaskMini({ x, y, badge, title, tag, tagColor, bar, deadline, deadlineCo
 function MemberHead({ x, y, name, initials, bg, color }) {
   return (
     <div
-      className="absolute flex items-center rounded-[14px] border-2 bg-white px-3 shadow-[0_3px_12px_rgba(255,107,43,.15)]"
-      style={{ left: x, top: y, width: CARD_W, height: HEAD_H, borderColor: "#FF6B2B" }}
+      className="absolute flex items-center rounded-[14px] border-2 px-3 shadow-[0_4px_16px_rgba(255,107,43,.22)]"
+      style={{ left: x, top: y, width: CARD_W, height: HEAD_H, borderColor: "#FF6B2B", background: SHOT.card }}
     >
       <div className="flex items-center gap-2.5">
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-[1.5px] text-[11px] font-semibold" style={{ borderColor: "#FF6B2B", background: bg, color }}>
           {initials}
         </div>
         <div>
-          <div className="text-[13px] font-semibold leading-none text-ink">{name}</div>
+          <div className="text-[13px] font-semibold leading-none" style={{ color: SHOT.title }}>{name}</div>
           <span className="mt-1 inline-block rounded bg-accent px-1.5 py-0.5 text-[8px] font-semibold uppercase text-white">Member</span>
         </div>
       </div>
@@ -88,26 +106,27 @@ function MemberHead({ x, y, name, initials, bg, color }) {
 }
 
 // แต่ละคนมีจำนวนงานไม่เท่ากัน (ซ้อนลงมา) → ผังดูมีมิติ
+// avatar = พื้นโปร่งแสง + ตัวอักษรสว่าง, tag ใช้เฉดสว่างของสีเดิม (ค่าเข้มจะจมบนการ์ดมืด)
 const COLUMNS = [
   {
-    name: "Mira", initials: "MJ", avBg: "#FFE6D6", avColor: "#b8521f",
+    name: "Mira", initials: "MJ", avBg: "rgba(255,160,107,.18)", avColor: "#ffa06b",
     tasks: [
-      { title: "Design landing page", tag: "Design", tagColor: "#2E9E5B", bar: "#FF6B2B", deadline: "Jul 3", priority: PRI.high, status: ST.inprog },
-      { title: "Refine onboarding flow", tag: "UX", tagColor: "#6b3fa0", bar: "#C4C4C4", deadline: "Jul 8", priority: PRI.medium, status: ST.todo },
+      { title: "Design landing page", tag: "Design", tagColor: "#6fcf97", bar: "#FF6B2B", deadline: "Jul 3", priority: PRI.high, status: ST.inprog },
+      { title: "Refine onboarding flow", tag: "UX", tagColor: "#c4a5e8", bar: "rgba(255,255,255,.22)", deadline: "Jul 8", priority: PRI.medium, status: ST.todo },
     ],
   },
   {
-    name: "Theo", initials: "TP", avBg: "#E0EEFF", avColor: "#2c5b9e",
+    name: "Theo", initials: "TP", avBg: "rgba(127,179,240,.18)", avColor: "#7fb3f0",
     tasks: [
-      { title: "Write API docs", tag: "Docs", tagColor: "#5A5A5A", bar: "#FF6B2B", deadline: "Jul 5", priority: PRI.medium, status: ST.inprog },
-      { title: "Set up Supabase schema", tag: "Backend", tagColor: "#2c5b9e", bar: "#C4C4C4", deadline: "Jul 6", priority: PRI.high, status: ST.todo },
-      { title: "Deploy to Vercel", tag: "DevOps", tagColor: "#2E9E5B", bar: "#2E9E5B", deadline: "Jul 9", priority: PRI.low, status: ST.done },
+      { title: "Write API docs", tag: "Docs", tagColor: "rgba(255,255,255,.62)", bar: "#FF6B2B", deadline: "Jul 5", priority: PRI.medium, status: ST.inprog },
+      { title: "Set up Supabase schema", tag: "Backend", tagColor: "#7fb3f0", bar: "rgba(255,255,255,.22)", deadline: "Jul 6", priority: PRI.high, status: ST.todo },
+      { title: "Deploy to Vercel", tag: "DevOps", tagColor: "#6fcf97", bar: "#2E9E5B", deadline: "Jul 9", priority: PRI.low, status: ST.done },
     ],
   },
   {
-    name: "Sora", initials: "SK", avBg: "#EDE0FF", avColor: "#6b3fa0",
+    name: "Sora", initials: "SK", avBg: "rgba(196,165,232,.18)", avColor: "#c4a5e8",
     tasks: [
-      { title: "Fix login bug", tag: "Bug", tagColor: "#2c5b9e", bar: "#FF6B2B", deadline: "Jul 2", deadlineColor: "#FF6B2B", priority: PRI.high, status: ST.todo, demo: true },
+      { title: "Fix login bug", tag: "Bug", tagColor: "#7fb3f0", bar: "#FF6B2B", deadline: "Jul 2", deadlineColor: "#ff9d6b", priority: PRI.high, status: ST.todo, demo: true },
     ],
   },
 ];
@@ -151,11 +170,11 @@ function TreePreview() {
           )}
         </svg>
 
-        <div className="absolute flex h-[70px] items-center rounded-[14px] border-2 border-brand bg-white px-4 shadow-[0_3px_14px_rgba(46,158,91,.18)]" style={{ left: lcx - 90, top: 16, width: 180 }}>
+        <div className="absolute flex h-[70px] items-center rounded-[14px] border-2 border-brand px-4 shadow-[0_4px_18px_rgba(46,158,91,.28)]" style={{ left: lcx - 90, top: 16, width: 180, background: SHOT.card }}>
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full border-[1.5px] border-brand bg-brand-soft text-sm font-semibold text-brand-dark">AK</div>
+            <div className="flex h-10 w-10 items-center justify-center rounded-full border-[1.5px] border-brand text-sm font-semibold" style={{ background: "rgba(46,158,91,.18)", color: "#6fcf97" }}>AK</div>
             <div>
-              <div className="text-[15px] font-semibold leading-none text-ink">Akarawin</div>
+              <div className="text-[15px] font-semibold leading-none" style={{ color: SHOT.title }}>Akarawin</div>
               <span className="mt-1.5 inline-block rounded bg-brand px-2 py-0.5 text-[9px] font-semibold uppercase text-white">Leader</span>
             </div>
           </div>
@@ -188,14 +207,24 @@ function TreePreview() {
 
 function WindowFrame({ children }) {
   return (
-    <div className="mx-auto max-w-3xl overflow-hidden rounded-2xl border border-white/15 bg-white shadow-[0_40px_100px_-35px_rgba(0,0,0,.85),0_0_0_1px_rgba(255,255,255,.06)]">
-      <div className="flex items-center gap-2 border-b border-line bg-surface-2/50 px-4 py-3">
+    <div className="mx-auto max-w-3xl overflow-hidden rounded-2xl border border-white/12 bg-[#0f141d] shadow-[0_40px_100px_-35px_rgba(0,0,0,.85),0_0_0_1px_rgba(255,255,255,.05)]">
+      <div className="flex items-center gap-2 border-b border-white/10 bg-white/[0.03] px-4 py-3">
         <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
         <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
         <span className="h-3 w-3 rounded-full bg-[#28c840]" />
-        <span className="ml-2 text-lg font-medium text-ink-3">TaskHub · Workspace</span>
+        <span className="ml-2 text-sm font-medium text-white/45">TaskHub · Workspace</span>
       </div>
-      <div className="dot-grid flex items-center justify-center px-4 py-8">{children}</div>
+      {/* จุดไข่ปลาเขียนสีตรง ๆ ไม่ใช้ .dot-grid เพราะคลาสนั้นพลิกตามธีมผู้ใช้ */}
+      <div
+        className="flex items-center justify-center px-4 py-8"
+        style={{
+          backgroundColor: "#0b0f17",
+          backgroundImage: "radial-gradient(rgba(255,255,255,.09) 1.5px, transparent 1.5px)",
+          backgroundSize: "24px 24px",
+        }}
+      >
+        {children}
+      </div>
     </div>
   );
 }
