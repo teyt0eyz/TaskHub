@@ -7,8 +7,8 @@ import AssigneeSelect from "@/components/AssigneeSelect";
 import TrashIcon from "@/components/icons/TrashIcon";
 
 const STATUSES = [
-  { key: "todo", label: "Todo", bg: "#F0F0F0", color: "#5A5A5A" },
-  { key: "in_progress", label: "In Progress", bg: "rgba(255,107,43,.12)", color: "#FF6B2B" },
+  { key: "todo", label: "Todo", bg: "var(--color-surface-2)", color: "var(--color-ink-2)" },
+  { key: "in_progress", label: "In Progress", bg: "var(--color-accent-soft)", color: "var(--color-accent)" },
   { key: "done", label: "Done", bg: "#2E9E5B", color: "#fff" },
 ];
 
@@ -319,7 +319,7 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
           )}
 
           {needsRev && (
-            <div className="mb-4 rounded-xl border border-[rgba(193,57,43,.25)] bg-[rgba(193,57,43,.06)] px-3 py-2 text-sm font-medium text-[#c1392b]">
+            <div className="mb-4 rounded-xl border border-danger-line bg-danger-soft px-3 py-2 text-sm font-medium text-danger">
               ↩ This task was sent back — see details in the progress below
             </div>
           )}
@@ -352,7 +352,7 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
                     style={
                       status === s.key
                         ? { background: s.bg, color: s.color }
-                        : { background: "#fff", color: "#9A9A9A", boxShadow: "inset 0 0 0 1px #E4E4E4" }
+                        : { background: "var(--color-surface)", color: "var(--color-ink-3)", boxShadow: "inset 0 0 0 1px var(--color-line)" }
                     }
                   >
                     {s.label}
@@ -375,7 +375,7 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
                     </button>
                     <button
                       onClick={() => setRejecting(true)}
-                      className="rounded-[10px] border border-[#c1392b] px-3 py-2 text-[13px] font-semibold text-[#c1392b] hover:bg-[rgba(193,57,43,.06)]"
+                      className="rounded-[10px] border border-danger px-3 py-2 text-[13px] font-semibold text-danger hover:bg-danger-soft"
                     >
                       ↩ Send back for changes
                     </button>
@@ -388,7 +388,7 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
                       onChange={(e) => setRejectText(e.target.value)}
                       rows={3}
                       placeholder="Describe what needs fixing..."
-                      className="w-full resize-none rounded-xl border border-line px-3 py-2 text-sm outline-none focus:border-[#c1392b] focus:ring-2 focus:ring-[rgba(193,57,43,.12)]"
+                      className="w-full resize-none rounded-xl border border-line px-3 py-2 text-sm outline-none focus:border-danger focus:ring-2 focus:ring-danger-soft"
                     />
                     <div className="flex justify-end gap-2">
                       <button onClick={() => setRejecting(false)} className="rounded-[10px] border border-line px-3 py-1.5 text-sm font-semibold text-ink-2 hover:bg-surface-2">
@@ -447,7 +447,7 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
                         📎 {a.file_name}
                       </a>
                       {canComment && (
-                        <button onClick={() => deleteAttachment(a.id)} title="Delete file" className="ml-1 text-ink-3 hover:text-[#c1392b]">
+                        <button onClick={() => deleteAttachment(a.id)} title="Delete file" className="ml-1 text-ink-3 hover:text-danger">
                           ✕
                         </button>
                       )}
@@ -503,7 +503,7 @@ export default function TaskDetail({ task, projectId, onClose, canComment = true
         {/* footer: ผู้มีสิทธิ์Manage tasks ลบงาน */}
         {canEdit && !editing && (
           <div className="border-t border-line px-5 py-3">
-            <button onClick={deleteTask} disabled={busy} className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#c1392b] hover:underline disabled:opacity-60">
+            <button onClick={deleteTask} disabled={busy} className="inline-flex items-center gap-1.5 text-sm font-semibold text-danger hover:underline disabled:opacity-60">
               <TrashIcon size={15} /> Delete task
             </button>
           </div>

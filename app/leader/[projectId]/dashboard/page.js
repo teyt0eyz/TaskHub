@@ -95,7 +95,7 @@ export default async function DashboardPage({ params }) {
       </div>
 
       {blocked.length > 0 && (
-        <div className="mb-5 flex items-start gap-3 rounded-xl border border-[rgba(193,57,43,.25)] bg-[rgba(193,57,43,.06)] px-4 py-3">
+        <div className="mb-5 flex items-start gap-3 rounded-xl border border-danger-line bg-danger-soft px-4 py-3">
           <span className="text-lg leading-none">🚧</span>
           <div className="text-sm text-ink">
             <b>{blocked.map((m) => m.name).join(", ")}</b> {blocked.length === 1 ? "is" : "are"} stuck — consider stepping in to help.
@@ -167,7 +167,7 @@ export default async function DashboardPage({ params }) {
                   <span className="w-28 truncate text-sm text-ink-2" title={m.name}>{m.name}</span>
                   <div className="relative h-5 flex-1 overflow-hidden rounded-full bg-surface-2">
                     {/* total */}
-                    <div className="absolute inset-y-0 left-0 rounded-full bg-[#E4E4E4]" style={{ width: `${(m.tasksTotal / maxTasks) * 100}%` }} />
+                    <div className="absolute inset-y-0 left-0 rounded-full bg-line" style={{ width: `${(m.tasksTotal / maxTasks) * 100}%` }} />
                     {/* done */}
                     <div className="absolute inset-y-0 left-0 rounded-full bg-brand" style={{ width: `${(m.tasksDone / maxTasks) * 100}%` }} />
                   </div>

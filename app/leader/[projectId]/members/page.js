@@ -25,12 +25,12 @@ function MemberCard({ m, projectId, canManage, canPromote, canAI }) {
           <div className="flex items-center gap-2">
             <span className="text-base font-semibold text-ink">{m.name}</span>
             {m.blocker && (
-              <span className="rounded-full bg-[rgba(193,57,43,.12)] px-2 py-0.5 text-[10px] font-semibold text-[#c1392b]">
+              <span className="rounded-full bg-danger-soft px-2 py-0.5 text-[10px] font-semibold text-danger">
                 ● Stuck
               </span>
             )}
           </div>
-          <div className={`text-xs ${m.role === "leader" ? "font-semibold text-brand-dark" : m.role === "deputy" ? "font-semibold text-[#6b3fa0]" : "text-ink-3"}`}>
+          <div className={`text-xs ${m.role === "leader" ? "font-semibold text-brand-dark" : m.role === "deputy" ? "font-semibold text-deputy" : "text-ink-3"}`}>
             {displayRole(m)}
           </div>
           {m.status && <div className="mt-0.5 truncate text-xs text-ink-2">{m.status}</div>}
@@ -112,7 +112,7 @@ export default async function LeaderMembersPage({ params }) {
       {canManage && <PendingRequests requests={pending} projectId={projectId} />}
 
       {blocked.length > 0 && (
-        <div className="mb-5 flex items-center gap-3 rounded-xl border border-[rgba(193,57,43,.25)] bg-[rgba(193,57,43,.06)] px-4 py-3">
+        <div className="mb-5 flex items-center gap-3 rounded-xl border border-danger-line bg-danger-soft px-4 py-3">
           <span className="text-lg">🚧</span>
           <div className="text-sm text-ink">
             <b>{blocked.map((m) => m.name).join(", ")}</b> is stuck — consider stepping in to help

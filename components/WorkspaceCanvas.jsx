@@ -449,7 +449,7 @@ export default function WorkspaceCanvas({
                 >
                   {it.badge != null && (
                     <span
-                      className="absolute -left-3 -top-3 z-10 flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-brand text-xs font-bold text-white shadow-sm"
+                      className="absolute -left-3 -top-3 z-10 flex h-7 w-7 items-center justify-center rounded-full border-2 border-surface bg-brand text-xs font-bold text-white shadow-sm"
                       title={`Deadline order #${it.badge}`}
                     >
                       {it.badge}

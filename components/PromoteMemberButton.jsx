@@ -119,7 +119,7 @@ export default function PromoteMemberButton({ projectId, userId, name, currentRo
                       </label>
                     ))}
                     {perms.length === 0 && (
-                      <p className="text-[11px] font-medium text-[#c1392b]">
+                      <p className="text-[11px] font-medium text-danger">
                         ⚠ No permissions selected — saving makes them a regular member (no access to management pages)
                       </p>
                     )}

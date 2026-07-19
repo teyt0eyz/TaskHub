@@ -67,7 +67,7 @@ export default function InviteButton({
             {busy && <div className="mt-4 text-center text-sm text-ink-2">⏳ Generating code...</div>}
 
             {error && (
-              <div className="mt-4 rounded-lg bg-[rgba(193,57,43,.08)] p-3 text-sm text-[#c1392b]">{error}</div>
+              <div className="mt-4 rounded-lg bg-danger-soft p-3 text-sm text-danger">{error}</div>
             )}
 
             {code && (

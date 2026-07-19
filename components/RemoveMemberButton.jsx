@@ -29,7 +29,7 @@ export default function RemoveMemberButton({ projectId, userId, name }) {
       onClick={remove}
       disabled={busy}
       title="Remove member"
-      className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-lg text-ink-3 hover:bg-[rgba(193,57,43,.08)] hover:text-[#c1392b] disabled:opacity-50"
+      className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-lg text-ink-3 hover:bg-danger-soft hover:text-danger disabled:opacity-50"
     >
       <TrashIcon size={15} />
     </button>

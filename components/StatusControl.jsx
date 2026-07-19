@@ -89,7 +89,7 @@ export default function StatusControl({ projectId, current = null }) {
                 type="button"
                 disabled={busy || !current}
                 onClick={() => save("")}
-                className="rounded-lg px-2 py-1 text-xs font-semibold text-[#c1392b] hover:bg-[rgba(193,57,43,.06)] disabled:opacity-40"
+                className="rounded-lg px-2 py-1 text-xs font-semibold text-danger hover:bg-danger-soft disabled:opacity-40"
               >
                 Clear status
               </button>

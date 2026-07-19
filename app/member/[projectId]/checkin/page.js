@@ -121,7 +121,7 @@ export default function CheckinPage() {
                     <span className="text-2xl">{m.emoji}</span>
                     <span
                       className="text-xs font-semibold"
-                      style={{ color: active ? m.color : "#9A9A9A" }}
+                      style={{ color: active ? m.color : "var(--color-ink-3)" }}
                     >
                       {m.label}
                     </span>
@@ -154,7 +154,7 @@ export default function CheckinPage() {
           />
 
           {error && (
-            <div className="rounded-lg bg-[rgba(193,57,43,.08)] p-3 text-sm text-[#c1392b]">{error}</div>
+            <div className="rounded-lg bg-danger-soft p-3 text-sm text-danger">{error}</div>
           )}
 
           <div className="flex items-center justify-end gap-3 pt-1">

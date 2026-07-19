@@ -23,11 +23,11 @@ function TaskChip({ task, onClick }) {
       onClick={onClick}
       title={task.title}
       className={`flex w-full items-center gap-1.5 rounded-md px-1.5 py-1 text-left text-[11px] leading-tight transition-colors hover:bg-surface-2 ${
-        task.overdue ? "bg-[rgba(193,57,43,.06)]" : ""
+        task.overdue ? "bg-danger-soft" : ""
       }`}
     >
       <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: task.overdue ? "#c1392b" : st.bar }} />
-      <span className={`truncate ${done ? "text-ink-3 line-through" : task.overdue ? "font-semibold text-[#c1392b]" : "text-ink"}`}>
+      <span className={`truncate ${done ? "text-ink-3 line-through" : task.overdue ? "font-semibold text-danger" : "text-ink"}`}>
         {task.title}
       </span>
     </button>

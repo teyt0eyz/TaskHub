@@ -60,7 +60,7 @@ export default function ProjectCardMenu({ projectId, projectName }) {
               setOpen(false);
               setConfirming(true);
             }}
-            className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm font-medium text-[#c1392b] hover:bg-[rgba(193,57,43,.06)]"
+            className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm font-medium text-danger hover:bg-danger-soft"
           >
             <TrashIcon size={15} /> Delete project
           </button>

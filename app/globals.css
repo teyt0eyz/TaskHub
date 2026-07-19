@@ -5,6 +5,9 @@
   --color-brand: #2e9e5b;
   --color-brand-dark: #1f7a45;
   --color-brand-soft: rgba(46, 158, 91, 0.12);
+  /* เขียวสำหรับ "ตัวอักษร" โดยเฉพาะ — แยกจาก brand-dark ที่ใช้เป็นพื้นปุ่มตอน hover
+     (พื้นปุ่มต้องเข้มไว้เพราะคู่กับ text-white, แต่ตัวอักษรต้องสว่างขึ้นในธีมมืด) */
+  --color-brand-text: #1f7a45;
 
   --color-accent: #ff6b2b;
   --color-accent-soft: rgba(255, 107, 43, 0.12);
@@ -12,6 +15,18 @@
   --color-warn: #f5c400;
   --color-warn-text: #a07a00;
   --color-warn-soft: rgba(245, 196, 0, 0.18);
+
+  /* สีความหมายที่เดิม hardcode ไว้ทั่วโปรเจกต์ — ทำเป็น token เพื่อให้พลิกตามธีมได้ */
+  --color-danger: #c1392b;
+  --color-danger-soft: rgba(193, 57, 43, 0.08);
+  --color-danger-line: rgba(193, 57, 43, 0.25);
+  --color-deputy: #6b3fa0;
+
+  /* คู่สีของ pill (mood / priority / status) — ต้องมาเป็นคู่ text+bg เสมอ */
+  --color-info: #2c5b9e;
+  --color-info-soft: #e0eeff;
+  --color-ember: #b8521f;
+  --color-ember-soft: #ffe6d6;
 
   --color-ink: #1c1c1c;
   --color-ink-2: #5a5a5a;
@@ -41,7 +56,7 @@ html.dark {
 
   --color-ink: #e9edf3;
   --color-ink-2: #a3adbb;
-  --color-ink-3: #6f7b8a;
+  --color-ink-3: #858f9d;
   --color-line: #262d38;
   --color-line-soft: #1c222b;
   --color-surface: #151a22;
@@ -52,6 +67,22 @@ html.dark {
   --color-warn-soft: rgba(245, 196, 0, 0.16);
   --color-warn-text: #f0cf4a;
 
+  /*
+   * สีเข้มพวกนี้ถูกใช้เป็น "สีตัวอักษร" บนพื้นอ่อน — พอพื้นกลายเป็นสีเข้ม
+   * ต้องสว่างขึ้น ไม่งั้นมืดบนมืด อ่านไม่ออก
+   * (ไม่แตะ --color-brand-dark / --color-accent เพราะสองตัวนั้นถูกใช้เป็น
+   *  พื้นปุ่มทึบคู่กับ text-white ด้วย — ทำให้สว่างแล้วปุ่มจะอ่านยากแทน)
+   */
+  --color-brand-text: #6fcf97;
+  --color-danger: #ff7a6b;
+  --color-danger-soft: rgba(255, 122, 107, 0.14);
+  --color-danger-line: rgba(255, 122, 107, 0.32);
+  --color-deputy: #c4a5e8;
+  --color-info: #7fb3f0;
+  --color-info-soft: rgba(127, 179, 240, 0.16);
+  --color-ember: #ffa06b;
+  --color-ember-soft: rgba(255, 160, 107, 0.16);
+
   color-scheme: dark;
 }
 
@@ -61,6 +92,11 @@ html.dark {
  */
 html.dark .bg-white {
   background-color: var(--color-surface);
+}
+
+/* text-brand-dark ใช้เป็นสีตัวอักษรล้วน — พลิกเฉพาะ color ไม่แตะ hover:bg-brand-dark */
+html.dark .text-brand-dark {
+  color: var(--color-brand-text);
 }
 html.dark .bg-white\/80,
 html.dark .bg-white\/85 {

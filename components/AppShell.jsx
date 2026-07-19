@@ -36,14 +36,14 @@ function NavRow({ item, active, open }) {
       <span
         className="relative flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-base"
         style={{
-          background: active ? item.color : "#F0F0F0",
-          color: active ? "#fff" : "#5A5A5A",
+          background: active ? item.color : "var(--color-surface-2)",
+          color: active ? "#fff" : "var(--color-ink-2)",
         }}
       >
         {item.icon}
         {/* ตอนย่อ sidebar ไม่มีที่ให้ badge ด้านขวา จึงโชว์ที่มุมไอคอนแทน */}
         {!open && badge > 0 && (
-          <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#c1392b] px-1 text-[10px] font-bold leading-none text-white ring-2 ring-white">
+          <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#c1392b] px-1 text-[10px] font-bold leading-none text-white ring-2 ring-surface">
             {badge > 9 ? "9+" : badge}
           </span>
         )}
@@ -51,7 +51,7 @@ function NavRow({ item, active, open }) {
       {open && (
         <span
           className="flex-1 truncate text-[13.5px]"
-          style={{ color: active ? "#1f7a45" : "#1C1C1C", fontWeight: active ? 600 : 500 }}
+          style={{ color: active ? "var(--color-brand-text)" : "var(--color-ink)", fontWeight: active ? 600 : 500 }}
         >
           {item.label}
         </span>

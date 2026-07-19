@@ -30,10 +30,10 @@ export default function DeleteProjectButton({ projectId, projectName = "" }) {
   return (
     <div className="mt-5 border-t border-line pt-4">
       <details onToggle={(e) => !e.currentTarget.open && setConfirming(false)}>
-        <summary className="cursor-pointer list-none text-xs font-medium text-ink-3 hover:text-[#c1392b]">
+        <summary className="cursor-pointer list-none text-xs font-medium text-ink-3 hover:text-danger">
           Danger zone ▾
         </summary>
-        <div className="mt-3 rounded-xl border border-[rgba(193,57,43,.25)] bg-[rgba(193,57,43,.04)] p-3">
+        <div className="mt-3 rounded-xl border border-danger-line bg-danger-soft p-3">
           <div className="text-[13px] font-semibold text-ink">Delete this project</div>
           <p className="mt-0.5 text-[11px] text-ink-3">
             Permanently deletes all tasks, members, comments and data — this cannot be undone
@@ -42,7 +42,7 @@ export default function DeleteProjectButton({ projectId, projectName = "" }) {
           {!confirming ? (
             <button
               onClick={() => setConfirming(true)}
-              className="mt-2.5 inline-flex items-center gap-1.5 rounded-[9px] border border-[#c1392b] px-3 py-1.5 text-xs font-semibold text-[#c1392b] hover:bg-[rgba(193,57,43,.06)]"
+              className="mt-2.5 inline-flex items-center gap-1.5 rounded-[9px] border border-danger px-3 py-1.5 text-xs font-semibold text-danger hover:bg-danger-soft"
             >
               <TrashIcon size={14} /> Delete project
             </button>
@@ -56,7 +56,7 @@ export default function DeleteProjectButton({ projectId, projectName = "" }) {
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 placeholder={projectName}
-                className="w-full rounded-lg border border-line px-2.5 py-1.5 text-sm outline-none focus:border-[#c1392b]"
+                className="w-full rounded-lg border border-line px-2.5 py-1.5 text-sm outline-none focus:border-danger"
               />
               <div className="flex justify-end gap-2">
                 <button

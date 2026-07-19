@@ -19,8 +19,8 @@ export default async function MemberWorkspacePage({ params }) {
     const root = {
       name: project.name,
       initials: initialsOf(project.name),
-      color: "#1f7a45",
-      bg: "rgba(46,158,91,.16)",
+      color: "var(--color-brand-text)",
+      bg: "var(--color-brand-soft)",
       accent: "#2E9E5B",
       roleLabel: "Team",
     };

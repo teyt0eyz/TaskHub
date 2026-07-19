@@ -4,7 +4,7 @@ import { getDbUser, getTeamRoster } from "@/lib/data";
 
 const ROLE_META = {
   leader: { label: "Leader", cls: "text-brand-dark" },
-  deputy: { label: "Deputy", cls: "text-[#6b3fa0]" },
+  deputy: { label: "Deputy", cls: "text-deputy" },
   member: { label: "Member", cls: "text-ink-3" },
 };
 const roleLabel = (m) => m.title || (ROLE_META[m.role] || ROLE_META.member).label;

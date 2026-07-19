@@ -8,7 +8,7 @@ function Assignees({ list = [] }) {
     <div className="flex min-w-0 items-center gap-2">
       <div className="flex items-center">
         {shown.map((a, i) => (
-          <div key={a?.id || i} style={{ marginLeft: i === 0 ? 0 : -8 }} className="rounded-full ring-2 ring-white">
+          <div key={a?.id || i} style={{ marginLeft: i === 0 ? 0 : -8 }} className="rounded-full ring-2 ring-surface">
             <Avatar person={a} size={24} />
           </div>
         ))}
@@ -39,7 +39,7 @@ export default function TaskCard({ task, selected = false, onClick, className = 
       onClick={onClick}
       style={{
         boxShadow,
-        border: selected ? "2px solid #FF6B2B" : awaiting ? "1px solid rgba(46,158,91,.5)" : "1px solid #E4E4E4",
+        border: selected ? "2px solid #FF6B2B" : awaiting ? "1px solid rgba(46,158,91,.5)" : "1px solid var(--color-line)",
       }}
       className={`relative rounded-[10px] bg-white p-[14px] transition-shadow ${
         onClick ? "cursor-pointer" : ""
@@ -52,7 +52,7 @@ export default function TaskCard({ task, selected = false, onClick, className = 
 
       {/* แจ้งเตือนคอมเมนต์ใหม่ — มุมขวาบน เด่นชัด */}
       {task.unreadComments > 0 && (
-        <span className="absolute -right-2 -top-2 z-10 inline-flex animate-bounce items-center gap-1 rounded-full bg-[#2c5b9e] px-2.5 py-1 text-[11px] font-bold text-white shadow-[0_3px_10px_rgba(44,91,158,.5)] ring-2 ring-white">
+        <span className="absolute -right-2 -top-2 z-10 inline-flex animate-bounce items-center gap-1 rounded-full bg-[#2c5b9e] px-2.5 py-1 text-[11px] font-bold text-white shadow-[0_3px_10px_rgba(44,91,158,.5)] ring-2 ring-surface">
           💬 {task.unreadComments} new
         </span>
       )}
@@ -65,7 +65,7 @@ export default function TaskCard({ task, selected = false, onClick, className = 
             </span>
           )}
           {task.needs_revision && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-[rgba(193,57,43,.12)] px-2 py-0.5 text-[10px] font-semibold text-[#c1392b]">
+            <span className="inline-flex items-center gap-1 rounded-full bg-danger-soft px-2 py-0.5 text-[10px] font-semibold text-danger">
               ↩ Send back for changes
             </span>
           )}
@@ -82,8 +82,8 @@ export default function TaskCard({ task, selected = false, onClick, className = 
             key={tag}
             style={
               i === 0
-                ? { color: "#1f7a45", background: "rgba(46,158,91,.12)" }
-                : { color: "#5A5A5A", background: "#F0F0F0" }
+                ? { color: "var(--color-brand-text)", background: "var(--color-brand-soft)" }
+                : { color: "var(--color-ink-2)", background: "var(--color-surface-2)" }
             }
             className="rounded-full px-2.5 py-[3px] text-[11px]"
           >
@@ -95,7 +95,7 @@ export default function TaskCard({ task, selected = false, onClick, className = 
       <div className="mt-3 flex items-center justify-between">
         <div
           className="flex items-center gap-1.5 text-xs"
-          style={{ color: task.overdue ? "#FF6B2B" : "#5A5A5A", fontWeight: task.overdue ? 600 : 400 }}
+          style={{ color: task.overdue ? "var(--color-accent)" : "var(--color-ink-2)", fontWeight: task.overdue ? 600 : 400 }}
         >
           <span>🗓</span>
           <span>

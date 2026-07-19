@@ -63,7 +63,7 @@ export default function GeminiKeyField() {
           <span className="truncate text-xs text-ink-2">{masked}</span>
           <div className="flex gap-2">
             <button onClick={() => setEditing(true)} className="text-xs font-semibold text-brand hover:underline">Edit</button>
-            <button onClick={clear} className="text-xs font-semibold text-[#c1392b] hover:underline">Delete</button>
+            <button onClick={clear} className="text-xs font-semibold text-danger hover:underline">Delete</button>
           </div>
         </div>
       ) : (

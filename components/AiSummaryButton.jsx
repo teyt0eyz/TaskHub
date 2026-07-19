@@ -163,7 +163,7 @@ export default function AiSummaryButton({ projectId, memberId, memberName }) {
         🤖 AI summary
         {quotaText && <span className="ml-1 font-normal text-ink-3">({quotaText})</span>}
         {history.length > 0 && (
-          <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand px-1 text-[10px] font-bold text-white ring-2 ring-white">
+          <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand px-1 text-[10px] font-bold text-white ring-2 ring-surface">
             {history.length}
           </span>
         )}
@@ -222,7 +222,7 @@ export default function AiSummaryButton({ projectId, memberId, memberName }) {
                   </div>
                 </div>
               )}
-              {error && <div className="mt-3 rounded-lg bg-[rgba(193,57,43,.08)] p-3 text-sm text-[#c1392b]">{error}</div>}
+              {error && <div className="mt-3 rounded-lg bg-danger-soft p-3 text-sm text-danger">{error}</div>}
               <div className="mt-4">
                 <GeminiKeyField />
               </div>
@@ -238,7 +238,7 @@ export default function AiSummaryButton({ projectId, memberId, memberName }) {
                   >
                     ➕ New summary
                   </button>
-                  <button onClick={deleteCurrent} className="inline-flex items-center gap-1.5 rounded-[10px] border border-line px-3 py-2 text-sm font-semibold text-[#c1392b] hover:bg-[rgba(193,57,43,.06)]">
+                  <button onClick={deleteCurrent} className="inline-flex items-center gap-1.5 rounded-[10px] border border-line px-3 py-2 text-sm font-semibold text-danger hover:bg-danger-soft">
                     <TrashIcon size={15} /> Delete this one
                   </button>
                 </div>

@@ -10,7 +10,7 @@ export default function Error({ error, reset }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-surface p-6">
       <div className="w-full max-w-md rounded-2xl border border-line bg-white p-8 text-center shadow-[0_8px_30px_rgba(0,0,0,.06)]">
-        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[rgba(193,57,43,.1)] text-3xl">
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-danger-soft text-3xl">
           😵
         </div>
         <h2 className="text-lg font-bold text-ink">Something went wrong</h2>

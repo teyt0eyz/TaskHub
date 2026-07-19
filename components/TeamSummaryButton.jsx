@@ -187,7 +187,7 @@ export default function TeamSummaryButton({ projectId }) {
         🤖 Summarize whole team with AI
         {quotaText && <span className="font-normal opacity-80">({quotaText})</span>}
         {history.length > 0 && (
-          <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand px-1 text-[10px] font-bold ring-2 ring-white" title={`summaries saved ${history.length}`}>
+          <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand px-1 text-[10px] font-bold ring-2 ring-surface" title={`summaries saved ${history.length}`}>
             {history.length}
           </span>
         )}
@@ -255,10 +255,10 @@ export default function TeamSummaryButton({ projectId }) {
                   <div className="mt-2 text-xs text-ink-3">
                     {hasKey ? "Using your own API key — unlimited 🔑" : `Project credits left ${remaining ?? "-"}/${limit} this month`}
                   </div>
-                  {out && <div className="mt-1 text-xs text-[#c1392b]">Project credits used up — add your own API key below to keep generating</div>}
+                  {out && <div className="mt-1 text-xs text-danger">Project credits used up — add your own API key below to keep generating</div>}
                 </div>
               )}
-              {error && <div className="mt-3 rounded-lg bg-[rgba(193,57,43,.08)] p-3 text-sm text-[#c1392b]">{error}</div>}
+              {error && <div className="mt-3 rounded-lg bg-danger-soft p-3 text-sm text-danger">{error}</div>}
               <div className="mt-4">
                 <GeminiKeyField />
               </div>
@@ -271,11 +271,11 @@ export default function TeamSummaryButton({ projectId }) {
                     onClick={generate}
                     disabled={out}
                     title={out ? "Out of credits" : "Create a new summary (added to history, never overwrites)"}
-                    className="rounded-[10px] border border-[#6b3fa0] px-3 py-2 text-sm font-semibold text-[#6b3fa0] hover:bg-[#6b3fa0]/10 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="rounded-[10px] border border-deputy px-3 py-2 text-sm font-semibold text-deputy hover:bg-deputy/10 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     ➕ New summary
                   </button>
-                  <button onClick={deleteCurrent} className="inline-flex items-center gap-1.5 rounded-[10px] border border-line px-3 py-2 text-sm font-semibold text-[#c1392b] hover:bg-[rgba(193,57,43,.06)]">
+                  <button onClick={deleteCurrent} className="inline-flex items-center gap-1.5 rounded-[10px] border border-line px-3 py-2 text-sm font-semibold text-danger hover:bg-danger-soft">
                     <TrashIcon size={15} /> Delete this one
                   </button>
                 </div>
