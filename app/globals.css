@@ -166,6 +166,34 @@ html.dark .dot-grid {
   color: transparent;
 }
 
+/*
+ * ผังต้นไม้บน landing มีขนาดตายตัว 620px — จอมือถือ (390px) จะโดน
+ * overflow-hidden ของกรอบหน้าต่างตัดขอบขวาหาย
+ * ย่อทั้งผังตามความกว้างจริงของกล่อง โดยไม่ขยายเกินขนาดออกแบบ (0.7)
+ */
+.shot-outer {
+  container-type: inline-size;
+  width: 100%;
+}
+.shot-fit {
+  /* ค่าสำรองสำหรับเบราว์เซอร์ที่ไม่รองรับ container query
+     (เขียนเป็น @supports เพราะ minifier จะยุบ custom property ที่ประกาศซ้ำทิ้ง) */
+  --k: 0.7;
+  position: relative;
+  height: calc(var(--shot-h) * var(--k));
+}
+@supports (container-type: inline-size) {
+  .shot-fit {
+    --k: min(0.7, calc(100cqw / var(--shot-w)));
+  }
+}
+.shot-inner {
+  width: var(--shot-w);
+  height: var(--shot-h);
+  transform: scale(var(--k));
+  transform-origin: top left;
+}
+
 /* เส้นขอบไล่สีบางๆ สำหรับการ์ดกระจก */
 .ring-gradient {
   position: relative;

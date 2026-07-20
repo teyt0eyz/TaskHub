@@ -133,7 +133,6 @@ const COLUMNS = [
 
 function TreePreview() {
   const W = 620;
-  const SCALE = 0.7;
   const ROW_GAP = 24;
   const lcx = 310;
   const cols = [100, 310, 520];
@@ -149,8 +148,9 @@ function TreePreview() {
   );
 
   return (
-    <div className="relative mx-auto" style={{ width: W * SCALE, height: H * SCALE, maxWidth: "100%" }}>
-      <div className="relative" style={{ width: W, height: H, transform: `scale(${SCALE})`, transformOrigin: "top left" }}>
+    <div className="shot-outer">
+      <div className="shot-fit" style={{ "--shot-w": `${W}px`, "--shot-h": `${H}px` }}>
+        <div className="shot-inner relative">
         <svg width={W} height={H} className="absolute inset-0" style={{ overflow: "visible" }}>
           <defs>
             <marker id="hah" markerWidth="8" markerHeight="8" refX="5" refY="4" orient="auto" markerUnits="strokeWidth">
@@ -198,6 +198,7 @@ function TreePreview() {
             />
           ))
         )}
+        </div>
       </div>
     </div>
   );
@@ -216,7 +217,7 @@ function WindowFrame({ children }) {
       </div>
       {/* จุดไข่ปลาเขียนสีตรง ๆ ไม่ใช้ .dot-grid เพราะคลาสนั้นพลิกตามธีมผู้ใช้ */}
       <div
-        className="flex items-center justify-center px-4 py-8"
+        className="flex items-center justify-center px-2 py-4 sm:px-4 sm:py-8"
         style={{
           backgroundColor: "#0b0f17",
           backgroundImage: "radial-gradient(rgba(255,255,255,.09) 1.5px, transparent 1.5px)",
